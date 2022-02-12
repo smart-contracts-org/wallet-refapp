@@ -3,6 +3,8 @@
 [![Download](https://img.shields.io/github/release/digital-asset/daml.svg?label=Download)](https://docs.daml.com/getting-started/installation.html)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/digital-asset/daml/blob/main/LICENSE)
 
+# Wallet Ref App
+
 # Welcome to _Create Daml App_
 
 This repository contains a template to get started with developing full-stack
