@@ -26,11 +26,14 @@ export interface ContractContextProps {
 export const ContractsContext = React.createContext<ContractContextProps>({} as ContractContextProps)
 
 
-export const useContracts = (): ContractContextProps => {
+ const useContracts = (): ContractContextProps => {
+  
   const initialState: State = {
     assetAccounts: {
     }
   }
+  
+  
   const [allContracts, setAllContracts] = React.useState<State>(initialState)
   
   React.useEffect(() => {

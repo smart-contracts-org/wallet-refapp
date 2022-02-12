@@ -51,14 +51,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 export const PendingSwapRow: React.FC<PendingSwapRowProps> = ({outboundQuantity,outboundTicker, sender, inboundTicker, inboundQuantity }) => {
-  const [isOpen, setIsOpen] = React.useState<boolean>(false)
   const classes = useStyles();
-  const handleOpen = () => {
-    setIsOpen(true)
-  }
-  const handleClose = () => {
-    setIsOpen(false);
-  }
+  // const [isOpen, setIsOpen] = React.useState<boolean>(false)
+  // const handleOpen = () => {
+  //   setIsOpen(true)
+  // }
+  // const handleClose = () => {
+  //   setIsOpen(false);
+  // }
 
   return (
     <>
@@ -89,7 +89,9 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = ({outboundQuantity,
         <div className={classes.actions}>
             <Button className={classes.button} variant='outlined' size="small">Accept</Button>
             <Button className={classes.button} variant='outlined' size="small">Reject</Button>
-            <Button className={classes.button} variant='outlined' size="small" onClick={handleOpen} >Details</Button>
+            <Button className={classes.button} variant='outlined' size="small" 
+            onClick={handleOpen} 
+            >Details</Button>
           </div>
       </Card>
       {/* <PopUp isOpen={isOpen} handleClose={handleClose}/> */}

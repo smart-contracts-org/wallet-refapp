@@ -37,14 +37,14 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 export const PendingAssetInviteRow: React.FC<PendingAssetInviteRowProps> = ({ sender, ticker }) => {
-  const [isOpen, setIsOpen] = React.useState<boolean>(false)
+  // const [isOpen, setIsOpen] = React.useState<boolean>(false)
   const classes = useStyles();
-  const handleOpen = () => {
-    setIsOpen(true)
-  }
-  const handleClose = () => {
-    setIsOpen(false);
-  }
+  // const handleOpen = () => {
+  //   setIsOpen(true)
+  // }
+  // const handleClose = () => {
+  //   setIsOpen(false);
+  // }
 
   return (
     <>
@@ -63,7 +63,9 @@ export const PendingAssetInviteRow: React.FC<PendingAssetInviteRowProps> = ({ se
         <div className={classes.actions}>
             <Button className={classes.button} variant='outlined' size="small">Accept</Button>
             <Button className={classes.button} variant='outlined' size="small">Reject</Button>
-            <Button className={classes.button} variant='outlined' size="small" onClick={handleOpen} >Details</Button>
+            <Button className={classes.button} variant='outlined' size="small" 
+            // onClick={handleOpen} 
+            >Details</Button>
           </div>
       </Card>
       {/* <PopUp isOpen={isOpen} handleClose={handleClose}/> */}
