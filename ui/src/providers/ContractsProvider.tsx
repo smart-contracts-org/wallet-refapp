@@ -36,9 +36,19 @@ export const ContractsContext = React.createContext<ContractContextProps>({} as 
   
   const [allContracts, setAllContracts] = React.useState<State>(initialState)
   
+  // TODO: JSON.stringify to compare the object not best practice
+  // use deep compare later, this is a hack.
+  const initialStateString = JSON.stringify(initialState)
+  const allContractsSring = JSON.stringify(allContracts);
+  
   React.useEffect(() => {
-    setAllContracts(initialState)
-  }, [])
+    if(initialStateString !== allContractsSring){
+      const state = JSON.parse(allContractsSring)
+      setAllContracts(state)
+    }
+
+    
+  }, [setAllContracts, allContractsSring, initialStateString])
 
   const addNewAccounts = (newAssetAccount: AssetAccount) => {
     const newState = {...allContracts, assetAccounts: {...allContracts.assetAccounts, [newAssetAccount.ticker]: newAssetAccount}}
