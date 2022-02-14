@@ -1,11 +1,12 @@
-sdk-version: 1.16.0
+sdk-version: 1.18.1
 name: wallet-refapp
 version: 0.1.0
 source: daml
 parties:
 - Alice
 - Bob
-- Charlie
+- Chris
+- Dianne
 dependencies:
 - daml-prim
 - daml-stdlib
