@@ -1,0 +1,117 @@
+-- Copyright (c) 2021 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+
+-- A simple transferrable asset with issuer and owner.
+-- It is intended to be used in conjunction with Asset.Account module.
+
+module Asset where
+
+-- Asset type is identified by a combination of issuer, symbol, fungible and reference properties.
+-- Optional reference field can be used for purposes like
+-- identifying a specific item in a run of non-fungible tokens.
+data AssetType = AssetType 
+  with
+    -- The issuer of the asset.
+    issuer: Party
+    -- A symbol for the asset. Uniquely identifies the type of asset amongst
+    -- those issued by the issuer
+    symbol: Text
+    -- Is the asset fungible, i.e. can it be split and merged
+    fungible : Bool
+    -- A possible reference for NFTs and the like
+    reference : Optional Text
+     
+  deriving (Eq, Show, Ord)
+  
+-- The Asset template represents an asset holding. When there's a corresponding
+-- AssetHoldingAccount template, active Asset contract can be interpreted as a position
+-- (or balance) held in the account.
+-- An Asset is co-signed by the issuer and the owner.
+-- Thus, an Asset is a contract between issuer and owner and can 
+-- represent assets as well as liabilities.
+template Asset
+  with
+    asset_type : AssetType
+    -- The asset owner
+    owner : Party
+    -- The amount of the asset. When there's a corresponding AssetHoldingAccount template,
+    -- Asset amount represents the size of the position (or balance) held in the account.
+    amount : Decimal
+
+  where
+    signatory asset_type.issuer, owner
+    ensure (if asset_type.fungible then amount>0.0 else (amount==1.0 || amount==0.0))
+
+    -- The key allows to retrieve active Assset contract from the ledger using
+    -- asset type and owner as input (or key). This means that  on the ledger there can be   
+    -- no more than one active Asset contract for any given asset type and owner.
+    -- The same key is used in AssetHoldingAccount template in the Asset.Account module.
+    -- The use of the same key between Asset and AsssetHoldingAccount templates is a method to
+    -- establish a relationship between asset and account. Using the key defined in AsssetHoldingAccount template
+    -- we can retrieve corresponding Asset contract and vice versa. This can be interpreted as fetching the asset
+    -- held in the account or conversely fecthing the account where the asset is held.
+    key (asset_type, owner) : (AssetType, Party)
+    maintainer key._2
+
+
+-- The AssetTransfer template represents an asset in transfer.
+-- It provides transfer originator with a choice to cancel the transfer.
+-- It also provides the recipient with a choice to reject the transfer.
+-- To acceps the transfer the recipient must have an AssetHoldingAccount contract corresponding
+-- to the asset in transfer, as Accept_Transfer choice is provided on the AssetHoldingAccount template.
+template AssetTransfer
+  with
+    -- The asset type to be transferred.
+    asset : Asset
+    -- The recepient of the transfer.
+    recipient : Party
+    -- The amount of the asset type to be transferred
+    amount : Decimal
+  where
+    signatory (signatory asset)
+    observer (observer asset), recipient
+
+    choice Cancel_Transfer : ContractId Asset
+      controller asset.owner 
+      do
+        assetCid <- lookupByKey @Asset (asset.asset_type, asset.owner)
+        previous_asset_amount <- case assetCid of
+          Some cid -> do
+            asset <- fetch cid
+            archive cid
+            return asset.amount
+          None -> do
+            return 0.0
+        create asset with
+          amount = amount + previous_asset_amount
+
+    -- In case the recipient rejects the transfer, the asset is returned to the original owner via a reverse transfer.
+    -- The reverse transfer is required to avoid disclosing to the recipient of the original transfer the balance in
+    -- the account of the sender of the original transfer. If the returned amount was moved straight into the original transfer sender's
+    -- account, the resulting Asset contract (which represents the position or the balance in original transfer sender's account)
+    -- would be visible to the original transfer recipient, which is undesirable, as it violates the account privacy.
+    choice Reject_Transfer : ContractId AssetTransfer
+      controller recipient
+      do
+        create this with
+          asset
+          recipient = asset.owner
+          amount
+
+    choice Accept_Transfer : ContractId Asset
+      controller recipient
+      do
+        assetCid <- lookupByKey @Asset (asset.asset_type, recipient)
+        previous_asset_amount <- case assetCid of
+          Some cid -> do
+            asset <- fetch cid
+            assertMsg "Cannot accept AssetTransfer. The recipient already owns this type of non-fungible asset" 
+              (asset.asset_type.fungible)
+            archive cid
+            return asset.amount
+          None -> do
+            return 0.0
+        create asset with
+          amount = amount + previous_asset_amount
+          owner = recipient
+
