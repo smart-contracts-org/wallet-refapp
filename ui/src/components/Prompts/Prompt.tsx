@@ -3,7 +3,6 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { makeStyles } from '@mui/styles';
 import { Theme } from '@mui/material/styles';
-import { Paper } from '@mui/material';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {

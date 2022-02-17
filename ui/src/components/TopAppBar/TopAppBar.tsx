@@ -1,15 +1,16 @@
 import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
+import MenuIcon from '@mui/icons-material/Menu';
 import { styled } from '@mui/material/styles';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch, { SwitchProps } from '@mui/material/Switch';
+import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
-import { Box } from '@mui/material';
+import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import { Box, IconButton } from '@mui/material';
 import { ContractsContext } from '../../providers/ContractsProvider';
+import { isMobile } from '../../platform/platform';
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -65,7 +66,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 export const LightDarkSwitch: React.FC = () => {
   const contractsContext = React.useContext(ContractsContext)
 
-  const onClick= () => {
+  const onClick = () => {
     contractsContext.toggleTheme()
   }
   return (
@@ -78,7 +79,13 @@ export const LightDarkSwitch: React.FC = () => {
   );
 }
 
-export const TopAppBar: React.FC = () => {
+interface TopAppBarProps {
+  handleDrawerOpen: () => void;
+  handleDrawerClose: () => void;
+  isOpen: boolean;
+}
+
+export const TopAppBar: React.FC<TopAppBarProps> = ({isOpen, handleDrawerOpen, handleDrawerClose}) => {
   // const [auth, setAuth] = React.useState<boolean>(true);
   // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -94,21 +101,26 @@ export const TopAppBar: React.FC = () => {
   //   setAnchorEl(null);
   // };
 
-  const [checked, setChecked] = React.useState(true);
+  // const [checked, setChecked] = React.useState(true);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
-  };
+  // const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setChecked(event.target.checked);
+  // };
 
   return (
     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
+        {isMobile() && <IconButton
+          onClick={isOpen ? handleDrawerClose : handleDrawerOpen}
+        >
+          {isOpen? <MenuOpenIcon/> :  <MenuIcon />}
+        </IconButton>}
         <Typography variant="h6" noWrap component="div">
           Wallet RefApp
       </Typography>
         <Box ml='auto'>
-
-          <LightDarkSwitch />
+          <LightDarkSwitch
+           />
         </Box>
       </Toolbar>
     </AppBar>

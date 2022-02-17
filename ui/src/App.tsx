@@ -5,8 +5,9 @@ import { TopAppBar } from './components/TopAppBar/TopAppBar';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter } from "react-router-dom";
 import { Pages } from './pages/Pages';
-
-import { ContractsContext, ContractsProvider } from './providers/ContractsProvider';
+import {  ContractsProvider } from './providers/ContractsProvider';
+import { isMobile } from './platform/platform';
+import { SideMenuMobile } from './components/SideMenuMobile.tsx/SideMenuMobile';
 
 const theme = createTheme({
   palette: {
@@ -16,16 +17,23 @@ const theme = createTheme({
 
 
 export const App: React.FC = () => {
-  const contractsContext = React.useContext(ContractsContext)
-  
+  const [isOpen, setOpen] = React.useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
   return (
     <BrowserRouter>
       <ContractsProvider>
         <ThemeProvider theme={theme}>
           <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <TopAppBar />
-            <SideMenu />
+            <TopAppBar isOpen={isOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} />
+            {isMobile() ? <SideMenuMobile isOpen={isOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} /> : <SideMenu />}
             <Pages />
           </Box>
         </ThemeProvider>
