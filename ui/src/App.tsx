@@ -5,7 +5,8 @@ import { TopAppBar } from './components/TopAppBar/TopAppBar';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter } from "react-router-dom";
 import { Pages } from './pages/Pages';
-import { ContractsProvider } from './providers/ContractsProvider';
+
+import { ContractsContext, ContractsProvider } from './providers/ContractsProvider';
 
 const theme = createTheme({
   palette: {
@@ -15,6 +16,8 @@ const theme = createTheme({
 
 
 export const App: React.FC = () => {
+  const contractsContext = React.useContext(ContractsContext)
+  
   return (
     <BrowserRouter>
       <ContractsProvider>

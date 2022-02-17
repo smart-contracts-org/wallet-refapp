@@ -16,11 +16,13 @@ export interface AssetAccounts {
 
 export interface State {
   assetAccounts: AssetAccounts, 
+  isDarkTheme: boolean
 }
 
 export interface ContractContextProps {
   state: State;
   addNewAccounts: (AssetAccount: AssetAccount) => void;
+  toggleTheme: () => void;
 }
 
 export const ContractsContext = React.createContext<ContractContextProps>({} as ContractContextProps)
@@ -30,7 +32,8 @@ export const ContractsContext = React.createContext<ContractContextProps>({} as 
   
   const initialState: State = {
     assetAccounts: {
-    }
+    }, 
+    isDarkTheme: false
   }
   
   
@@ -48,16 +51,22 @@ export const ContractsContext = React.createContext<ContractContextProps>({} as 
     }
 
     
-  }, [setAllContracts, allContractsSring, initialStateString])
+  }, [setAllContracts, allContractsSring, initialStateString, allContracts.isDarkTheme])
 
   const addNewAccounts = (newAssetAccount: AssetAccount) => {
     const newState = {...allContracts, assetAccounts: {...allContracts.assetAccounts, [newAssetAccount.ticker]: newAssetAccount}}
     setAllContracts(newState)
   }
+  const toggleTheme = () => {
+    console.log('toggle', allContracts.isDarkTheme)
+    const newState = {...allContracts, isDarkTheme: !allContracts.isDarkTheme}
+    setAllContracts(newState)
+  }
 
   return {
     state: allContracts, 
-    addNewAccounts
+    addNewAccounts, 
+    toggleTheme
   }
 }
 
