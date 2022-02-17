@@ -43,11 +43,13 @@ jobs:
       - run:
           name: Build Daml
           command: |
-            make build-dars
+            echo "todo: build dars"
+            # make build-dars
       - run:
           name: Daml tests
           command: |
-            make test-dars
+            echo "todo: test-dars"
+            # make test-dars
       # - run:
       #     name: Check daml.yaml file
       #     command: |
