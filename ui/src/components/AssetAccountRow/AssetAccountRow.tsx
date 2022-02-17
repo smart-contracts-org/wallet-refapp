@@ -38,7 +38,7 @@ interface AssetRowProps {
 }
 
 
-export const AssetRow: React.FC<AssetRowProps> = ({ issuer, isIssuedByMeTab, ticker, quantity, owner, isShareable, isFungible, isAirdroppable }) => {
+export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({ issuer, isIssuedByMeTab, ticker, quantity, owner, isShareable, isFungible, isAirdroppable }) => {
   const classes = useStyles()
   const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)
 

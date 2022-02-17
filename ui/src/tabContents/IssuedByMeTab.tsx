@@ -1,6 +1,6 @@
 import { Box, Button, Fab } from '@mui/material';
 import React from 'react';
-import { AssetRow } from '../components/AssetRow/AssetRow';
+import { AssetAccountRow } from '../components/AssetAccountRow/AssetAccountRow';
 import { UserPrompt } from '../components/UserPrompt/UserPrompt';
 import AddIcon from '@mui/icons-material/Add';
 import { PopUp } from '../components/PopUp/PopUp';
@@ -28,7 +28,7 @@ export const IssuedByMeTab: React.FC = () => {
         Create asset account
       </Button>}
       {Object.values(allContracts.assetAccounts).map((assetAccount, i) =>
-        <AssetRow
+        <AssetAccountRow
           key={assetAccount.ticker + i}
           isIssuedByMeTab
           {...assetAccount}
