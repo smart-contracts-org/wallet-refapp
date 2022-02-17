@@ -19,6 +19,7 @@ export const IssuedByMeTab: React.FC = () => {
     setPopupContent(undefined);
   }
   const allContracts = contractsContext.state
+  const hasAccounts = Object.values(allContracts.assetAccounts).length > 0
  
   return (
     <Box>
@@ -32,7 +33,7 @@ export const IssuedByMeTab: React.FC = () => {
           isIssuedByMeTab
           {...assetAccount}
         />)}
-      {Object.values(allContracts.assetAccounts).length === 0 && <UserPrompt />}
+      {!hasAccounts && <UserPrompt />}
       <PopUp
         issuer={''}
         owner={''}

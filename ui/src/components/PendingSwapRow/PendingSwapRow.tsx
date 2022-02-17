@@ -90,7 +90,7 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = ({outboundQuantity,
             <Button className={classes.button} variant='outlined' size="small">Accept</Button>
             <Button className={classes.button} variant='outlined' size="small">Reject</Button>
             <Button className={classes.button} variant='outlined' size="small" 
-            onClick={handleOpen} 
+            // onClick={handleOpen} 
             >Details</Button>
           </div>
       </Card>
