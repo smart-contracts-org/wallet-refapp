@@ -5,6 +5,7 @@ import { TopAppBar } from './components/TopAppBar/TopAppBar';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter } from "react-router-dom";
 import { Pages } from './pages/Pages';
+
 import {  ContractsProvider } from './providers/ContractsProvider';
 import { isMobile } from './platform/platform';
 import { SideMenuMobile } from './components/SideMenuMobile.tsx/SideMenuMobile';

@@ -4,8 +4,8 @@ import React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-import { PendingOutboundActivityTab } from '../components/PendingOutboundActivityTab/PendingOutboundActivityTab';
 import { PendingInboundActivities } from '../components/PendingInboundActivities/PendingInboundActivities';
+import { PendingOutboundActivities } from '../components/PendingOutboundActivities/PendingOutbouneActivities';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -57,10 +57,9 @@ export const BasicTabs: React.FC<unknown> = () => {
       </Box>
       <TabPanel value={value} index={0}>
         <PendingInboundActivities/>
-
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <PendingOutboundActivityTab/>
+        <PendingOutboundActivities/>
       </TabPanel>
     </Box>
   );

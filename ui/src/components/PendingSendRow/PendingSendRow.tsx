@@ -4,14 +4,15 @@ import Button from '@mui/material/Button';
 import { RowChip } from '../RowChip/RowChip';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { InboundSendRowContents } from '../InboundSendRowContents/InboundSendRowContents';
-import { OutboundSendRowContents } from '../OutboundSendRowContents/OutboundSendRowContents';
+import { SendRowContents } from '../SendRowContents/SendRowContents';
+import { PendingRowProps } from '../PendingRow/PendingRow';
 
-interface PendingSendRowProps {
+export interface PendingSendRowProps {
   ticker?: string;
   quantity?: number;
   sender?: string;
   isInbound: boolean;
+  
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-export const PendingSendRow: React.FC<PendingSendRowProps> = ({ isInbound, sender, ticker, quantity }) => {
+export const PendingSendRow: React.FC<PendingRowProps> = ({ isNarrow, isInbound, sender, inboundTicker, inboundQuantity }) => {
   // const [isOpen, setIsOpen] = React.useState<boolean>(false)
   const classes = useStyles();
   // const handleOpen = () => {
@@ -57,10 +58,7 @@ export const PendingSendRow: React.FC<PendingSendRowProps> = ({ isInbound, sende
     <>
       <Card className={classes.card}>
         <RowChip label={'Send Request'} requestType={'send'} />
-        {isInbound ? <InboundSendRowContents sender={sender} quantity={quantity} ticker={ticker}
-        
-        /> : <OutboundSendRowContents sender={sender} quantity={quantity} ticker={ticker} />}
-
+        <SendRowContents isNarrow={isNarrow} isInbound={isInbound} sender={sender} inboundQuantity={inboundQuantity} inboundTicker={inboundTicker}/>
         <div className={classes.actions}>
           {isInbound && <Button className={classes.button} variant='outlined' size="small">Accept</Button>}
           <Button className={classes.button} variant='outlined' size="small">{isInbound ? 'Reject' : 'Cancel'}</Button>

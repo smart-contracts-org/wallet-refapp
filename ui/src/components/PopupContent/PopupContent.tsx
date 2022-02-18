@@ -14,7 +14,6 @@ interface PopupContentTypes {
   [AssetAction.Details]: React.FC<AssetDetailsPopupContentProps>,
   [AssetAction.CreateAccount]: React.FC<CreateAccountPopupContentProps>,
   [AssetAction.Swap]: React.FC<SwapPopupContentProps>
-
 }
 
 export const popupContentTypes: PopupContentTypes = {
