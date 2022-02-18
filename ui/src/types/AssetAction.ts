@@ -6,3 +6,9 @@ export enum AssetAction {
   CreateAccount, 
   Swap
 }
+
+export enum TemplateType {
+  Send,
+  Swap,
+  AssetInvite
+}

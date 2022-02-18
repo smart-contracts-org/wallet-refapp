@@ -1,18 +1,16 @@
 import React from 'react';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
-import { RowChip } from '../RowChip/RowChip';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { InboundSendRowContents } from '../InboundSendRowContents/InboundSendRowContents';
-import { OutboundSendRowContents } from '../OutboundSendRowContents/OutboundSendRowContents';
-import { PendingSendRowProps } from '../PendingSendRow/PendingSendRow';
+import { SendRowContents } from '../SendRowContents/SendRowContents';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { CardContent, Collapse, IconButton } from '@mui/material';
+import { Avatar, CardContent, Collapse, IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import clx from 'clsx';
-const useStyles = makeStyles((theme: Theme) => ({
+import { PendingRowProps } from '../PendingRow/PendingRow';
+export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   card: {
     display: 'flex',
     flexDirection: 'column',
@@ -52,12 +50,33 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   marginTop: {
     marginTop: theme.spacing(1)
-  }
+  },
+  inboundTicker: {
+    color: theme.palette.primary.main
+  },
+  inboundQuantity: {
+    color: 'green'
+  },
+  outboundTicker: {
+    color: 'red',
+  },
+  outboundQuantity: {
+    color: 'red'
+  },
+  divider: {
+    marginTop: theme.spacing(0.5),
+    marginBottom: theme.spacing(0.5)
+  },
+  inboundForOutboundContainer: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+
 }))
 
-export const PendingSendRowNarrow: React.FC<PendingSendRowProps> = ({ isInbound, sender, ticker, quantity }) => {
+export const PendingSendRowNarrow: React.FC<PendingRowProps> = ({ isNarrow, isInbound, sender, inboundTicker, inboundQuantity }) => {
   // const [isOpen, setIsOpen] = React.useState<boolean>(false)
-  const classes = useStyles();
+  const classes = useNarrowPendingStyles();
   const [isExpanded, setExpand] = React.useState<boolean>(false);
   const toggleExpand = () => {
     setExpand(!isExpanded)
@@ -73,25 +92,24 @@ export const PendingSendRowNarrow: React.FC<PendingSendRowProps> = ({ isInbound,
     <>
       <Card className={classes.card}>
         <div className={classes.symbolTextContainer} >
-          <IconButton size='small' color='success'>
+          <IconButton size='small' color='default'>
+            <Avatar>
+
             <ArrowBackIcon />
+            </Avatar>
           </IconButton>
-          {isInbound ? <InboundSendRowContents isNarrow sender={sender} quantity={quantity} ticker={ticker}
-
-          /> : <OutboundSendRowContents sender={sender} quantity={quantity} ticker={ticker} />}
-
-
+          <SendRowContents isInbound={isInbound} isNarrow={isNarrow} sender={sender} inboundQuantity={inboundQuantity} inboundTicker={inboundTicker} />
           <IconButton onClick={toggleExpand} className={classes.moreButton} size='medium'>
-           {isExpanded ? <ExpandLessIcon/> : <ExpandMoreIcon />}
+            {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </IconButton>
         </div>
         <Collapse in={isExpanded} className={clx(classes.actions)}>
           <CardContent>
-          {isInbound && <Button fullWidth className={classes.button} variant='outlined' color='success' size="medium">Accept</Button>}
-          <Button fullWidth className={classes.button} variant='outlined' color='error' size="medium">{isInbound ? 'Reject' : 'Cancel'}</Button>
-          <Button fullWidth variant='outlined' size="medium"
-          // onClick={handleOpen} 
-          >Details</Button>
+            {isInbound && <Button fullWidth className={classes.button} variant='outlined' color='success' size="medium">Accept</Button>}
+            <Button fullWidth className={classes.button} variant='outlined' color='error' size="medium">{isInbound ? 'Reject' : 'Cancel'}</Button>
+            <Button fullWidth variant='outlined' size="medium"
+            // onClick={handleOpen} 
+            >Details</Button>
           </CardContent>
         </Collapse>
       </Card>
