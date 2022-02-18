@@ -11,7 +11,7 @@ import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import { Box, IconButton } from '@mui/material';
 import { ContractsContext } from '../../providers/ContractsProvider';
 import { isMobile } from '../../platform/platform';
-
+import { featureFlags } from '../../featureFlags'
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
   height: 34,
@@ -85,7 +85,7 @@ interface TopAppBarProps {
   isOpen: boolean;
 }
 
-export const TopAppBar: React.FC<TopAppBarProps> = ({isOpen, handleDrawerOpen, handleDrawerClose}) => {
+export const TopAppBar: React.FC<TopAppBarProps> = ({ isOpen, handleDrawerOpen, handleDrawerClose }) => {
   // const [auth, setAuth] = React.useState<boolean>(true);
   // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -113,15 +113,15 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({isOpen, handleDrawerOpen, h
         {isMobile() && <IconButton
           onClick={isOpen ? handleDrawerClose : handleDrawerOpen}
         >
-          {isOpen? <MenuOpenIcon/> :  <MenuIcon />}
+          {isOpen ? <MenuOpenIcon /> : <MenuIcon />}
         </IconButton>}
         <Typography variant="h6" noWrap component="div">
           Wallet RefApp
       </Typography>
-        <Box ml='auto'>
+        {featureFlags.isDarkTheme && <Box ml='auto'>
           <LightDarkSwitch
-           />
-        </Box>
+          />
+        </Box>}
       </Toolbar>
     </AppBar>
   );

@@ -12,7 +12,10 @@ import { AssetAccountRowProps } from '../AssetAccountRow/AssetAccountRow';
 import Collapse from '@mui/material/Collapse';
 import { IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import clx from 'clsx'
 import Avatar from '@mui/material/Avatar';
+import { AssetDetailsPopupContent } from '../AssetDetailsPopupContent/AssetDetailsPopupContent';
 
 //TODO: issuer and owner currently hardcoded as 'me'
 
@@ -20,10 +23,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'start',
-    width: '100%',
+    // alignItems: 'start',
+    // width: '100%',
     marginBottom: theme.spacing(1),
-    paddingRight: theme.spacing(1)
   },
   quantity: {
     marginRight: theme.spacing(1)
@@ -34,28 +36,37 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   nameAndMoreContainer: {
     display: 'flex',
-    flexDirection: 'row', 
-    width: '100%'
+    flexDirection: 'row',
+    width: '100%', 
+    alignItems: 'center'
   },
-  actionContainer: {
+  expandContainer: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'column'
   },
   expandButton: {
     marginLeft: 'auto'
   },
   avatar: {
     marginRight: theme.spacing(1)
+  },
+  buttonsContainer: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  button: {
+    marginBottom: theme.spacing(0.5)
   }
 }))
 
 export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, isIssuedByMeTab, ticker, quantity, owner, isShareable, isFungible, isAirdroppable }) => {
   const classes = useStyles()
   const [isExpanded, setExpand] = React.useState<boolean>(false);
+  const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)
+
   const toggleExpand = () => {
     setExpand(!isExpanded);
   }
-  const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)
 
   const selectPopupContent = (contentType: AssetAction) => {
     setPopupContent(contentType)
@@ -64,9 +75,32 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
     setPopupContent(undefined);
   }
 
+  const expandContent = (
+    <CardContent>
+      <div className={classes.buttonsContainer}>
+        {isIssuedByMeTab && <Button className={classes.button} variant='outlined' size="medium" onClick={() => selectPopupContent(AssetAction.IssueAirdrop)}>Issue / Airdrop</Button>
+        }
+        {!isIssuedByMeTab && <Button className={classes.button} disabled={issuer !== owner && !isShareable} variant='outlined' size="medium" onClick={() => selectPopupContent(AssetAction.Send)}>Send</Button>}
+        {!isIssuedByMeTab && <Button className={classes.button} disabled={issuer !== owner && !isShareable} variant='outlined' size="medium" onClick={() => selectPopupContent(AssetAction.Swap)}>Swap</Button>}
+        <Button variant='outlined' disabled={issuer !== owner && !isShareable} size="medium" onClick={() => selectPopupContent(AssetAction.InviteNewAssetOwner)} >Invite New Asset Owner</Button>
+      </div>
+      <AssetDetailsPopupContent
+        ticker={ticker}
+        issuer={issuer}
+        owner={owner}
+        quantity={quantity || 0}
+        isShareable={!!isShareable}
+        isAirdroppable={!!isAirdroppable}
+        isFungible={!!isFungible}
+        handleClose={toggleExpand}
+        isNarrow
+      />
+    </CardContent>
+  )
+
   return (
     <>
-      <Card className={classes.root} >
+      <Card className={classes.root}  >
         <CardContent className={classes.nameAndMoreContainer}>
           <Avatar className={classes.avatar}>
             {ticker[0]}
@@ -79,24 +113,15 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
               {quantity}
             </Typography>
           </div>
-          {/* {!isIssuedByMeTab && issuer === owner && <div className={classes.expandButton}><RowChip requestType={'issuer'} label='Issuer' /></div>} */}
+          {!isIssuedByMeTab && issuer === owner && <div className={classes.expandButton}><RowChip requestType={'issuer'} label='Issuer' /></div>}
 
-          <IconButton className={classes.expandButton} onClick={toggleExpand}>
-            <ExpandMoreIcon />
+          <IconButton className={clx(issuer !== owner && classes.expandButton)} onClick={toggleExpand}>
+            {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </IconButton>
         </CardContent>
 
-        <Collapse timeout="auto" in={isExpanded} className={classes.actionContainer}>
-          <CardContent>
-            {!isIssuedByMeTab && issuer === owner && <RowChip requestType={'issuer'} label='Issuer' />}
-
-            {isIssuedByMeTab && <Button variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.IssueAirdrop)}>Issue / Airdrop</Button>
-            }
-            {!isIssuedByMeTab && <Button disabled={issuer !== owner && !isShareable} variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Send)}>Send</Button>}
-            {!isIssuedByMeTab && <Button disabled={issuer !== owner && !isShareable} variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Swap)}>Swap</Button>}
-            <Button variant='outlined' disabled={issuer !== owner && !isShareable} size="small" onClick={() => selectPopupContent(AssetAction.InviteNewAssetOwner)} >Invite New Asset Owner</Button>
-            <Button variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Details)} >Details</Button>
-          </CardContent>
+        <Collapse timeout="auto" in={isExpanded} className={classes.expandContainer}>
+          {expandContent}
         </Collapse>
       </Card>
       <PopUp
