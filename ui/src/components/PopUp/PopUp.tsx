@@ -4,6 +4,7 @@ import { AssetAction } from '../../types/AssetAction';
 import { PopupContent } from '../PopupContent/PopupContent';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
+import { isMobile } from '../../platform/platform';
 
 export interface ContentTypes {
   issueAirdrop: JSX.Element
@@ -23,7 +24,7 @@ interface PopUpProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    minWidth: '400px'
+    minWidth: isMobile() ? '100%' : '400px'
   }
 }))
 

@@ -26,7 +26,7 @@ export const AssetDetailsPopupContent: React.FC<AssetDetailsPopupContentProps> =
   };
 
   return (
-    <Box sx={{ width: '450px' }}>
+    <Box sx={{ maxWidth: '450px' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <AppBar position="static">
           <Tabs value={value}

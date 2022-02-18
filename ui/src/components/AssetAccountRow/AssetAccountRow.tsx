@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-interface AssetRowProps {
+export interface AssetAccountRowProps {
   ticker: string;
   quantity?: number;
   isIssuer?: boolean;

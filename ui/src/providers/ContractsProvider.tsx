@@ -51,7 +51,7 @@ export const ContractsContext = React.createContext<ContractContextProps>({} as 
     }
 
     
-  }, [setAllContracts, allContractsSring, initialStateString, allContracts.isDarkTheme])
+  }, [setAllContracts, allContractsSring, initialStateString])
 
   const addNewAccounts = (newAssetAccount: AssetAccount) => {
     const newState = {...allContracts, assetAccounts: {...allContracts.assetAccounts, [newAssetAccount.ticker]: newAssetAccount}}
