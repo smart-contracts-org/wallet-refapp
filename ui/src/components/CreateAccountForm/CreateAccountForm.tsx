@@ -16,8 +16,16 @@ interface CreateAccountFormProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    marginBottom: theme.spacing(1), 
+    marginBottom: theme.spacing(1),
     background: theme.palette.grey[200]
+  },
+  issuerContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginBottom: theme.spacing(2)
+  }, 
+  issuerText: {
+    marginRight: theme.spacing(0.5)
   }
 }))
 
@@ -59,6 +67,16 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleClos
   }
   return (
     <div>
+      <div>
+        <div className={classes.issuerContainer}>
+          <Typography variant='caption' className={classes.issuerText}>
+            Issuer:
+          </Typography>
+          <Typography variant='caption' color='primary'>
+            you-user-id
+         </Typography>
+        </div>
+      </div>
       <FormControl fullWidth>
         <TextField
           autoFocus
@@ -81,11 +99,11 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleClos
           </Typography>
           <FormControlLabel control={<Switch defaultChecked onChange={(e) => { setIsAirdroppable(e.target.checked) }} />} label="Airdroppable" />
           <Typography variant='caption' color='text.secondary' mb={1}>
-          If activated, you will be able to invite other users to receive the tokens when airdropped.
+            If activated, you will be able to invite other users to receive the tokens when airdropped.
           </Typography>
           <FormControlLabel control={<Switch defaultChecked onChange={(e) => { setFungible(e.target.checked) }} />} label="Fungible" />
           <Typography variant='caption' color='text.secondary' mb={1}>
-          If activated, the asset can be divided. Set Fungible to true if you want to create an NFT.
+            If activated, the asset can be divided. Set Fungible to true if you want to create an NFT.
           </Typography>
         </FormGroup>
       </FormControl>

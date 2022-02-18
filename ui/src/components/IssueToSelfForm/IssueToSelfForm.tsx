@@ -27,7 +27,7 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ ticker, handle
   const [quantity, setQuantity] = React.useState<number>(0);
   const contractsContext = React.useContext(ContractsContext)
 
-  const onMint = () => {
+  const onIssue = () => {
     
     const asset = contractsContext.state.assetAccounts[ticker]
     if (asset) {
@@ -71,7 +71,7 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ ticker, handle
           onChange={(e) => { onChange(e) }}
         />
         <Typography variant='caption' color='text.secondary'>
-          Specify the quanity you would like to mint to wallet.
+          Specify the quanity you would like to issue to wallet.
         </Typography>
       </FormControl>
       <Card className={classes.root} elevation={0} variant='outlined'>
@@ -84,12 +84,12 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ ticker, handle
         loading={isLoading}
         fullWidth
         variant="outlined"
-        onClick={onMint}
+        onClick={onIssue}
         sx={{
           marginBottom: 0.5
         }}
       >
-        Mint
+        Issue
       </LoadingButton>
 
     </>
