@@ -7,7 +7,7 @@ import { makeStyles } from '@mui/styles';
 import { InboundSendRowContents } from '../InboundSendRowContents/InboundSendRowContents';
 import { OutboundSendRowContents } from '../OutboundSendRowContents/OutboundSendRowContents';
 
-interface PendingSendRowProps {
+export interface PendingSendRowProps {
   ticker?: string;
   quantity?: number;
   sender?: string;

@@ -60,9 +60,6 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 }));
 
 
-
-
-
 export const LightDarkSwitch: React.FC = () => {
   const contractsContext = React.useContext(ContractsContext)
 
