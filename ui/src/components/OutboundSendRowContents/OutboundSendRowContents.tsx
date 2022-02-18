@@ -44,19 +44,19 @@ export const OutboundSendRowContents: React.FC<OutboundSendRowContentsProps> = (
   
   return (
       <div className={classes.card}>
-          <Typography variant='body2' color='text.secondary' className={classes.text} >
+          <Typography variant='h1' color='text.secondary' className={classes.text} >
             You want to send
           </Typography>
-          <Typography variant='body2' className={classes.text} color="text.secondary"  >
+          <Typography variant='h1' className={classes.text} color="text.secondary"  >
             {quantity}
           </Typography>
-          <Typography variant='body2' className={clx(classes.text, classes.assetName)} color="text.secondary" >
+          <Typography variant='h1' className={clx(classes.text, classes.assetName)} color="text.secondary" >
             {ticker}
           </Typography>
-          <Typography variant='body2' color='text.secondary' className={classes.text} >
+          <Typography variant='body1' color='text.secondary' className={classes.text} >
             to
           </Typography>
-          <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
+          <Typography variant='body1' className={clx(classes.text, classes.sender)} color="text.secondary" >
             {sender}
           </Typography>
       </div>

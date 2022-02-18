@@ -58,11 +58,11 @@ export const SendRowContents: React.FC<PendingRowProps> = ({ isNarrow, isInbound
   const inboundMessage = (
     <>
       <Divider className={classes.divider} />
-      <Typography variant='body1' className={clx(classes.text, classes.sender)} color="text.secondary" >
+      <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
         {sender}
       </Typography>
       <Divider className={classes.divider} />
-      <Typography variant='body1' color='text.secondary' className={clx(classes.text)} >
+      <Typography variant='body2' color='text.secondary' className={clx(classes.text)} >
         wants to send you
           </Typography>
       <Divider className={classes.divider} />
@@ -71,11 +71,11 @@ export const SendRowContents: React.FC<PendingRowProps> = ({ isNarrow, isInbound
   const outboundMessage = (
     <>
       <Divider className={classes.divider} />
-      <Typography variant='body1' color='text.secondary' className={classes.text} >
+      <Typography variant='body2' color='text.secondary' className={classes.text} >
         You want to send
   </Typography>
       <Divider className={classes.divider} />
-      <Typography variant='body1' className={clx(classes.text, classes.sender)} color="text.secondary" >
+      <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
         {sender}
       </Typography>
       <Divider className={classes.divider} />
@@ -87,10 +87,10 @@ export const SendRowContents: React.FC<PendingRowProps> = ({ isNarrow, isInbound
     <div className={isNarrow ? classes.narrowCard : classes.card}>
       {isInbound ? inboundMessage : outboundMessage}
       <div className={ classes.row}>
-        <Typography variant='body1' className={classes.text} color="text.secondary"  >
+        <Typography variant='body2' className={classes.text} color="text.secondary"  >
           {inboundQuantity}
         </Typography>
-        <Typography variant='body1' className={clx(classes.text, classes.assetName)} color="text.secondary" >
+        <Typography variant='body2' className={clx(classes.text, classes.assetName)} color="text.secondary" >
           {inboundTicker}
         </Typography>
       </div>

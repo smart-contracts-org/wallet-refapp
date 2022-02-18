@@ -28,29 +28,29 @@ export const PendingSwapRowNarrow: React.FC<PendingSwapRowProps> = ({ isInbound,
     <>
       <div>
         <Divider className={classes.divider} />
-        <Typography variant='body1' className={clx(classes.text, classes.sender)} color="text.secondary" >
+        <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
           {sender}
         </Typography>
         <Divider className={classes.divider} />
-        <Typography variant='body1' color='text.secondary' className={classes.text} >
+        <Typography variant='body2' color='text.secondary' className={classes.text} >
           wants to swap
           </Typography>
         <Divider className={classes.divider} />
 
         <div className={classes.inboundForOutboundContainer}>
-          <Typography variant='body1' className={clx(classes.text, classes.inboundQuantity)} color="text.secondary"  >
+          <Typography variant='body2' className={clx(classes.text, classes.inboundQuantity)} color="text.secondary"  >
             {inboundQuantity}
           </Typography>
-          <Typography variant='body1' className={clx(classes.text, classes.inboundTicker)} color="text.secondary" >
+          <Typography variant='body2' className={clx(classes.text, classes.inboundTicker)} color="text.secondary" >
             {inboundTicker}
           </Typography>
-          <Typography variant='body1' color='text.secondary' className={classes.text} >
+          <Typography variant='body2' color='text.secondary' className={classes.text} >
             for
           </Typography>
-          <Typography variant='body1' className={clx(classes.text, classes.outboundQuantity)} color="text.secondary"  >
+          <Typography variant='body2' className={clx(classes.text, classes.outboundQuantity)} color="text.secondary"  >
             {outboundQuantity}
           </Typography>
-          <Typography variant='body1' className={clx(classes.text)} color="primary" >
+          <Typography variant='body2' className={clx(classes.text)} color="primary" >
             {outboundTicker}
           </Typography>
 
@@ -65,29 +65,29 @@ export const PendingSwapRowNarrow: React.FC<PendingSwapRowProps> = ({ isInbound,
     <>
       <div>
         <Divider className={classes.divider} />
-        <Typography variant='body1' color='text.secondary' className={classes.text} >
+        <Typography variant='body2' color='text.secondary' className={classes.text} >
           you want to swap with
           </Typography>
         <Divider className={classes.divider} />
-        <Typography variant='body1' className={clx(classes.text, classes.sender)} color="text.secondary" >
+        <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
           {sender}
         </Typography>
         <Divider className={classes.divider} />
 
         <div className={classes.inboundForOutboundContainer}>
-          <Typography variant='body1' className={clx(classes.text, classes.outboundQuantity)} color="text.secondary"  >
+          <Typography variant='body2' className={clx(classes.text, classes.outboundQuantity)} color="text.secondary"  >
             {outboundQuantity}
           </Typography>
-          <Typography variant='body1' className={clx(classes.text)} color="primary" >
+          <Typography variant='body2' className={clx(classes.text)} color="primary" >
             {outboundTicker}
           </Typography>
-          <Typography variant='body1' color='text.secondary' className={classes.text} >
+          <Typography variant='body2' color='text.secondary' className={classes.text} >
             for
           </Typography>
-          <Typography variant='body1' className={clx(classes.text, classes.inboundQuantity)} color="text.secondary"  >
+          <Typography variant='body2' className={clx(classes.text, classes.inboundQuantity)} color="text.secondary"  >
             {inboundQuantity}
           </Typography>
-          <Typography variant='body1' className={clx(classes.text, classes.inboundTicker)} color="text.secondary" >
+          <Typography variant='body2' className={clx(classes.text, classes.inboundTicker)} color="text.secondary" >
             {inboundTicker}
           </Typography>
         </div>

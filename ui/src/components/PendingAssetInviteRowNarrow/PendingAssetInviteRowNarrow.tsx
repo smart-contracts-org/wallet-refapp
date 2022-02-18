@@ -22,16 +22,16 @@ export const PendingAssetInviteRowNarrow: React.FC<PendingRowProps> = ({ isInbou
     <>
       <Divider className={classes.divider} />
 
-      <Typography variant='body1' className={classes.text} color="text.primary" >
+      <Typography variant='body2' className={classes.text} color="text.primary" >
         {sender}
       </Typography>
       <Divider className={classes.divider} />
-      <Typography variant='body1' color='text.secondary' className={classes.text} >
+      <Typography variant='body2' color='text.secondary' className={classes.text} >
         Invites you to create asset holding account for
           </Typography>
       <Divider className={classes.divider} />
 
-      <Typography variant='body1' className={clx(classes.text, classes.assetName)} color="text.secondary" >
+      <Typography variant='body2' className={clx(classes.text, classes.assetName)} color="text.secondary" >
         {inboundTicker}
       </Typography>
       <Divider className={classes.divider} />
@@ -41,11 +41,11 @@ export const PendingAssetInviteRowNarrow: React.FC<PendingRowProps> = ({ isInbou
   const outboundMessage = (
     <>
       <Divider className={classes.divider} />
-      <Typography variant='body1' color='text.secondary' className={classes.text} >
+      <Typography variant='body2' color='text.secondary' className={classes.text} >
         You are inviting {sender} to create asset holding account for
     </Typography>
       <Divider className={classes.divider} />
-      <Typography variant='body1' className={clx(classes.text, classes.assetName)} color="text.secondary" >
+      <Typography variant='body2' className={clx(classes.text, classes.assetName)} color="text.secondary" >
         {inboundTicker}
       </Typography>
       <Divider className={classes.divider} />
