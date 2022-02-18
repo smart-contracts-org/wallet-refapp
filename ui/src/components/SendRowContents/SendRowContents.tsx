@@ -57,7 +57,7 @@ export const SendRowContents: React.FC<PendingRowProps> = ({ isNarrow, isInbound
 
   const inboundMessage = (
     <>
-      <Divider className={classes.divider} />
+      <div className={classes.divider} />
       <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
         {sender}
       </Typography>
@@ -70,7 +70,7 @@ export const SendRowContents: React.FC<PendingRowProps> = ({ isNarrow, isInbound
   )
   const outboundMessage = (
     <>
-      <Divider className={classes.divider} />
+      <div className={classes.divider} />
       <Typography variant='body2' color='text.secondary' className={classes.text} >
         You want to send
   </Typography>
@@ -94,7 +94,7 @@ export const SendRowContents: React.FC<PendingRowProps> = ({ isNarrow, isInbound
           {inboundTicker}
         </Typography>
       </div>
-      <Divider className={classes.divider} />
+      <div className={classes.divider} />
 
     </div>
   );

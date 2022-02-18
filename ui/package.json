@@ -52,7 +52,7 @@
     "react-scripts": "^4.0.3",
     "typescript": "~3.8.3",
     "react-error-overlay": "6.0.9"
-  }, 
+  },
   "devDependenciesComments": {
     "react-error-overlay": "Used to fix process is not defined error which causes the UI to freeze, https://stackoverflow.com/questions/70368760/react-uncaught-referenceerror-process-is-not-defined"
   }

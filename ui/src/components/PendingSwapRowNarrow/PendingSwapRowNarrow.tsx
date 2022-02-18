@@ -27,7 +27,7 @@ export const PendingSwapRowNarrow: React.FC<PendingSwapRowProps> = ({ isInbound,
   const inboundMessage = (
     <>
       <div>
-        <Divider className={classes.divider} />
+        <div className={classes.divider} />
         <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
           {sender}
         </Typography>
@@ -55,7 +55,7 @@ export const PendingSwapRowNarrow: React.FC<PendingSwapRowProps> = ({ isInbound,
           </Typography>
 
         </div>
-        <Divider className={classes.divider} />
+        <div className={classes.divider} />
 
       </div>
     </>
@@ -64,7 +64,7 @@ export const PendingSwapRowNarrow: React.FC<PendingSwapRowProps> = ({ isInbound,
   const outboundMessage = (
     <>
       <div>
-        <Divider className={classes.divider} />
+        <div className={classes.divider} />
         <Typography variant='body2' color='text.secondary' className={classes.text} >
           you want to swap with
           </Typography>
@@ -91,7 +91,7 @@ export const PendingSwapRowNarrow: React.FC<PendingSwapRowProps> = ({ isInbound,
             {inboundTicker}
           </Typography>
         </div>
-        <Divider className={classes.divider} />
+        <div className={classes.divider} />
 
       </div>
     </>
@@ -103,7 +103,6 @@ export const PendingSwapRowNarrow: React.FC<PendingSwapRowProps> = ({ isInbound,
         <div className={classes.symbolTextContainer} >
           <IconButton size='small'>
             <Avatar>
-
               <SwapHorizIcon />
             </Avatar>
           </IconButton>

@@ -115,7 +115,7 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
           </div>
           {!isIssuedByMeTab && issuer === owner && <div className={classes.expandButton}><RowChip requestType={'issuer'} label='Issuer' /></div>}
 
-          <IconButton className={clx(issuer !== owner && classes.expandButton)} onClick={toggleExpand}>
+          <IconButton className={clx((isIssuedByMeTab || issuer !== owner) && classes.expandButton)} onClick={toggleExpand}>
             {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </IconButton>
         </CardContent>
