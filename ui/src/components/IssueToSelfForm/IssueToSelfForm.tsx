@@ -18,9 +18,6 @@ interface IssueToSelfFormProps {
   handleClose: () => void;
 }
 
-
-
-
 export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ ticker, handleClose }) => {
   const classes = useStyles()
   const [isLoading, setLoading] = React.useState<boolean>(false);
