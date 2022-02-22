@@ -9,7 +9,7 @@ import { ContractsContext } from '../providers/ContractsProvider';
 import { AssetAccountRowNarrow } from '../components/AssetAccountRowNarrow/AssetAccountRowNarrow';
 import { isMobile } from '../platform/platform';
 
-const isFabActivated = true
+const isFabActivated = false
 
 export const IssuedByMeTab: React.FC = () => {
   const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)

@@ -12,7 +12,7 @@ import { SideMenuMobile } from './components/SideMenuMobile.tsx/SideMenuMobile';
 
 const theme = createTheme({
   palette: {
-    mode: 'light'
+    mode: 'dark'
   }
 });
 
