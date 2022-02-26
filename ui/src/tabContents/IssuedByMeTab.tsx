@@ -25,7 +25,13 @@ export const IssuedByMeTab: React.FC = () => {
 
   return (
     <Box>
-      {!isFabActivated && <Button size='small' color='primary' variant='contained' onClick={() => selectPopupContent(AssetAction.CreateAccount)}>
+      {!isFabActivated && 
+      <Button
+      // component={Link} 
+      // to='/create-asset-account' 
+      size='small' color='primary' variant='contained' 
+      onClick={() => selectPopupContent(AssetAction.CreateAccount)}
+      >
         <AddIcon />
         Create asset account
       </Button>}

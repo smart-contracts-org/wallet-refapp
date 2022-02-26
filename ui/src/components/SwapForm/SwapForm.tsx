@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   helpMessage: {
     margin: theme.spacing(1, 0, 1, 0), 
-    background: theme.palette.grey[200]
   },
   recipient: {
     marginBottom: theme.spacing(1)
@@ -72,7 +71,6 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
       <FormControl className={classes.root}>
         <Box className={classes.recipient}>
           <TextField
-            autoFocus
             id="recipient"
             label="Recipient"
             type="text"

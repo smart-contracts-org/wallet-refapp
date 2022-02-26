@@ -24,7 +24,8 @@ interface PopUpProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    minWidth: isMobile() ? '100%' : '400px'
+    minWidth: isMobile() ? '100%' : '500px', 
+    minHeight:  isMobile() ? '100%' : '300px', 
   }
 }))
 

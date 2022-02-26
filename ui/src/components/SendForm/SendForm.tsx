@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   helpMessage: {
     margin: theme.spacing(1, 0, 1, 0), 
-    background: theme.palette.grey[200]
+    // background: theme.palette.grey[200]
   },
 }))
 
@@ -51,7 +51,6 @@ export const SendForm: React.FC<SendFormProps> = ({ ticker }) => {
           </Typography>
         </Box>
         <TextField
-          autoFocus
           margin="normal"
           id="recipient"
           label="Recipient"

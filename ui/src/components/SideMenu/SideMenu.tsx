@@ -24,8 +24,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 const menuItems: MenuItem[] = [
-  { label: 'My Active Accounts', path: '/' },
-  { label: 'Pending Activities', path: '/pending' }]
+  { label: 'My Asset Accounts', path: '/' },
+  { label: 'Pending Activities', path: '/pending' }, 
+]
 
 export const SideMenu: React.FC<unknown> = () => {
   const [selected, setSelected] = React.useState<number>(0);

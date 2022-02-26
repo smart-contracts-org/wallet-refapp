@@ -8,8 +8,7 @@ import { ContractsContext } from '../../providers/ContractsProvider';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    margin: theme.spacing(1, 0, 1, 0), 
-    background: theme.palette.grey[200]
+    margin: theme.spacing(0, 0, 0, 0), 
   }
 }))
 
@@ -46,8 +45,12 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ ticker, handle
   return (
     <>
       <FormControl fullWidth>
+      <Card className={classes.root} elevation={0} variant='outlined'>
+        <Typography color='text.primary' variant='body2' p={1}>
+          The assets will be created directly in your wallet with the attributes you defined when creating the asset account.
+        </Typography>
+      </Card>
         <TextField
-          autoFocus
           margin="dense"
           id="symbol"
           label={`${ticker}`}
@@ -71,11 +74,7 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ ticker, handle
           Specify the quanity you would like to issue to wallet.
         </Typography>
       </FormControl>
-      <Card className={classes.root} elevation={0} variant='outlined'>
-        <Typography color='text.primary' variant='body2' p={1}>
-          The assets will be created directly in your wallet with the attributes you defined when creating the asset account.
-        </Typography>
-      </Card>
+      
 
       <LoadingButton
         loading={isLoading}

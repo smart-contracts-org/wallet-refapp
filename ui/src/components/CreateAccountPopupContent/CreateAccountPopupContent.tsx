@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import { AppBar, Button} from '@mui/material';
 import { CreateAccountForm } from '../CreateAccountForm/CreateAccountForm';
 import { TabPanel, a11yProps } from '../TabPanel/TabPanel';
+import { CreateAssetAccountSteps } from '../CreateAssetAccountSteps/CreateAssetAccountSteps';
 
 export interface CreateAccountPopupContentProps {
   handleClose: () => void
