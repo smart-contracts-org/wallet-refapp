@@ -67,6 +67,11 @@ export const SendForm: React.FC<SendFormProps> = ({ ticker }) => {
           fullWidth
           variant="outlined"
           size='small'
+          inputProps={{
+            inputMode: 'numeric',
+            type:'number',
+            pattern:"[0-9]*"
+        }}
         />
         <Card elevation={0} variant='outlined' className={classes.helpMessage}>
           <Typography color='text.primary' variant='body2' p={1}>
