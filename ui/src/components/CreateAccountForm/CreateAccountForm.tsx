@@ -4,33 +4,42 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import { Card, FormControl, Typography } from '@mui/material';
 import React from 'react';
+import WarningIcon from '@mui/icons-material/Warning';
 import { LoadingButton } from '@mui/lab';
 import { ContractsContext } from '../../providers/ContractsProvider';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
+import { isMobile } from '../../platform/platform';
 
 interface CreateAccountFormProps {
   handleClose: () => void;
+  handleSubmit?: () => void;
 }
 
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    marginBottom: theme.spacing(1),
-    background: theme.palette.grey[200]
+    margin: theme.spacing(0,0,1,0),
   },
   issuerContainer: {
     display: 'flex',
     flexDirection: 'row',
     marginBottom: theme.spacing(2)
-  }, 
+  },
   issuerText: {
     marginRight: theme.spacing(0.5)
+  },
+  formContainer: {
+    padding: isMobile() ? theme.spacing(0, 0, 0, 0) : theme.spacing(0, 0, 0, 0)
+  }, 
+  warningText: {
+    display: 'flex', 
+    alignItems: 'center'
   }
 }))
 
 
-export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleClose }) => {
+export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleSubmit, handleClose }) => {
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const classes = useStyles();
   const [ticker, setTicker] = React.useState<string>('')
@@ -58,15 +67,22 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleClos
       isFungible,
       isAirdroppable
     })
+    console.log('form')
 
     toggleSubmitting();
-
     setTimeout(() => {
       handleClose()
+      handleSubmit && handleSubmit()
+      toggleSubmitting()
     }, 1000)
   }
   return (
-    <div>
+    <div className={classes.formContainer}>
+      <Card elevation={0} variant='outlined' className={classes.root}>
+        <Typography color='text.secondary' variant='body2' p={1}>
+          You must create an Asset Account first before you can mint your assets. Once you create the asset account, you will be able to mint tokens to yourself, or airdrop to other users.
+        </Typography>
+      </Card>
       <div>
         <div className={classes.issuerContainer}>
           <Typography variant='caption' className={classes.issuerText}>
@@ -79,7 +95,6 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleClos
       </div>
       <FormControl fullWidth>
         <TextField
-          autoFocus
           margin="none"
           id="symbol"
           label="Symbol"
@@ -107,9 +122,15 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleClos
           </Typography>
         </FormGroup>
       </FormControl>
-      <Card elevation={0} variant='outlined' className={classes.root}>
+      {/* <Card elevation={0} variant='outlined' className={classes.root}>
         <Typography color='text.secondary' variant='body2' p={1}>
           You must create an Asset Account first before you can mint your assets. Once you create the asset account, you will be able to mint tokens to yourself, or airdrop to other users.
+        </Typography>
+      </Card> */}
+      <Card elevation={0} variant='outlined' className={classes.root}>
+        <Typography className={classes.warningText} color='text.secondary' variant='body2' p={1}>
+          <WarningIcon />
+          Once created, you will not be able to edit the attributes.
         </Typography>
       </Card>
       <LoadingButton

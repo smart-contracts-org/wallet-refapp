@@ -6,6 +6,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { AirdropInvites } from '../AirdropInvites/AirdropInvites';
+import { isMobile } from '../../platform/platform';
 
 interface AirdropFormProps {
 
@@ -28,7 +29,6 @@ export const AirdropForm: React.FC<AirdropFormProps> = () => {
       <FormControl className={classes.root}>
         <Box mr={0.5}>
         <TextField
-          autoFocus
           margin="none"
           id="userId"
           label="UserId"

@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from "react-router-dom";
+
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -8,7 +10,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
-import { Box, IconButton } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 import { ContractsContext } from '../../providers/ContractsProvider';
 import { isMobile } from '../../platform/platform';
 import { featureFlags } from '../../featureFlags'
@@ -115,6 +117,11 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ isOpen, handleDrawerOpen, 
         <Typography variant="h6" noWrap component="div">
           Wallet RefApp
       </Typography>
+      {/* <Button component={Link} to={'/create-asset-account'} variant='contained' size='small' sx={{marginLeft: 'auto'}}>
+        <Typography variant='caption'>
+          Create
+        </Typography>
+      </Button> */}
         {featureFlags.isDarkTheme && <Box ml='auto'>
           <LightDarkSwitch
           />

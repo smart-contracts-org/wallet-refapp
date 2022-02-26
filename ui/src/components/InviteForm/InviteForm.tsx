@@ -27,7 +27,6 @@ export const InviteForm: React.FC<InviteFormProps> = () => {
     <div>
       <FormControl className={classes.root}>
         <TextField
-          autoFocus
           margin="none"
           id="userId"
           label="user ID"

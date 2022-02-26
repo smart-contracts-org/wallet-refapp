@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   }, 
   helpMessage: {
     margin: theme.spacing(1, 0, 1), 
-    background: theme.palette.grey[200]
   }, 
   inviteButton: {
     marginBottom: theme.spacing(0.5)
@@ -37,7 +36,6 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
     <>
       <FormControl className={classes.root}>
         <TextField
-          autoFocus
           margin="dense"
           id="recipient"
           label="Recipient"
