@@ -21,9 +21,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 export interface IssueAirdropPopupContentProps {
   handleClose: () => void;
   ticker: string;
+  cancelText?: string;
 }
 
-export const IssueOrAirdropForm: React.FC<IssueAirdropPopupContentProps> = ({ ticker, handleClose }) => {
+export const IssueOrAirdropForm: React.FC<IssueAirdropPopupContentProps> = ({cancelText, ticker, handleClose }) => {
   const [value, setValue] = React.useState(0);
 const classes = useStyles();
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -47,7 +48,7 @@ const classes = useStyles();
         fullWidth
         onClick={handleClose}
       >
-        cancel
+        {cancelText || 'cancel'}
       </Button>
       <AirdropForm />
       <Button

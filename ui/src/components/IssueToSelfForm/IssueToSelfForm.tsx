@@ -1,39 +1,47 @@
 import TextField from '@mui/material/TextField';
-import {  Card,  FormControl, Typography } from '@mui/material';
+import { Button, Card, FormControl, Typography } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import React from 'react';
 import { LoadingButton } from '@mui/lab';
 import { ContractsContext } from '../../providers/ContractsProvider';
+import { IssueSuccess } from '../IssueSuccess/IssueSuccess';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    margin: theme.spacing(0, 0, 0, 0), 
+    margin: theme.spacing(0, 0, 0, 0),
   }
 }))
 
 interface IssueToSelfFormProps {
   ticker: string;
   handleClose: () => void;
+  onNext?: () => void;
+  onDoneClick?: () => void;
+  issueLater?: () => void;
+  cancelText?: string;
 }
 
-export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ ticker, handleClose }) => {
+export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({cancelText, issueLater, onDoneClick, onNext, ticker, handleClose }) => {
   const classes = useStyles()
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [quantity, setQuantity] = React.useState<number>(0);
+  const [isIssueToSelfSuccess, setIsIssueToSelfSuccess] = React.useState(false);
+
+  // TODO: remove context, get from daml/react library
   const contractsContext = React.useContext(ContractsContext)
 
   const onIssue = () => {
-    
     const asset = contractsContext.state.assetAccounts[ticker]
     if (asset) {
       setLoading(true);
       asset.quantity = quantity
       contractsContext.addNewAccounts(asset)
-      
+
     }
     setTimeout(() => {
       handleClose()
+      setIsIssueToSelfSuccess(true)
       setLoading(false)
     }, 2000)
 
@@ -44,10 +52,13 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ ticker, handle
 
   return (
     <>
-      <FormControl fullWidth>
+      {isIssueToSelfSuccess ? (
+        <IssueSuccess onNext={onNext} onDoneClick={onDoneClick} />
+      ) : (
+      <><FormControl fullWidth>
       <Card className={classes.root} elevation={0} variant='outlined'>
         <Typography color='text.primary' variant='body2' p={1}>
-          The assets will be created directly in your wallet with the attributes you defined when creating the asset account.
+            The assets will be created directly in your wallet with the attributes you defined when creating the asset account.
         </Typography>
       </Card>
         <TextField
@@ -85,8 +96,18 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ ticker, handle
           marginBottom: 0.5
         }}
       >
-        Issue
+          Issue
       </LoadingButton>
+      <Button
+          variant='outlined'
+          size='small'
+          fullWidth
+          onClick={issueLater && issueLater || handleClose}
+        >
+          {cancelText || 'Cancel'}
+      </Button>
+      
+      </>)}
 
     </>
   );

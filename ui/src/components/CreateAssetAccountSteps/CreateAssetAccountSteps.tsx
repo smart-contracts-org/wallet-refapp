@@ -8,23 +8,67 @@ import { CreateAccountForm } from '../CreateAccountForm/CreateAccountForm';
 import { isMobile } from '../../platform/platform';
 import { Card, CardContent, Paper } from '@mui/material';
 import { IssueAirdropPopupContent } from '../IssueAirdropPopupContent/IssueAirdropPopupContent';
+import { IssueLater } from '../IssueLater/IssueLater';
+import { CreateAssetAccountSuccess } from '../CreateAssetAccountSuccess/CreateAssetAccountSuccess';
+import { CreateAssetWorkflowDone } from '../CreateAssetWorkflowDone/CreateAssetWorkflowDone';
 
-const steps = ['Create Asset Account', 'Mint Assets'];
-
+const steps = ['Create Asset Account', 'Issue Assets'];
 export const CreateAssetAccountSteps: React.FC = () => {
   const isStepFailed = (step: number) => {
     return false;
   };
-  const [step, setStep] = React.useState<number>(0);
+  const [displayedStep, setDisplayStep] = React.useState(0);
+  const [activeStep, setActiveStep] = React.useState(0);
+  
+  const [completed, setCompleted] = React.useState<{[k: number]: boolean}>({});
+  const [isSubmitting, setSubmitting] = React.useState(false);
+  const [isSubmitSuccessful, setSubmitSuccessful] = React.useState(false);
+
+
+  const handleNext = () => {
+    const newActiveStep = activeStep + 1;
+    setActiveStep(newActiveStep);
+  };
+  const handleNextandDisplay = () => {
+    handleNext();
+    setDisplayStep(displayedStep+1)
+  }
+
+  const handleComplete = () => {
+    const newCompleted = completed;
+    newCompleted[activeStep] = true;
+    setCompleted(newCompleted);
+    handleNext();
+  };
+
+  const setDisplayandActiveSteps = (display: number, active:number) => {
+    setDisplayStep(display);
+    setActiveStep(active)
+  }
 
   const handleOnNext = (step: number) => {
-    setStep(step)
+    setActiveStep(step)
+  }
+
+  //TODO: submitting form calling API
+  const handleSubmit = () => {
+    setSubmitting(true);
+    setTimeout(() => {
+      setSubmitting(false);
+      setSubmitSuccessful(true);
+      setDisplayStep(displayedStep+1)
+      handleComplete();
+    }, 1000)
+   
+    
+
   }
 
   return (
     <Box sx={{ maxWidth: '600px' }}>
-      <Stepper alternativeLabel={isMobile()} activeStep={step} sx={{ paddingTop: 2, paddingBottom: 2 }}>
+      <Stepper alternativeLabel={isMobile()} activeStep={activeStep} sx={{ paddingTop: 2, paddingBottom: 2 }}>
         {steps.map((label, index) => {
+          
           const labelProps: {
             optional?: React.ReactNode;
             error?: boolean;
@@ -37,9 +81,8 @@ export const CreateAssetAccountSteps: React.FC = () => {
             );
             labelProps.error = true;
           }
-
-          return (
-            <Step key={label}>
+            return (
+            <Step key={label} completed={completed[index]}>
               <StepLabel {...labelProps}>{label}</StepLabel>
             </Step>
           );
@@ -47,17 +90,30 @@ export const CreateAssetAccountSteps: React.FC = () => {
       </Stepper>
       <Paper>
 
-        {step === 0 && (<Card>
+        {displayedStep === 0 && !isSubmitSuccessful && (<Card>
           <CardContent>
-            <CreateAccountForm handleClose={() => { }} handleSubmit={() => handleOnNext(1)} />
+            <CreateAccountForm handleClose={() => { }} handleSubmit={handleSubmit} />
           </CardContent>
         </Card>)
         }
+        {
+          isSubmitSuccessful && 
+          displayedStep === 1 && 
+          <CreateAssetAccountSuccess 
+          onNextClick={() => {setDisplayandActiveSteps(displayedStep+1, activeStep)}} 
+          onDoneClick={() => setDisplayandActiveSteps(4,0)} />
+        }
 
-        {step === 1 && (
-          <>
-           
-            <IssueAirdropPopupContent ticker={'ETH'} handleClose={() => { }} /></>)}
+        {displayedStep === 2 && (
+          <IssueAirdropPopupContent
+            ticker={'ETH'}
+            cancelText={'Issue Later'}
+            issueLater= {() => setDisplayandActiveSteps(4,0)}
+            handleClose={() => setDisplayandActiveSteps(2,0)}
+            onDoneClick={() => setDisplayandActiveSteps(3,2)}
+            onNext={() => setDisplayandActiveSteps(2,2)} />)}
+        {displayedStep === 3 && <CreateAssetWorkflowDone />}
+        {displayedStep === 4 && <IssueLater />}
       </Paper>
     </Box>
   );

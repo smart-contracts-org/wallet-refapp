@@ -42,10 +42,15 @@ function a11yProps(index: number) {
 export interface IssueAirdropPopupContentProps {
   handleClose: () => void;
   ticker: string;
+  onNext?: () => void;
+  onDoneClick?: () =>void;
+  issueLater?: () =>void;
+  cancelText?: string;
 }
 
-export const IssueAirdropPopupContent: React.FC<IssueAirdropPopupContentProps> = ({ ticker, handleClose }) => {
+export const IssueAirdropPopupContent: React.FC<IssueAirdropPopupContentProps> = ({issueLater,cancelText, onDoneClick, onNext, ticker, handleClose }) => {
   const [value, setValue] = React.useState(0);
+
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -68,15 +73,8 @@ export const IssueAirdropPopupContent: React.FC<IssueAirdropPopupContentProps> =
         </AppBar>
       </Box>
       <TabPanel value={value} index={0}>
-        <IssueToSelfForm handleClose={handleClose} ticker={ticker} />
-        <Button
-          variant='outlined'
-          size='small'
-          fullWidth
-          onClick={handleClose}
-        >
-          cancel
-      </Button>
+        <IssueToSelfForm  cancelText={cancelText} issueLater={issueLater} onDoneClick={onDoneClick} onNext={onNext} handleClose={handleClose} ticker={ticker} />
+        
       </TabPanel>
       <TabPanel value={value} index={1}>
         <AirdropForm />
@@ -84,7 +82,7 @@ export const IssueAirdropPopupContent: React.FC<IssueAirdropPopupContentProps> =
           variant='outlined'
           size='small'
           fullWidth
-          onClick={handleClose}
+          onClick={issueLater && issueLater}
         >
           cancel
       </Button>

@@ -19,9 +19,9 @@ const handleChange = (event: React.SyntheticEvent, newValue: number) => {
 };
 
 return (
-  <Box sx={{ width: '100%' }}>
+  <Box sx={{ width: '100%', height: '500px' }}>
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-      <AppBar position="static">
+      <AppBar color='primary' position="sticky">
         <Tabs value={value}
           onChange={handleChange}
           aria-label="basic tabs example"
