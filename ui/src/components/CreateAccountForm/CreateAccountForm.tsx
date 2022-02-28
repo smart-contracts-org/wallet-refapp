@@ -10,7 +10,6 @@ import { ContractsContext } from '../../providers/ContractsProvider';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { isMobile } from '../../platform/platform';
-import { IssueLater } from '../IssueLater/IssueLater';
 
 interface CreateAccountFormProps {
   handleClose: () => void;

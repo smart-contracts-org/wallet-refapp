@@ -53,7 +53,6 @@ export const BasicTabs: React.FC<unknown> =() => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-    const classes = useStyles();
 
 
   return (

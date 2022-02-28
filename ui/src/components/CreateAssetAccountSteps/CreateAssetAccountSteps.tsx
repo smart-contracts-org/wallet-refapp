@@ -29,10 +29,6 @@ export const CreateAssetAccountSteps: React.FC = () => {
     const newActiveStep = activeStep + 1;
     setActiveStep(newActiveStep);
   };
-  const handleNextandDisplay = () => {
-    handleNext();
-    setDisplayStep(displayedStep+1)
-  }
 
   const handleComplete = () => {
     const newCompleted = completed;
@@ -44,10 +40,6 @@ export const CreateAssetAccountSteps: React.FC = () => {
   const setDisplayandActiveSteps = (display: number, active:number) => {
     setDisplayStep(display);
     setActiveStep(active)
-  }
-
-  const handleOnNext = (step: number) => {
-    setActiveStep(step)
   }
 
   //TODO: submitting form calling API

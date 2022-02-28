@@ -2,8 +2,7 @@ import React from 'react';
 
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { Button, Card, CardContent, Typography } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import {  Card, CardContent, Typography } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
 export const useMessageCardsStyles = makeStyles((theme: Theme) => ({
   root: {

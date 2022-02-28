@@ -1,5 +1,5 @@
 import React from 'react';
-import {useLocation, useNavigate} from 'react-router-dom'
+// import {useLocation, useNavigate} from 'react-router-dom'
 
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -10,7 +10,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
-import { Box, Button, IconButton } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import { ContractsContext } from '../../providers/ContractsProvider';
 import { isMobile } from '../../platform/platform';
 import { featureFlags } from '../../featureFlags';
@@ -107,9 +107,8 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ isOpen, handleDrawerOpen, 
   //   setChecked(event.target.checked);
   // };
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  console.log(location)
+  // const location = useLocation();
+  // const navigate = useNavigate();
 
   return (
     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>

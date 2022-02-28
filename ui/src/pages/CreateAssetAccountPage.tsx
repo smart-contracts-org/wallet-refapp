@@ -1,4 +1,4 @@
-import { Box, IconButton, Toolbar, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import React from 'react';
 import { CreateAssetAccountSteps } from '../components/CreateAssetAccountSteps/CreateAssetAccountSteps';
 export const CreateAssetAccountPage: React.FC = () => {

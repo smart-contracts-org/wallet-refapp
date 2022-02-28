@@ -102,7 +102,7 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({cancelText, iss
           variant='outlined'
           size='small'
           fullWidth
-          onClick={issueLater && issueLater || handleClose}
+          onClick={(issueLater && issueLater) || handleClose}
         >
           {cancelText || 'Cancel'}
       </Button>

@@ -3,9 +3,6 @@ import Box from '@mui/material/Box';
 import React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { IssuedByMeTab } from '../tabContents/IssuedByMeTab';
-import { OwnedByMeTab } from '../tabContents/OwnedByMeTab';
-import { CreateAssetAccountPage } from './CreateAssetAccountPage';
 import { isMobile } from '../platform/platform';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -55,8 +52,6 @@ export const BasicTabs: React.FC<unknown> =() => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-    const classes = useStyles();
-
 
   return (
     <>

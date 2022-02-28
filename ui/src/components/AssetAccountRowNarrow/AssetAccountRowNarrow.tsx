@@ -18,8 +18,8 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import clx from 'clsx'
 import Avatar from '@mui/material/Avatar';
 import { AssetDetailsPopupContent } from '../AssetDetailsPopupContent/AssetDetailsPopupContent';
-import { SendForm } from '../SendForm/SendForm';
-import { SendPopupContent } from '../SendPopupContent/SendPopupContent';
+// import { SendForm } from '../SendForm/SendForm';
+// import { SendPopupContent } from '../SendPopupContent/SendPopupContent';
 import { PopupContent } from '../PopupContent/PopupContent';
 
 //TODO: issuer and owner currently hardcoded as 'me'

@@ -6,7 +6,6 @@ import SendIcon from '@mui/icons-material/Send';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { AirdropInvites } from '../AirdropInvites/AirdropInvites';
-import { isMobile } from '../../platform/platform';
 
 interface AirdropFormProps {
 
