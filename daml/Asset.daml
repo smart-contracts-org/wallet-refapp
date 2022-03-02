@@ -2,7 +2,6 @@
 -- SPDX-License-Identifier: Apache-2.0
 
 -- A simple transferrable asset with issuer and owner.
--- It is intended to be used in conjunction with Asset.Account module.
 
 module Asset where
 
@@ -21,97 +20,89 @@ data AssetType = AssetType
     -- A possible reference for NFTs and the like
     reference : Optional Text
      
-  deriving (Eq, Show, Ord)
+  deriving (Eq, Show)
   
--- The Asset template represents an asset holding. When there's a corresponding
--- AssetHoldingAccount template, active Asset contract can be interpreted as a position
--- (or balance) held in the account.
+-- The Asset template represents an asset holding.
 -- An Asset is co-signed by the issuer and the owner.
 -- Thus, an Asset is a contract between issuer and owner and can 
 -- represent assets as well as liabilities.
 template Asset
   with
-    asset_type : AssetType
+    assetType : AssetType
     -- The asset owner
     owner : Party
-    -- The amount of the asset. When there's a corresponding AssetHoldingAccount template,
-    -- Asset amount represents the size of the position (or balance) held in the account.
+    -- The amount of the asset
     amount : Decimal
 
   where
-    signatory asset_type.issuer, owner
-    ensure (if asset_type.fungible then amount>0.0 else (amount==1.0 || amount==0.0))
+    signatory assetType.issuer, owner
+    ensure (if assetType.fungible then amount>0.0 else (amount==1.0))
 
-    -- The key allows to retrieve active Assset contract from the ledger using
-    -- asset type and owner as input (or key). This means that  on the ledger there can be   
-    -- no more than one active Asset contract for any given asset type and owner.
-    -- The same key is used in AssetHoldingAccount template in the Asset.Account module.
-    -- The use of the same key between Asset and AsssetHoldingAccount templates is a method to
-    -- establish a relationship between asset and account. Using the key defined in AsssetHoldingAccount template
-    -- we can retrieve corresponding Asset contract and vice versa. This can be interpreted as fetching the asset
-    -- held in the account or conversely fecthing the account where the asset is held.
-    key (asset_type, owner) : (AssetType, Party)
-    maintainer key._2
+    choice Asset_Transfer : ContractId AssetTransfer
+      with
+        recipient : Party
+      controller owner 
+      do
+        create AssetTransfer with
+          asset = this
+          recipient
+
+    -- Asset_Split and Asset_Merge choices are not currently used.
+    -- Perhaps they should be removed
+    choice Asset_Split : (ContractId Asset, ContractId Asset)
+      with
+        splitAmount : Decimal
+      controller owner
+      do
+        assertMsg "Non fungible asset cannot be split" assetType.fungible
+        assertMsg "Split amount must be smaller than the original asset amount" (splitAmount <= amount)
+        cid1 <- create this with
+          amount = splitAmount
+        cid2 <- create this with
+          amount = amount - splitAmount
+        return (cid1, cid2)
+
+    -- Asset_Split and Asset_Merge choices are not currently used.
+    -- Perhaps they should be removed
+    choice Asset_Merge : ContractId Asset
+      with
+        mergeAssetCid : ContractId Asset
+      controller owner
+      do
+        assertMsg "Non fungible asset cannot be merged" assetType.fungible
+        mergeAsset <- fetch mergeAssetCid
+        assertMsg "Asset types do not match" (assetType == mergeAsset.assetType)
+        archive mergeAssetCid
+        create this with
+          amount = amount + mergeAsset.amount
 
 
 -- The AssetTransfer template represents an asset in transfer.
 -- It provides transfer originator with a choice to cancel the transfer.
--- It also provides the recipient with a choice to reject the transfer.
--- To acceps the transfer the recipient must have an AssetHoldingAccount contract corresponding
--- to the asset in transfer, as Accept_Transfer choice is provided on the AssetHoldingAccount template.
+-- It also provides the recipient with a choice to accept or reject the transfer.
 template AssetTransfer
   with
-    -- The asset type to be transferred.
+    -- The asset to be transferred.
     asset : Asset
     -- The recepient of the transfer.
     recipient : Party
-    -- The amount of the asset type to be transferred
-    amount : Decimal
   where
     signatory (signatory asset)
-    observer (observer asset), recipient
+    observer recipient
 
     choice Cancel_Transfer : ContractId Asset
       controller asset.owner 
       do
-        assetCid <- lookupByKey @Asset (asset.asset_type, asset.owner)
-        previous_asset_amount <- case assetCid of
-          Some cid -> do
-            asset <- fetch cid
-            archive cid
-            return asset.amount
-          None -> do
-            return 0.0
-        create asset with
-          amount = amount + previous_asset_amount
+        create asset
 
-    -- In case the recipient rejects the transfer, the asset is returned to the original owner via a reverse transfer.
-    -- The reverse transfer is required to avoid disclosing to the recipient of the original transfer the balance in
-    -- the account of the sender of the original transfer. If the returned amount was moved straight into the original transfer sender's
-    -- account, the resulting Asset contract (which represents the position or the balance in original transfer sender's account)
-    -- would be visible to the original transfer recipient, which is undesirable, as it violates the account privacy.
-    choice Reject_Transfer : ContractId AssetTransfer
+    choice Reject_Transfer : ContractId Asset
       controller recipient
       do
-        create this with
-          asset
-          recipient = asset.owner
-          amount
+        create asset
 
     choice Accept_Transfer : ContractId Asset
       controller recipient
       do
-        assetCid <- lookupByKey @Asset (asset.asset_type, recipient)
-        previous_asset_amount <- case assetCid of
-          Some cid -> do
-            asset <- fetch cid
-            assertMsg "Cannot accept AssetTransfer. The recipient already owns this type of non-fungible asset" 
-              (asset.asset_type.fungible)
-            archive cid
-            return asset.amount
-          None -> do
-            return 0.0
         create asset with
-          amount = amount + previous_asset_amount
           owner = recipient
 
