@@ -177,7 +177,7 @@ test = do
       recipient = dianne
 
   -- Dianne accepts Chris's invite to have asset holding account for NFT
-  dianneNFTAccCid <- submit dianne do
+  dianneNFTAccCid <- submit dianne $
     exerciseCmd dianneAssetAccountHolderProposalCid AssetHoldingAccountProposal_Accept
 
   -- Chris cannot airdrop 20 NFT into Dianne's account because NFT is non fungible
@@ -196,7 +196,7 @@ test = do
       recipient = alice
 
   -- Alice accepts Dianne's invite to have asset holding account for NFT
-  aliceNFTAccCid <- submit alice do
+  aliceNFTAccCid <- submit alice $
     exerciseCmd aliceAssetAccountHolderProposalCid AssetHoldingAccountProposal_Accept
 
   -- Dianne transfers 1 NFT to Alice 
@@ -210,7 +210,7 @@ test = do
       recipient = alice
 
   -- Alice accepts transfer of 1 NFT from Dianne
-  aliceNFTCid <- submit alice do
+  aliceNFTCid <- submit alice $
     exerciseCmd aliceTransferCid Accept_Transfer
 
   -- This tests whether transfer from Alice to Chris is divulged to Dianne
@@ -223,7 +223,9 @@ test = do
       assetsCids = aliceAssetsCids
       amount = 1.0
       recipient = chris
-  chrisNFTCid <- submit chris do
+  chrisNFTCid <- submit chris $
     exerciseCmd chrisTransferCid Accept_Transfer
+  x <- queryContractId dianne chrisNFTCid
+  x === None
 
   pure()

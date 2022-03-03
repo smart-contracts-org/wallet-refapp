@@ -54,8 +54,10 @@ template AssetHoldingAccount
         amount : Decimal
       controller assetType.issuer 
       do
-        assertMsg "Cannot create airdrop. The target account does not accept airdrops" (airdroppable || assetType.issuer==owner)
-        assertMsg "Cannot create airdrop. The amount of non fungible asset must be 1.0" (assetType.fungible || amount==1.0)
+        assertMsg "Cannot create airdrop. The target account does not accept airdrops" $
+          airdroppable || assetType.issuer==owner
+        assertMsg "Cannot create airdrop. The amount of non fungible asset must be 1.0" $ 
+          assetType.fungible || amount==1.0
         create Asset with
           assetType
           owner
@@ -73,11 +75,14 @@ template AssetHoldingAccount
         recipient : Party
       controller owner 
       do
-        assertMsg "Cannot create transfer. The amount of non fungible asset must be 1.0" (assetType.fungible || amount==1.0)
+        assertMsg "Cannot create transfer. The amount of non fungible asset must be 1.0" $
+          assetType.fungible || amount==1.0
         totAssetAmount <- sum . map (\x -> x.amount) <$>  forA assetsCids (\assetCid -> do
           asset <- fetch assetCid
-          assertMsg "Cannot create transfer. Asset type mismatch between asset and account" (asset.assetType == assetType)
-          assertMsg "Cannot create transfer. Owner mismatch between asset and account" (asset.owner == owner)
+          assertMsg "Cannot create transfer. Asset type mismatch between asset and account" $
+            asset.assetType == assetType
+          assertMsg "Cannot create transfer. Owner mismatch between asset and account" $
+            asset.owner == owner
           archive assetCid
           return asset)
         when (totAssetAmount > amount)(do 
@@ -111,5 +116,4 @@ template AssetHoldingAccountProposal
       controller recipient 
       do
         return ()
-
 

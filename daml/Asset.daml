@@ -55,7 +55,8 @@ template Asset
       controller owner
       do
         assertMsg "Non fungible asset cannot be split" assetType.fungible
-        assertMsg "Split amount must be smaller than the original asset amount" (splitAmount <= amount)
+        assertMsg "Split amount must be smaller than the original asset amount" $
+          splitAmount <= amount
         cid1 <- create this with
           amount = splitAmount
         cid2 <- create this with
@@ -71,7 +72,8 @@ template Asset
       do
         assertMsg "Non fungible asset cannot be merged" assetType.fungible
         mergeAsset <- fetch mergeAssetCid
-        assertMsg "Asset types do not match" (assetType == mergeAsset.assetType)
+        assertMsg "Asset types do not match" $
+          assetType == mergeAsset.assetType
         archive mergeAssetCid
         create this with
           amount = amount + mergeAsset.amount
@@ -105,4 +107,3 @@ template AssetTransfer
       do
         create asset with
           owner = recipient
-
