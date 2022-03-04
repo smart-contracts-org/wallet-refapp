@@ -12,9 +12,9 @@ import { httpBaseUrl } from '../config';
  * React component for the entry point into the application.
  */
 // APP_BEGIN
-const App: React.FC = () => {
+export const AppOld: React.FC = () => {
   const [credentials, setCredentials] = React.useState<Credentials | undefined>();
-
+  
   return credentials
     ? <DamlLedger
         token={credentials.token}
@@ -27,4 +27,3 @@ const App: React.FC = () => {
 }
 // APP_END
 
-export default App;

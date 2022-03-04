@@ -5,10 +5,12 @@ import { TopAppBar } from './components/TopAppBar/TopAppBar';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter } from "react-router-dom";
 import { Pages } from './pages/Pages';
+import jwt_decode from "jwt-decode";
 
-import {  ContractsProvider } from './providers/ContractsProvider';
+import { ContractsProvider } from './providers/ContractsProvider';
 import { isMobile } from './platform/platform';
 import { SideMenuMobile } from './components/SideMenuMobile.tsx/SideMenuMobile';
+import { AppOld } from './components/AppOld';
 
 const theme = createTheme({
   palette: {
@@ -19,7 +21,7 @@ const theme = createTheme({
 
 export const App: React.FC = () => {
   const [isOpen, setOpen] = React.useState(false);
-
+ 
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -35,6 +37,7 @@ export const App: React.FC = () => {
             <CssBaseline />
             <TopAppBar isOpen={isOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} />
             {isMobile() ? <SideMenuMobile isOpen={isOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} /> : <SideMenu />}
+          <AppOld />
             <Pages />
           </Box>
         </ThemeProvider>
