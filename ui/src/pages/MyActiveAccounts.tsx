@@ -9,6 +9,7 @@ import { CreateAssetAccountPage } from './CreateAssetAccountPage';
 import { isMobile } from '../platform/platform';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
+import { useParty } from '@daml/react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -23,6 +24,8 @@ interface TabPanelProps {
 
 export const TabPanel: React.FC<TabPanelProps> = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
+  const party = useParty();
+  console.log("partyyy', ", party)
   return (
     <div
       role="tabpanel"
