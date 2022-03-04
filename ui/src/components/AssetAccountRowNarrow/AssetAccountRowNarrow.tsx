@@ -1,5 +1,7 @@
 import React from 'react';
 import Card from '@mui/material/Card';
+import { Link } from "react-router-dom";
+
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -10,15 +12,18 @@ import { makeStyles } from '@mui/styles';
 import { AssetAction } from '../../types/AssetAction';
 import { AssetAccountRowProps } from '../AssetAccountRow/AssetAccountRow';
 import Collapse from '@mui/material/Collapse';
-import { IconButton } from '@mui/material';
+import { Box, IconButton, SwipeableDrawer } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import clx from 'clsx'
 import Avatar from '@mui/material/Avatar';
 import { AssetDetailsPopupContent } from '../AssetDetailsPopupContent/AssetDetailsPopupContent';
+// import { SendForm } from '../SendForm/SendForm';
+// import { SendPopupContent } from '../SendPopupContent/SendPopupContent';
+import { PopupContent } from '../PopupContent/PopupContent';
 
 //TODO: issuer and owner currently hardcoded as 'me'
-
+const enableMobilePopup = false;
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
@@ -37,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   nameAndMoreContainer: {
     display: 'flex',
     flexDirection: 'row',
-    width: '100%', 
+    width: '100%',
     alignItems: 'center'
   },
   expandContainer: {
@@ -56,6 +61,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   button: {
     marginBottom: theme.spacing(0.5)
+  },
+  drawer: {
+    height: '80%'
   }
 }))
 
@@ -68,19 +76,25 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
     setExpand(!isExpanded);
   }
 
-  const selectPopupContent = (contentType: AssetAction) => {
+  const [open, setOpen] = React.useState(false);
+  const selectPopupContent =  (contentType: AssetAction) => {
     setPopupContent(contentType)
+    setOpen(!open)
   }
   const handleClose = () => {
     setPopupContent(undefined);
   }
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpen(newOpen);
+  };
 
   const expandContent = (
     <CardContent>
       <div className={classes.buttonsContainer}>
         {isIssuedByMeTab && <Button className={classes.button} variant='outlined' size="medium" onClick={() => selectPopupContent(AssetAction.IssueAirdrop)}>Issue / Airdrop</Button>
         }
-        {!isIssuedByMeTab && <Button className={classes.button} disabled={issuer !== owner && !isShareable} variant='outlined' size="medium" onClick={() => selectPopupContent(AssetAction.Send)}>Send</Button>}
+        {!isIssuedByMeTab && <Button className={classes.button} disabled={issuer !== owner && !isShareable} variant='outlined' size="medium" component={Link} to="/send" onClick={() => selectPopupContent(AssetAction.Send)}>Send</Button>}
         {!isIssuedByMeTab && <Button className={classes.button} disabled={issuer !== owner && !isShareable} variant='outlined' size="medium" onClick={() => selectPopupContent(AssetAction.Swap)}>Swap</Button>}
         <Button variant='outlined' disabled={issuer !== owner && !isShareable} size="medium" onClick={() => selectPopupContent(AssetAction.InviteNewAssetOwner)} >Invite New Asset Owner</Button>
       </div>
@@ -124,7 +138,7 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
           {expandContent}
         </Collapse>
       </Card>
-      <PopUp
+      {enableMobilePopup && <PopUp
         issuer={issuer}
         owner={owner}
         isAirdroppable={!!isAirdroppable}
@@ -133,7 +147,32 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
         isShareable={isShareable || false}
         ticker={ticker}
         assetAction={popupContent}
-        handleClose={handleClose} />
+        handleClose={handleClose} />}
+        
+      <SwipeableDrawer
+        anchor="bottom"
+        open={open}
+        onClose={toggleDrawer(false)}
+        onOpen={toggleDrawer(true)}
+        disableSwipeToOpen={false}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        className={classes.drawer}
+      >
+        <Box style={{height: '500px'}}>
+        <PopupContent
+          issuer={issuer}
+          owner={owner}
+          isAirdroppable={!!isAirdroppable}
+          isFungible={!!isFungible}
+          quantity={quantity || 0}
+          isShareable={isShareable || false}
+          ticker={ticker}
+          contentType={popupContent}
+          handleClose={toggleDrawer(false)} />
+          </Box>
+      </SwipeableDrawer>
     </>
   );
 }

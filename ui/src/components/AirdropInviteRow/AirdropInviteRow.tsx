@@ -55,7 +55,7 @@ export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = ({isAccepted}) 
       </Typography>
             
       <Typography className={clx (classes.status, isAccepted ? classes.accepted : classes.pending)} variant='caption'>
-        pending
+        {isAccepted? 'Accepted' : 'Pending'}
       </Typography>
       <TextField
         margin="none"

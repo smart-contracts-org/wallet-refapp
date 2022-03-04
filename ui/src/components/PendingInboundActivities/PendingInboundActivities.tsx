@@ -34,7 +34,7 @@ export const PendingInboundActivities: React.FC = () => {
   const isNarrow = isMobile();
   const pendingRows = inboundData.map((asset, i)=> {
     return (
-      <PendingRow  {...asset} isInbound isNarrow={isNarrow} key={i}/>
+      <PendingRow  {...asset} isInbound={true} isNarrow={isNarrow} key={i}/>
     )
   })
   return (

@@ -41,7 +41,7 @@ export const AssetDetailsPopupContent: React.FC<AssetDetailsPopupContentProps> =
           {issuer === 'me' && <Tab label="More" {...a11yProps(1)} />}
         </Tabs>
         ) : 
-        <AppBar color='transparent' position="static">
+        <AppBar color='transparent' position="static" sx={{width: '400px'}}>
           <Tabs value={value}
             onChange={handleChange}
             aria-label="basic tabs example"

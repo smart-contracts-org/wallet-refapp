@@ -19,6 +19,7 @@ export interface PendingRowProps {
 
 export const PendingRow: React.FC<PendingRowProps> = (props) => {
   const { isNarrow } = props
+  console.log(props)
   if (props.templateName === 'swap') {
     return (isNarrow ? <PendingSwapRowNarrow {...props} /> : <PendingSwapRow {...props} />
     )

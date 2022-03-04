@@ -25,7 +25,7 @@ export const IssuedByMeTab: React.FC = () => {
 
   return (
     <Box>
-      {!isFabActivated && 
+      {isFabActivated && 
       <Button
       // component={Link} 
       // to='/create-asset-account' 
