@@ -20,7 +20,7 @@ export const OwnedByMeTab: React.FC = () => {
       </Prompt>
       {Object.values(state.assetAccounts).map(({ owner, issuer, quantity, ticker, }, i) => { return (isMobile() ? <AssetAccountRowNarrow key={ticker + i} owner={owner} issuer={issuer} ticker={ticker} quantity={quantity} isIssuer /> : <AssetAccountRow key={ticker + i} owner={owner} issuer={issuer} ticker={ticker} quantity={quantity} isIssuer />) }
       )}
-      {isMobile() ? <AssetAccountRowNarrow isFungible isAirdroppable isShareable owner={'me'} issuer={'Digital Asset'} ticker={'DAMLCOIN'} quantity={800} isIssuer /> : <AssetAccountRow isFungible isAirdroppable isShareable owner={'me'} issuer={'Digital Asset'} ticker={'DAMLCOIN'} quantity={800} isIssuer />}
+      {isMobile() ? <AssetAccountRowNarrow isFungible isAirdroppable isShareable owner={'me'} issuer={'Digital Asset'} ticker={'DAMLCOIN'} quantity={800} isIssuer /> : <AssetAccountRow isFungible isAirdroppable isShareable owner={'me'} issuer={'Digital Asset'} ticker={'BTOKEN'} quantity={800} isIssuer />}
       {isMobile() ? <AssetAccountRowNarrow owner={'me'} issuer={'Alex'} ticker={'ATOKEN'} quantity={100000} /> : <AssetAccountRow owner={'me'} issuer={'Alex'} ticker={'ATOKEN'} quantity={100000} />}
       {isMobile() ? <AssetAccountRowNarrow owner={'me'} issuer={'THEWEEKEND'} ticker={'TICKET'} quantity={1} /> : <AssetAccountRow owner={'me'} issuer={'THEWEEKEND'} ticker={'TICKET'} quantity={1} />}
 

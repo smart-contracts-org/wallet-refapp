@@ -19,7 +19,9 @@ const handleChange = (event: React.SyntheticEvent, newValue: number) => {
 };
 
 return (
-  <Box sx={{ width: '100%', height: '500px' }}>
+  <Box sx={{ width: '100%',
+  // height: '500px' 
+  }}>
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
       <AppBar color='primary' position="sticky">
         <Tabs value={value}

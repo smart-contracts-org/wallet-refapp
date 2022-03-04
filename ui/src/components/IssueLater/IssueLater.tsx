@@ -1,20 +1,9 @@
 import React from 'react'; 
-
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import {  Card, CardContent, Typography } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
 export const useMessageCardsStyles = makeStyles((theme: Theme) => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: theme.spacing(1),
-    paddingRight: theme.spacing(1)
-  },
-  quantity: {
-    marginRight: theme.spacing(1)
-  },
   success: {
     background: theme.palette.grey[800], 
     display: 'flex', 

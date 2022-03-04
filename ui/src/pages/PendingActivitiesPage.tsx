@@ -57,16 +57,16 @@ export const BasicTabs: React.FC<unknown> =() => {
     <>
       <Box sx={{ marginBottom:1, borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Inbound" {...a11yProps(1)} />
-          <Tab label="Outbound" {...a11yProps(0)} />
+          <Tab label="Inbound" {...a11yProps(0)} />
+          <Tab label="Outbound" {...a11yProps(1)} />
 
         </Tabs>
       </Box>
       <Box sx={{marginLeft: isMobile() ? 2 : 0, marginRight: isMobile()? 2 : 0}}>
-      <TabPanel value={value} index={1}>
+      <TabPanel value={value} index={0}>
         <PendingInboundActivities/>
       </TabPanel>
-      <TabPanel value={value} index={0}>
+      <TabPanel value={value} index={1}>
         <PendingOutboundActivities/>
       </TabPanel>
    

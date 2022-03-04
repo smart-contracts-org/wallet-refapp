@@ -13,6 +13,7 @@ import { CreateAssetAccountSuccess } from '../CreateAssetAccountSuccess/CreateAs
 import { CreateAssetWorkflowDone } from '../CreateAssetWorkflowDone/CreateAssetWorkflowDone';
 
 const steps = ['Create Asset Account', 'Issue Assets'];
+
 export const CreateAssetAccountSteps: React.FC = () => {
   const isStepFailed = (step: number) => {
     return false;
@@ -21,7 +22,6 @@ export const CreateAssetAccountSteps: React.FC = () => {
   const [activeStep, setActiveStep] = React.useState(0);
   
   const [completed, setCompleted] = React.useState<{[k: number]: boolean}>({});
-  const [isSubmitting, setSubmitting] = React.useState(false);
   const [isSubmitSuccessful, setSubmitSuccessful] = React.useState(false);
 
 
@@ -44,9 +44,7 @@ export const CreateAssetAccountSteps: React.FC = () => {
 
   //TODO: submitting form calling API
   const handleSubmit = () => {
-    setSubmitting(true);
     setTimeout(() => {
-      setSubmitting(false);
       setSubmitSuccessful(true);
       setDisplayStep(displayedStep+1)
       handleComplete();

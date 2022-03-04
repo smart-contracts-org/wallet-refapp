@@ -1,33 +1,24 @@
-import React from 'react'; 
+import React from 'react';
 
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { Button, Card, CardContent, Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
 export const useMessageCardsStyles = makeStyles((theme: Theme) => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: theme.spacing(1),
-    paddingRight: theme.spacing(1)
-  },
-  quantity: {
-    marginRight: theme.spacing(1)
-  },
   success: {
-    background: theme.palette.success.main, 
-    display: 'flex', 
-    // border: '1px solid',
-    // borderColor: theme.palette.success.main
+    background: theme.palette.success.main,
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%'
   },
   icon: {
-    justifySelf: 'center', 
+    justifySelf: 'center',
     width: '100%'
   },
   button: {
-    marginRight: theme.spacing(1), 
-    color: 'white', 
+    marginRight: theme.spacing(1),
+    color: 'white',
     border: '1px solid white'
   }
 }))
@@ -37,21 +28,20 @@ interface CreateAssetAccountSuccessProps {
   onDoneClick?: () => void;
 }
 
-export const CreateAssetAccountSuccess: React.FC<CreateAssetAccountSuccessProps> = ({onDoneClick, onNextClick}) => {
+export const CreateAssetAccountSuccess: React.FC<CreateAssetAccountSuccessProps> = ({ onDoneClick, onNextClick }) => {
   const classes = useMessageCardsStyles();
   return (
-    <Card elevation={0}  variant='outlined'  className={classes.success}>
-
+    <Card elevation={0} variant='outlined' className={classes.success}>
       <CardContent>
-              <CheckCircleIcon className={classes.icon}/>
-      <Typography variant='body2'>
-          You have successfully created Asset account for XYZ
-          Follow the next step to issue assets. 
+        <CheckCircleIcon className={classes.icon} />
+        <Typography variant='body2'>
+          You have successfully created Asset account for MAXCOIN
+          Follow the next step to issue assets.
         </Typography>
-        <Button sx={{marginBottom: 1}} fullWidth className={classes.button}  variant='outlined' onClick={onNextClick}>
+        <Button sx={{ marginBottom: 1 }} fullWidth className={classes.button} variant='outlined' onClick={onNextClick}>
           Next
         </Button>
-        <Button fullWidth className={classes.button} disableElevation  variant='outlined' onClick={onDoneClick && onDoneClick}>
+        <Button fullWidth className={classes.button} disableElevation variant='outlined' onClick={onDoneClick && onDoneClick}>
           Issue Later
         </Button>
       </CardContent>
