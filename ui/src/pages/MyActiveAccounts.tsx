@@ -1,4 +1,3 @@
-import {  Toolbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
 import Tabs from '@mui/material/Tabs';
@@ -9,7 +8,6 @@ import { CreateAssetAccountPage } from './CreateAssetAccountPage';
 import { isMobile } from '../platform/platform';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { useParty } from '@daml/react';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -24,8 +22,7 @@ interface TabPanelProps {
 
 export const TabPanel: React.FC<TabPanelProps> = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
-  const party = useParty();
-  console.log("partyyy', ", party)
+ 
   return (
     <div
       role="tabpanel"
@@ -88,7 +85,6 @@ export const MyActiveAccountsPage: React.FC = () => {
 
   return (
       <Box component="main" sx={{ flexGrow: 1, }} className={classes.root}>
-        <Toolbar />
         <BasicTabs/>
       </Box>
   )

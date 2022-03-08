@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route} from 'react-router';
-import {useLocation} from 'react-router-dom'
+import Credentials from '../Credentials';
 import { CreateAssetAccountPage } from './CreateAssetAccountPage';
 import { LoginPage } from './LoginPage';
 import { MyActiveAccountsPage } from './MyActiveAccounts';
@@ -8,11 +8,10 @@ import { PendingActivitiesPage } from './PendingActivitiesPage';
 import { SendPage } from './SendPage';
 
 interface PagesProps {
-  setCredentials: () => {}
+  setCredentials: (credentials: Credentials) => void
 }
 export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
-  const location = useLocation();
-  console.log(location)
+
   return (
     <Routes>
       <Route path='/pending' element={<PendingActivitiesPage />

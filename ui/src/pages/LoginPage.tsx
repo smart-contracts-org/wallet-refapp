@@ -6,11 +6,11 @@ import Credentials, { computeCredentials } from '../Credentials';
 import Ledger from '@daml/ledger';
 import { User } from '@daml.js/wallet-refapp';
 import { DeploymentMode, deploymentMode, ledgerId, httpBaseUrl } from '../config';
-import { useEffect } from 'react';
-import { Button, TextField, Toolbar } from '@mui/material';
-import jwt_decode from "jwt-decode";
+import { Avatar, Button, Card, CardContent, TextField, Typography } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
+import { getCookieValue } from '../utils/getCookieValue';
+import { partyFromToken } from '../utils/getPartyFromToken';
 
 type Props = {
   onLogin: (credentials: Credentials) => void;
@@ -21,32 +21,30 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    width: '100%',
+    height: '70vh',
   },
-  pageContent: {
-    width: '100%', 
-    display:'flex', 
-    justifyContent: 'center'
-  }
+  localLogin: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  loginButton: {
+    marginBottom: theme.spacing(2)
+  },
+  usernameTextField: {
+    marginBottom: theme.spacing(1)
+  },
+  avatar: {
+    marginBottom: theme.spacing(1)
+  },
 }))
-
-const partyFromToken = (token: string) => {
-  try {
-    const decoded = jwt_decode(token);
-    const party = decoded["https://daml.com/ledger-api"].actAs.shift()
-    return party
-  } catch (e) {
-    console.log(e.message || "failed to extract party from jwt token")
-    return undefined;
-  }
-}
-
-const getCookieValue = (name: string): string => (
-  document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
-)
 
 export const LoginPage: React.FC<Props> = ({ onLogin }) => {
   const [username, setUsername] = React.useState('');
-
+  const [hasError, setError] = React.useState(false);
   const classes = useStyles();
 
   const login = useCallback(async (credentials: Credentials) => {
@@ -60,7 +58,8 @@ export const LoginPage: React.FC<Props> = ({ onLogin }) => {
       }
       onLogin(credentials);
     } catch (error) {
-      alert(`Unknown error:\n${error}`);
+      // alert(`Unknown error:\n${error}`);
+      setError(true)
     }
   }, [onLogin]);
 
@@ -69,8 +68,6 @@ export const LoginPage: React.FC<Props> = ({ onLogin }) => {
     event.preventDefault();
     const credentials = computeCredentials(username);
     await login(credentials);
-    
-
   }
 
   // used in prod
@@ -79,9 +76,12 @@ export const LoginPage: React.FC<Props> = ({ onLogin }) => {
   }
 
 
-  useEffect(() => {
+  React.useEffect(() => {
     const token = getCookieValue('DAMLHUB_LEDGER_ACCESS_TOKEN');
     const url = new URL(window.location.toString());
+    if(!token){
+      return
+    }
     const party = partyFromToken(token)
 
     if (party === undefined) {
@@ -95,27 +95,42 @@ export const LoginPage: React.FC<Props> = ({ onLogin }) => {
 
   return (
     <div className={classes.root}>
-      <div>
-        <Toolbar />
-        {deploymentMode !== DeploymentMode.PROD_DAML_HUB
-          ?
-          <div className={classes.pageContent}>
-            <TextField
-              fullWidth
-              placeholder='Username'
-              value={username}
-              onChange={e => setUsername(e.currentTarget.value)}
-            />
+      <div className={classes.localLogin}>
+        <Avatar className={classes.avatar} />
+        {deploymentMode !== DeploymentMode.PROD_DAML_HUB ?
+          <><TextField
+            fullWidth
+            size='small'
+            variant='outlined'
+            placeholder='Username'
+            error={hasError}
+            value={username}
+            className={classes.usernameTextField}
+            onChange={e => setUsername(e.currentTarget.value)}
+          />
             <Button
-              onClick={handleLogin}>
+              size='small'
+              variant='contained' fullWidth
+              onClick={handleLogin}
+              className={classes.loginButton}>
               Log in
-                </Button>
-            {/* div_END */}
-          </div>
-          : <Button onClick={handleDamlHubLogin}>
-            Log in with Daml Hub
-              </Button>
-        }
+            </Button>
+            </> :
+            <Button
+              size='small'
+              variant='contained'
+              fullWidth
+              className={classes.loginButton}
+              onClick={handleDamlHubLogin}>
+              Login to wallet
+          </Button>}
+        <Card variant='outlined'>
+          <CardContent>
+            <Typography variant='caption'>
+              Welcome to the DA Wallet Ref app.
+              </Typography>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

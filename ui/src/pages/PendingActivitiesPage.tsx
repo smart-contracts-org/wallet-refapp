@@ -1,4 +1,3 @@
-import {  Toolbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
 import Tabs from '@mui/material/Tabs';
@@ -80,7 +79,6 @@ export const PendingActivitiesPage: React.FC = () => {
 
   return (
       <Box component="main" sx={{ flexGrow: 1, }} className={classes.root}>
-        <Toolbar />
         <BasicTabs/>
       </Box>
   )

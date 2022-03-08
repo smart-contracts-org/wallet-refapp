@@ -4,44 +4,42 @@ import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
 import Typography from '@mui/material/Typography';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
-import { Avatar, Box, Button, Card, CardContent, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
+import { Avatar, Box, Card, CardContent, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import { isMobile } from '../../platform/platform';
 import { SvgIcon } from '../SvgIcon/SvgIcon';
-import { Link } from "react-router-dom";
-import { useParty } from '@daml/react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+
+const demoPartyId = 'DEMO-ledger-party-03568cfb-dc57-4c54-90d6-7db79f0e3dc2'
 interface TopAppBarProps {
   handleDrawerOpen: () => void;
   handleDrawerClose: () => void;
   isOpen: boolean;
+  onLogout?: () => void;
+  party?: string;
 }
 
-export const TopAppBar: React.FC<TopAppBarProps> = ({ isOpen, handleDrawerOpen, handleDrawerClose }) => {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, handleDrawerOpen, handleDrawerClose }) => {
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-  const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-  const party = useParty();
+
+  const onLogoutClick = () => {
+    handleCloseUserMenu();
+    onLogout && onLogout()
+  }
 
   return (
     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
         {!isMobile() && <SvgIcon />}
-        {isMobile() && <IconButton
+        {party && isMobile() && <IconButton
           onClick={isOpen ? handleDrawerClose : handleDrawerOpen}
         >
           {isOpen ? <MenuOpenIcon /> : <MenuIcon />}
@@ -50,10 +48,10 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ isOpen, handleDrawerOpen, 
         <Typography variant="h6" noWrap component="div">
           Wallet RefApp
       </Typography>
-        {party ? (<Box sx={{ flexGrow: 0, marginLeft: 'auto' }}>
+        {party && (<Box sx={{ flexGrow: 0, marginLeft: 'auto' }}>
           <Tooltip title="Open settings" >
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar sx={{ marginLeft: 'auto' }} alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+              <Avatar sx={{ marginLeft: 'auto' }} alt="profile" />
             </IconButton>
           </Tooltip>
           <Menu
@@ -78,19 +76,19 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ isOpen, handleDrawerOpen, 
                   Party ID:
                 </Typography>
                 <Typography variant='caption'>
-                  {party || 'ledger-party-03568cfb-dc57-4c54-90d6-7db79f0e3dc2'}
+                  {party || demoPartyId}
                 </Typography>
                 <IconButton size='small'>
                   <ContentCopyIcon />
                 </IconButton>
               </CardContent>
             </Card>
-            <MenuItem key={'Logout'} onClick={handleCloseUserMenu}>
+            <MenuItem key={'Logout'} onClick={onLogout && onLogoutClick}>
               <Typography textAlign="center">{'Logout'}</Typography>
             </MenuItem>
           </Menu>
         </Box>
-        ) : (<Button component={Link} to='/login' size='small' sx={{ marginLeft: 'auto' }} variant='outlined'>Login</Button>)}
+        )}
       </Toolbar>
     </AppBar >
   );

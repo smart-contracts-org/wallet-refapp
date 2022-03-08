@@ -6,11 +6,10 @@ export enum DeploymentMode {
   PROD_DAML_HUB,
   PROD_OTHER,
 }
-console.log(process.env.NODE_ENV)
 export const deploymentMode: DeploymentMode =
   process.env.NODE_ENV === 'development'
   ? DeploymentMode.DEV
-  // endsWith is also changed from legacy
+  // TODO: endsWith is also changed from legacy
   : window.location.hostname.endsWith('.daml.app')
   ? DeploymentMode.PROD_DAML_HUB
   : DeploymentMode.PROD_OTHER;

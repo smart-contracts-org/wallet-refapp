@@ -8,7 +8,7 @@ import { User } from '@daml.js/wallet-refapp';
 import { DeploymentMode, deploymentMode, ledgerId, httpBaseUrl } from '../config';
 import { useEffect } from 'react';
 import { Button, TextField, Toolbar } from '@mui/material';
-import jwt_decode from "jwt-decode";
+import { partyFromToken } from '../utils/getPartyFromToken';
 
 type Props = {
   onLogin: (credentials: Credentials) => void;
@@ -18,16 +18,7 @@ type Props = {
  * React component for the login screen of the `App`.
  */
 
- const partyFromToken = (token: string) => {
-  try {
-    const decoded = jwt_decode(token);
-    const party = decoded["https://daml.com/ledger-api"].actAs.shift()
-    return party
-  } catch (e) {
-    console.log(e.message || "failed to extract party from jwt token")
-    return undefined;
-  }
-}
+ 
 
 const getCookieValue = (name: string): string => (
   document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
