@@ -3,6 +3,7 @@
 /.daml
 build
 node_modules
+*.zip
 
 *.log
 
