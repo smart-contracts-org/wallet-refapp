@@ -9,9 +9,12 @@ import { DeploymentMode, deploymentMode, ledgerId, httpBaseUrl } from '../config
 import { useEffect } from 'react';
 import { Button, TextField, Toolbar } from '@mui/material';
 import { partyFromToken } from '../utils/getPartyFromToken';
+import { Token } from '@mui/icons-material';
 
-type Props = {
+interface LoginScreenProps {
   onLogin: (credentials: Credentials) => void;
+  token?: string;
+  party?: string;
 }
 
 /**
@@ -24,10 +27,10 @@ const getCookieValue = (name: string): string => (
   document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)')?.pop() || ''
 )
 
-const LoginScreen: React.FC<Props> = ({ onLogin }) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({party,token, onLogin }) => {
+  // Username is used locally, not when using Daml hub
   const [username, setUsername] = React.useState('');
 
-  
 
   const login = useCallback(async (credentials: Credentials) => {
     console.log('login cre', credentials)
@@ -61,11 +64,10 @@ const LoginScreen: React.FC<Props> = ({ onLogin }) => {
 
   
   useEffect(() => {
-    const token = getCookieValue('DAMLHUB_LEDGER_ACCESS_TOKEN');
+    console.log('login screen useEffect')
     const url = new URL(window.location.toString());
-    const party = partyFromToken(token)
   
-    if (party === undefined) {
+    if (party === undefined || !token) {
       return;
     }
     url.search = '';

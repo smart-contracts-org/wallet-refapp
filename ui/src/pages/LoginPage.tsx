@@ -6,14 +6,18 @@ import Credentials, { computeCredentials } from '../Credentials';
 import Ledger from '@daml/ledger';
 import { User } from '@daml.js/wallet-refapp';
 import { DeploymentMode, deploymentMode, ledgerId, httpBaseUrl } from '../config';
-import { Avatar, Button, Card, CardContent, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, TextField, Typography } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { getCookieValue } from '../utils/getCookieValue';
 import { partyFromToken } from '../utils/getPartyFromToken';
+import { LoadingButton } from '@mui/lab';
+import { isMobile } from '../platform/platform';
 
 type Props = {
   onLogin: (credentials: Credentials) => void;
+  token?: string;
+  party?: string;
 }
 
 
@@ -44,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const LoginPage: React.FC<Props> = ({ onLogin }) => {
   const [username, setUsername] = React.useState('');
+  const [isLoggingIn, setLoggingIn] = React.useState(false);
   const [hasError, setError] = React.useState(false);
   const classes = useStyles();
 
@@ -58,20 +63,21 @@ export const LoginPage: React.FC<Props> = ({ onLogin }) => {
       }
       onLogin(credentials);
     } catch (error) {
-      // alert(`Unknown error:\n${error}`);
       setError(true)
     }
   }, [onLogin]);
 
-  // Used in local dev env
+  // LOCAL Used in local dev env
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
+    setLoggingIn(true)
     const credentials = computeCredentials(username);
     await login(credentials);
   }
 
-  // used in prod
+  // PROD used in prod
   const handleDamlHubLogin = () => {
+    setLoggingIn(true)
     window.location.assign('.hub/v1/auth/login')
   }
 
@@ -79,7 +85,7 @@ export const LoginPage: React.FC<Props> = ({ onLogin }) => {
   React.useEffect(() => {
     const token = getCookieValue('DAMLHUB_LEDGER_ACCESS_TOKEN');
     const url = new URL(window.location.toString());
-    if(!token){
+    if (!token) {
       return
     }
     const party = partyFromToken(token)
@@ -90,13 +96,14 @@ export const LoginPage: React.FC<Props> = ({ onLogin }) => {
     url.search = '';
     window.history.replaceState(window.history.state, '', url.toString());
 
-    login({ token, party, ledgerId });
+    login({ token, party, ledgerId }).then(() => { setLoggingIn(false) });
   }, [login]);
 
   return (
     <div className={classes.root}>
       <div className={classes.localLogin}>
         <Avatar className={classes.avatar} />
+        <Box sx={{'marginBottom': 1}}/>
         {deploymentMode !== DeploymentMode.PROD_DAML_HUB ?
           <><TextField
             fullWidth
@@ -108,22 +115,26 @@ export const LoginPage: React.FC<Props> = ({ onLogin }) => {
             className={classes.usernameTextField}
             onChange={e => setUsername(e.currentTarget.value)}
           />
-            <Button
+            <LoadingButton
               size='small'
+              loading={!hasError && isLoggingIn}
               variant='contained' fullWidth
               onClick={handleLogin}
               className={classes.loginButton}>
               Log in
-            </Button>
-            </> :
-            <Button
-              size='small'
-              variant='contained'
-              fullWidth
-              className={classes.loginButton}
-              onClick={handleDamlHubLogin}>
-              Login to wallet
-          </Button>}
+            </LoadingButton>
+          </> :
+          <LoadingButton
+            size={isMobile() ? 'small': 'medium'}
+            variant='contained'
+            fullWidth
+            loading={isLoggingIn}
+            disabled={isLoggingIn}
+            className={classes.loginButton}
+            onClick={handleDamlHubLogin}>
+
+            Login to wallet
+          </LoadingButton>}
         <Card variant='outlined'>
           <CardContent>
             <Typography variant='caption'>

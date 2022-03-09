@@ -19,6 +19,7 @@ interface TopAppBarProps {
 }
 
 export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, handleDrawerOpen, handleDrawerClose }) => {
+  
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -50,7 +51,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, h
       </Typography>
         {party && (<Box sx={{ flexGrow: 0, marginLeft: 'auto' }}>
           <Tooltip title="Open settings" >
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <IconButton size='small' onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               <Avatar sx={{ marginLeft: 'auto' }} alt="profile" />
             </IconButton>
           </Tooltip>
