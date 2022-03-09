@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route} from 'react-router';
+import { Routes, Route, Navigate,} from 'react-router-dom';
 import Credentials from '../Credentials';
 import { CreateAssetAccountPage } from './CreateAssetAccountPage';
 import { LoginPage } from './LoginPage';
@@ -24,15 +24,9 @@ export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
       } />
       <Route path='/' element={<MyActiveAccountsPage />
       } />
-      
-
       <Route
         path="*"
-        element={
-          <main style={{ padding: "1rem" }}>
-            <p>There's nothing here!</p>
-          </main>
-        }
+        element={<Navigate replace to='/'/>}
       />
     </Routes>
   )
