@@ -9,6 +9,7 @@ import { RowChip } from '../RowChip/RowChip';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { AssetAction } from '../../types/AssetAction';
+import { Avatar } from '@mui/material';
 
 //TODO: issuer and owner currently hardcoded as 'me'
 
@@ -52,7 +53,10 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({ issuer, isIssu
   return (
     <>
       <Card sx={{ minWidth: 275 }} className={classes.root}>
-        <CardContent sx={{ display: 'flex' }}>
+        <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
+          <Avatar sx={{marginRight: 1}}>
+            {ticker[0]}
+          </Avatar>
           <Typography sx={{ fontSize: 14, marginRight: 1 }} color="text.secondary" >
             {ticker}
           </Typography>

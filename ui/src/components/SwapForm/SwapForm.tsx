@@ -83,7 +83,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
             Specify who you want to swap with
         </Typography>
         </Box>
-        <Card className={classes.swapAssetContainer} variant='outlined'>
+        <div className={classes.swapAssetContainer} >
           <Box display='flex' flexDirection='column' justifyContent='center'>
             <Box className={classes.directionContainer}>
               <Typography sx={{marginRight: 1}} color='text.secondary' variant='caption'>
@@ -121,8 +121,8 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
             </Box>
             </Box>
           </Box>
-        </Card>
-        <Card className={classes.swapAssetContainer} variant='outlined'>
+        </div>
+        <div className={classes.swapAssetContainer} >
           <Box display='flex' flexDirection='column' justifyContent='center'>
             <Box className={classes.directionContainer}>
             <WestIcon className={classes.inboundArrow}/>
@@ -159,7 +159,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
             </Box>
             </Box>
           </Box>
-        </Card>
+        </div>
         
         <Card elevation={0} variant='outlined' className={classes.helpMessage}>
           <Typography color='text.primary' variant='body2' p={1}>

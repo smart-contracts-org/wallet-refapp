@@ -55,7 +55,7 @@ export const App: React.FC = () => {
           <TopAppBar party={ partyId || credentials?.party} onLogout={ onLogout} isOpen={isOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} />
           <Toolbar/>
           {
-           ( token || credentials) ? 
+           ( !token || !credentials) ? 
               <DamlLedger
                 token={token || credentials?.token || ""}
                 party={partyId || credentials?.party || ""}

@@ -6,15 +6,19 @@ import { Typography } from '@mui/material';
 import { AssetAccountRowNarrow } from '../components/AssetAccountRowNarrow/AssetAccountRowNarrow';
 import { isMobile } from '../platform/platform';
 
-
 export const OwnedByMeTab: React.FC = () => {
   const contractContext = React.useContext(ContractsContext)
   const state = contractContext.state
-  console.log(state)
+
+  React.useEffect(() => {
+    // TODO:
+    // Fetch contracts
+    // useStreamQuery
+  }, [])
+  
   return (
     <>
       <Prompt>
-        
         <Typography color='text.primary' variant='body2'>
           Assets that you own are shown here. If there is an asset that you would like to own, contact an existing owner and request an invite to the asset account with you.
         </Typography>
