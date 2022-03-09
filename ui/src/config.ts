@@ -6,11 +6,11 @@ export enum DeploymentMode {
   PROD_DAML_HUB,
   PROD_OTHER,
 }
-
 export const deploymentMode: DeploymentMode =
   process.env.NODE_ENV === 'development'
   ? DeploymentMode.DEV
-  : window.location.hostname.endsWith('.projectdabl.com')
+  // TODO: endsWith is also changed from legacy
+  : window.location.hostname.endsWith('.daml.app')
   ? DeploymentMode.PROD_DAML_HUB
   : DeploymentMode.PROD_OTHER;
 
@@ -21,8 +21,8 @@ export const ledgerId: string =
   ? window.location.hostname.split('.')[0]
   : process.env.REACT_APP_LEDGER_ID
   ?? 'wallet-refapp-sandbox';
-
 export const httpBaseUrl =
-  deploymentMode === DeploymentMode.PROD_DAML_HUB
-  ? `https://api.projectdabl.com/data/${ledgerId}/`
+deploymentMode === DeploymentMode.PROD_DAML_HUB
+// TODO: Note that this is changed from legacy
+  ? `https://${ledgerId}.daml.app/`
   : undefined;

@@ -5,6 +5,7 @@ import React from 'react'
 import { Image, Menu } from 'semantic-ui-react'
 import MainView from './MainView';
 import { useParty } from '@daml/react';
+import { Toolbar } from '@mui/material';
 
 type Props = {
   onLogout: () => void;
@@ -14,9 +15,11 @@ type Props = {
  * React component for the main screen of the `App`.
  */
 const MainScreen: React.FC<Props> = ({onLogout}) => {
+  console.log('Main screen')
   return (
     <>
       <Menu icon borderless>
+        <Toolbar/>
         <Menu.Item>
           <Image
             as='a'

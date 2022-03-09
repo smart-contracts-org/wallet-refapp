@@ -71,7 +71,6 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
   const classes = useStyles()
   const [isExpanded, setExpand] = React.useState<boolean>(false);
   const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)
-
   const toggleExpand = () => {
     setExpand(!isExpanded);
   }
