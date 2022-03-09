@@ -54,24 +54,26 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({ issuer, isIssu
     <>
       <Card sx={{ minWidth: 275 }} className={classes.root}>
         <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar sx={{marginRight: 1}}>
+          <Avatar sx={{ marginRight: 1 }}>
             {ticker[0]}
           </Avatar>
-          <Typography sx={{ fontSize: 14, marginRight: 1 }} color="text.secondary" >
-            {ticker}
-          </Typography>
-          <Typography className={classes.quantity} sx={{ fontSize: 14 }} color="text.secondary" >
-            {quantity}
-          </Typography>
+          <div>
+            <Typography sx={{ fontSize: 14, marginRight: 1, fontWeight: '500' }} color="text.primary" >
+              {ticker}
+            </Typography>
+            <Typography className={classes.quantity} sx={{ fontSize: 14 }} color="text.secondary" >
+              {quantity}
+            </Typography>
+          </div>
         </CardContent>
-        <CardActions sx={{ marginLeft: 'auto'  }}>
-        {!isIssuedByMeTab && issuer === owner && <RowChip requestType={'issuer'} label='Issuer' />}
+        <CardActions sx={{ marginLeft: 'auto' }}>
+          {!isIssuedByMeTab && issuer === owner && <RowChip requestType={'issuer'} label='Issuer' />}
 
           {isIssuedByMeTab && <Button variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.IssueAirdrop)}>Issue / Airdrop</Button>
           }
-          {!isIssuedByMeTab && <Button disabled={ issuer !== owner && !isShareable} variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Send)}>Send</Button>}
-          {!isIssuedByMeTab && <Button disabled={ issuer !== owner && !isShareable} variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Swap)}>Swap</Button>}
-          <Button variant='outlined' disabled={ issuer !== owner && !isShareable} size="small" onClick={() => selectPopupContent(AssetAction.InviteNewAssetOwner)} >Invite New Asset Owner</Button>
+          {!isIssuedByMeTab && <Button disabled={issuer !== owner && !isShareable} variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Send)}>Send</Button>}
+          {!isIssuedByMeTab && <Button disabled={issuer !== owner && !isShareable} variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Swap)}>Swap</Button>}
+          <Button variant='outlined' disabled={issuer !== owner && !isShareable} size="small" onClick={() => selectPopupContent(AssetAction.InviteNewAssetOwner)} >Invite New Asset Owner</Button>
           <Button variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Details)} >Details</Button>
         </CardActions>
       </Card>

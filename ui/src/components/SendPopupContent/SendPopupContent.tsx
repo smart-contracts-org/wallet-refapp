@@ -39,7 +39,7 @@ return (
     </Box>
       <TabPanel value={value} index={0}>
         <SendForm ticker={ticker}/>
-        <Button fullWidth size='small' variant='outlined' onClick={handleClose}>
+        <Button fullWidth  variant='outlined' onClick={handleClose}>
           Cancel
         </Button>
       </TabPanel>

@@ -60,7 +60,7 @@ export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = ({isAccepted}) 
       <TextField
         margin="none"
         id="quantity"
-        label="Quantity"
+        label="Amount"
         type="number"
         variant="outlined"
         size='small'

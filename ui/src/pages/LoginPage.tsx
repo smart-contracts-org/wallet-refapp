@@ -125,7 +125,6 @@ export const LoginPage: React.FC<Props> = ({ onLogin }) => {
             </LoadingButton>
           </> :
           <LoadingButton
-            size={isMobile() ? 'small': 'medium'}
             variant='contained'
             fullWidth
             loading={isLoggingIn}

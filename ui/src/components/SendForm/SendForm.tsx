@@ -75,15 +75,15 @@ export const SendForm: React.FC<SendFormProps> = ({ ticker }) => {
         <TextField
           disabled={isLoading || isSuccessful}
           margin="none"
-          id="quantity"
-          label="Quantity"
+          id="amount"
+          label="Amount"
           type="number"
           fullWidth
           variant="outlined"
           size='small'
           onChange={(e) => setAmount(e.currentTarget.value)}
           inputProps={{
-            inputMode: 'numeric',
+            inputMode: 'decimal',
             type: 'number',
             pattern: "[0-9]*"
           }}
@@ -101,6 +101,7 @@ export const SendForm: React.FC<SendFormProps> = ({ ticker }) => {
           fullWidth
           loadingPosition="end"
           variant="outlined"
+          disabled={recipient.length <= 0}
           color={isSuccessful ? 'success' : undefined}
           onClick={isSuccessful ? onReset : onSubmit}
           sx={{
