@@ -5,6 +5,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 interface SendFormProps {
   ticker: string
@@ -21,8 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column'
   },
   helpMessage: {
-    margin: theme.spacing(1, 0, 1, 0), 
-    // background: theme.palette.grey[200]
+    margin: theme.spacing(1, 0, 1, 0),
   },
 }))
 
@@ -30,14 +30,25 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const SendForm: React.FC<SendFormProps> = ({ ticker }) => {
   const classes = useStyles();
+  const [recipient, setRecipient] = React.useState("");
+  const [amount, setAmount] = React.useState("");
   const [isLoading, setLoading] = React.useState<boolean>(false);
+  const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
 
-  const onClick = () => {
+  // TODO: 
+  // Create Form to send
+  const onSubmit = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false)
+      setSuccessful(true);
     }, 1000)
+  }
 
+  const onReset = () => {
+    setAmount("0");
+    setRecipient("");
+    setSuccessful(false);
   }
   return (
     <>
@@ -51,6 +62,7 @@ export const SendForm: React.FC<SendFormProps> = ({ ticker }) => {
           </Typography>
         </Box>
         <TextField
+          disabled={isLoading || isSuccessful}
           margin="normal"
           id="recipient"
           label="Recipient"
@@ -58,41 +70,46 @@ export const SendForm: React.FC<SendFormProps> = ({ ticker }) => {
           fullWidth
           variant="outlined"
           size='small'
+          onChange={(e) => setRecipient(e.currentTarget.value)}
         />
         <TextField
+          disabled={isLoading || isSuccessful}
           margin="none"
-          id="quantity"
-          label="quantity"
+          id="amount"
+          label="Amount"
           type="number"
           fullWidth
           variant="outlined"
           size='small'
+          onChange={(e) => setAmount(e.currentTarget.value)}
           inputProps={{
-            inputMode: 'numeric',
-            type:'number',
-            pattern:"[0-9]*"
-        }}
+            inputMode: 'decimal',
+            type: 'number',
+            pattern: "[0-9]*"
+          }}
         />
         <Card elevation={0} variant='outlined' className={classes.helpMessage}>
           <Typography color='text.primary' variant='body2' p={1}>
-            This is a one-off send. This means when you send to the specified user, 
-            they must accept it first in order for the ownership of the asset to be transferred. 
+            This is a one-off send. This means when you send to the specified user,
+            they must accept it first in order for the ownership of the asset to be transferred.
             This uses the 'propose and accept' pattern. Learn more about this pattern <Link target="_blank" href="https://docs.daml.com/daml/patterns/initaccept.html">here</Link>.
         </Typography>
         </Card>
         <LoadingButton
-          endIcon={<SendIcon />}
+          endIcon={isSuccessful ? <CheckCircleIcon /> : <SendIcon />}
           loading={isLoading}
           fullWidth
           loadingPosition="end"
           variant="outlined"
-          onClick={onClick}
+          disabled={recipient.length <= 0}
+          color={isSuccessful ? 'success' : undefined}
+          onClick={isSuccessful ? onReset : onSubmit}
           sx={{
             marginBottom: 0.5
           }}
         >
-          Send
-      </LoadingButton>
+          {isSuccessful ? 'Complete, make another transaction' : 'Send'}
+        </LoadingButton>
       </FormControl>
     </>
   );

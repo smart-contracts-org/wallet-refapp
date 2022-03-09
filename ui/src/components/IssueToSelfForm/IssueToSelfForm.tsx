@@ -80,6 +80,11 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({cancelText, iss
           variant="outlined"
           size='small'
           onChange={(e) => { onChange(e) }}
+          inputProps={{
+            inputMode: 'decimal',
+            type: 'number',
+            pattern: "[0-9]*"
+          }}
         />
         <Typography variant='caption' color='text.secondary'>
           Specify the quanity you would like to issue to wallet.

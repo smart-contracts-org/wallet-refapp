@@ -6,6 +6,7 @@ import { AppBar, Button } from '@mui/material';
 import { SendForm } from '../SendForm/SendForm';
 import { PendingFeatureSend } from '../PendingFeatureSend/PendingFeatureSend';
 import { TabPanel, a11yProps } from '../TabPanel/TabPanel';
+import { isMobile } from '../../platform/platform';
 
 export interface SendPopupContentProps {
   handleClose: () => void;
@@ -19,8 +20,8 @@ const handleChange = (event: React.SyntheticEvent, newValue: number) => {
 };
 
 return (
-  <Box sx={{ width: '100%',
-  // height: '500px' 
+  <Box sx={{ width: isMobile() ? '100%': '500px',
+  height: '450px',
   }}>
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
       <AppBar color='primary' position="sticky">
@@ -38,7 +39,7 @@ return (
     </Box>
       <TabPanel value={value} index={0}>
         <SendForm ticker={ticker}/>
-        <Button fullWidth size='small' variant='outlined' onClick={handleClose}>
+        <Button fullWidth  variant='outlined' onClick={handleClose}>
           Cancel
         </Button>
       </TabPanel>

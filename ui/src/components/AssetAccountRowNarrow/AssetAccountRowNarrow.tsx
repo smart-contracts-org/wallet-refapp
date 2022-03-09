@@ -69,6 +69,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, isIssuedByMeTab, ticker, quantity, owner, isShareable, isFungible, isAirdroppable }) => {
   const classes = useStyles()
+  const buttonVariant='contained';
   const [isExpanded, setExpand] = React.useState<boolean>(false);
   const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)
   const toggleExpand = () => {
@@ -91,11 +92,11 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
   const expandContent = (
     <CardContent>
       <div className={classes.buttonsContainer}>
-        {isIssuedByMeTab && <Button className={classes.button} variant='outlined' size="medium" onClick={() => selectPopupContent(AssetAction.IssueAirdrop)}>Issue / Airdrop</Button>
+        {isIssuedByMeTab && <Button className={classes.button} variant={buttonVariant} size="medium" onClick={() => selectPopupContent(AssetAction.IssueAirdrop)}>Issue / Airdrop</Button>
         }
-        {!isIssuedByMeTab && <Button className={classes.button} disabled={issuer !== owner && !isShareable} variant='outlined' size="medium" component={Link} to="/send" onClick={() => selectPopupContent(AssetAction.Send)}>Send</Button>}
-        {!isIssuedByMeTab && <Button className={classes.button} disabled={issuer !== owner && !isShareable} variant='outlined' size="medium" onClick={() => selectPopupContent(AssetAction.Swap)}>Swap</Button>}
-        <Button variant='outlined' disabled={issuer !== owner && !isShareable} size="medium" onClick={() => selectPopupContent(AssetAction.InviteNewAssetOwner)} >Invite New Asset Owner</Button>
+        {!isIssuedByMeTab && <Button className={classes.button} disabled={issuer !== owner && !isShareable} variant={buttonVariant} size="medium" component={Link} to="/send" onClick={() => selectPopupContent(AssetAction.Send)}>Send</Button>}
+        {!isIssuedByMeTab && <Button className={classes.button} disabled={issuer !== owner && !isShareable} variant={buttonVariant} size="medium" onClick={() => selectPopupContent(AssetAction.Swap)}>Swap</Button>}
+        <Button variant={buttonVariant} disabled={issuer !== owner && !isShareable} size="medium" onClick={() => selectPopupContent(AssetAction.InviteNewAssetOwner)} >Invite New Asset Owner</Button>
       </div>
       <AssetDetailsPopupContent
         ticker={ticker}

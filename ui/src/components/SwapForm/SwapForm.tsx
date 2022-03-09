@@ -7,6 +7,8 @@ import { makeStyles } from '@mui/styles';
 import EastIcon from '@mui/icons-material/East';
 import WestIcon from '@mui/icons-material/West';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { isMobile } from '../../platform/platform';
 
 
 interface SwapFormProps {
@@ -55,11 +57,24 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
+  const [isLoading, setLoading] = React.useState<boolean>(false);
+  const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
+
+  const onSubmit = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false)
+      setSuccessful(true);
+    }, 1000)
+  }
+  const onReset = () => {
+    setSuccessful(false);
+  }
 
   const classes = useStyles();
   return (
-    <>
-      <Box display='flex'>
+    <Box display='flex' flexDirection='column' sx={{ width: isMobile() ? '100%': '500px'}}>
+      <Box sx={{display: 'flex'}} >
         <Typography color='text.secondary' variant='body2' marginRight={1} gutterBottom>
           Swapping
         </Typography>
@@ -83,7 +98,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
             Specify who you want to swap with
         </Typography>
         </Box>
-        <Card className={classes.swapAssetContainer} variant='outlined'>
+        <div className={classes.swapAssetContainer} >
           <Box display='flex' flexDirection='column' justifyContent='center'>
             <Box className={classes.directionContainer}>
               <Typography sx={{marginRight: 1}} color='text.secondary' variant='caption'>
@@ -95,34 +110,28 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
             <Box className={classes.textFieldContainer} mr={0.5}>
               <TextField
                 margin="dense"
-                id="ticker"
+                id="Ticker"
                 label={ticker}
                 type="text"
                 disabled
                 variant="outlined"
                 size='small'
               />
-              <Typography color='text.secondary' variant='caption'>
-                Your selected asset
-            </Typography>
             </Box>
             <Box className={classes.textFieldContainer}>
               <TextField
                 margin="dense"
-                id="quantity"
-                label="quantity"
+                id="amount"
+                label="Amount"
                 type="text"
                 variant="outlined"
                 size='small'
               />
-              <Typography color='text.secondary' variant='caption'>
-                Specify your amount
-            </Typography>
             </Box>
             </Box>
           </Box>
-        </Card>
-        <Card className={classes.swapAssetContainer} variant='outlined'>
+        </div>
+        <div className={classes.swapAssetContainer} >
           <Box display='flex' flexDirection='column' justifyContent='center'>
             <Box className={classes.directionContainer}>
             <WestIcon className={classes.inboundArrow}/>
@@ -140,26 +149,20 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
                 variant="outlined"
                 size='small'
               />
-              <Typography color='text.secondary' variant='caption'>
-                Your selected asset
-            </Typography>
             </Box>
             <Box className={classes.textFieldContainer}>
               <TextField
                 margin="dense"
-                id="quantity"
-                label="quantity"
+                id="amount"
+                label="Amount"
                 type="text"
                 variant="outlined"
                 size='small'
               />
-              <Typography color='text.secondary' variant='caption'>
-                Specify your amount
-            </Typography>
             </Box>
             </Box>
           </Box>
-        </Card>
+        </div>
         
         <Card elevation={0} variant='outlined' className={classes.helpMessage}>
           <Typography color='text.primary' variant='body2' p={1}>
@@ -167,18 +170,20 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
         </Typography>
         </Card>
         <LoadingButton
-          endIcon={<SwapHorizIcon/>}
-          loading={false}
+          endIcon={isSuccessful ? <CheckCircleIcon/> : <SwapHorizIcon/>}
+          loading={isLoading}
           fullWidth
+          onClick={isSuccessful ? undefined : onSubmit}
+          color={isSuccessful? 'success' : undefined}
           loadingPosition="end"
           variant="outlined"
           sx={{
             marginBottom: 0.5
           }}
         >
-          Request Swap
+          {isSuccessful ? "Swap Request Sent" : "Request Swap"}
       </LoadingButton>
       </FormControl>
-    </>
+    </Box>
   );
 }
