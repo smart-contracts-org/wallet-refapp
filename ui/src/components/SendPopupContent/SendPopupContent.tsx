@@ -11,8 +11,9 @@ import { isMobile } from '../../platform/platform';
 export interface SendPopupContentProps {
   handleClose: () => void;
   ticker: string;
+  quantity: number;
 }
-export const SendPopupContent: React.FC<SendPopupContentProps> = ({ticker, handleClose}) => {
+export const SendPopupContent: React.FC<SendPopupContentProps> = ({quantity, ticker, handleClose}) => {
 const [value, setValue] = React.useState(0);
 
 const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -38,7 +39,7 @@ return (
       </AppBar>
     </Box>
       <TabPanel value={value} index={0}>
-        <SendForm ticker={ticker}/>
+        <SendForm ticker={ticker} quantity={quantity}/>
         <Button fullWidth  variant='outlined' onClick={handleClose}>
           Cancel
         </Button>
