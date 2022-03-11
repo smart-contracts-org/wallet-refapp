@@ -8,7 +8,8 @@ import { makeStyles } from '@mui/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 interface SendFormProps {
-  ticker: string
+  ticker: string;
+  quantity: number;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 
-export const SendForm: React.FC<SendFormProps> = ({ ticker }) => {
+export const SendForm: React.FC<SendFormProps> = ({ quantity, ticker }) => {
   const classes = useStyles();
   const [recipient, setRecipient] = React.useState("");
   const [amount, setAmount] = React.useState("");
@@ -59,6 +60,12 @@ export const SendForm: React.FC<SendFormProps> = ({ ticker }) => {
       </Typography>
           <Typography marginLeft={1} color='primary' variant='body2'>
             {ticker || 'No ticker defined'}
+          </Typography>
+          <Typography marginLeft={1} color='text.secondary' variant='body2'>
+            Balance: 
+          </Typography>
+          <Typography marginLeft={1} color='primary' variant='body2'>
+            {quantity || 'undefined'}
           </Typography>
         </Box>
         <TextField
