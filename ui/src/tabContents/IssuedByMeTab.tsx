@@ -1,4 +1,4 @@
-import { Box, Button, Fab } from '@mui/material';
+import { Box, Button, Fab, LinearProgress } from '@mui/material';
 import React from 'react';
 import { AssetAccountRow } from '../components/AssetAccountRow/AssetAccountRow';
 import { UserPrompt } from '../components/UserPrompt/UserPrompt';
@@ -8,44 +8,44 @@ import { AssetAction } from '../types/AssetAction';
 import { ContractsContext } from '../providers/ContractsProvider';
 import { AssetAccountRowNarrow } from '../components/AssetAccountRowNarrow/AssetAccountRowNarrow';
 import { isMobile } from '../platform/platform';
+import { useGetMyIssuedAssetAccounts } from '../ledgerHooks/ledgerHooks';
 
-const isFabActivated = false
 
 export const IssuedByMeTab: React.FC = () => {
   const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)
   const contractsContext = React.useContext(ContractsContext)
-  const selectPopupContent = (contentType: AssetAction) => {
-    setPopupContent(contentType)
-  }
+  const myIssuedAssetAccounts = useGetMyIssuedAssetAccounts()
+  const isLoading = myIssuedAssetAccounts.loading
+  const assetAccountRows = myIssuedAssetAccounts.contracts.map((contract,i) => {
+    const ticker = contract.payload.assetType.symbol;
+    const issuer = contract.payload.assetType.issuer;
+
+    return (
+      isMobile() ? <AssetAccountRowNarrow
+      key={ticker + issuer + i}
+      issuer={issuer}
+      isIssuedByMeTab={true}
+      owner={issuer}
+      ticker={ticker}
+      
+    /> : <AssetAccountRow
+    key={ticker + issuer + i}
+    issuer={issuer}
+    isIssuedByMeTab={true}
+    owner={issuer}
+    ticker={ticker}
+    />
+    )
+  })
   const handleClose = () => {
     setPopupContent(undefined);
   }
-  const allContracts = contractsContext.state
-  const hasAccounts = Object.values(allContracts.assetAccounts).length > 0
+  const hasAccounts = myIssuedAssetAccounts.contracts.length > 0
 
   return (
     <Box>
-      {isFabActivated && 
-      <Button
-      // component={Link} 
-      // to='/create-asset-account' 
-      size='small' color='primary' variant='contained' 
-      onClick={() => selectPopupContent(AssetAction.CreateAccount)}
-      >
-        <AddIcon />
-        Create asset account
-      </Button>}
-      {Object.values(allContracts.assetAccounts).map((assetAccount, i) => {
-        return (isMobile() ? <AssetAccountRowNarrow
-          key={assetAccount.ticker + i}
-          isIssuedByMeTab
-          {...assetAccount}
-        /> : <AssetAccountRow
-          key={assetAccount.ticker + i}
-          isIssuedByMeTab
-          {...assetAccount}
-        />)
-      })}
+      {isLoading ? <LinearProgress/> : assetAccountRows}
+      
       {!hasAccounts && <UserPrompt />}
       <PopUp
         issuer={''}
@@ -55,10 +55,6 @@ export const IssuedByMeTab: React.FC = () => {
         isShareable={false}
         isAirdroppable={false}
         ticker={''} assetAction={popupContent} handleClose={handleClose} />
-      {isFabActivated && <Fab variant='extended' sx={{ position: 'fixed', bottom: 30, right: 30 }} size='small' color='primary' onClick={() => selectPopupContent(AssetAction.CreateAccount)}>
-        <AddIcon />
-        Create asset account
-      </Fab>}
     </Box>
   )
 }
