@@ -71,7 +71,7 @@ export const AssetProfilePage: React.FC = () => {
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer}>
-        <IconButton edge='end' onClick={onBack} color='primary'>
+        <IconButton  onClick={onBack} color='primary'>
           <ArrowBackIosNewIcon />
         </IconButton>
       </div>

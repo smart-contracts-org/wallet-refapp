@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate,} from 'react-router-dom';
 import Credentials from '../Credentials';
 import { AssetInvitePage } from './AssetInvitePage';
-import { AssetProfilePage } from './AssetProfilePages';
+import { AssetProfilePage } from './AssetProfilePage';
 import { CreateAssetAccountPage } from './CreateAssetAccountPage';
 import { LoginPage } from './LoginPage';
 import { MyActiveAccountsPage } from './MyActiveAccounts';

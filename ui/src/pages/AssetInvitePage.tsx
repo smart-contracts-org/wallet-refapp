@@ -6,7 +6,7 @@ import { makeStyles } from '@mui/styles';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Card, CardContent, IconButton } from '@mui/material';
 import { InviteNewAssetOwnerForm } from '../components/InviteNewAssetOwnerForm/InviteNewAssetOwnerForm';
-import { usePageStyles } from './AssetProfilePages';
+import { usePageStyles } from './AssetProfilePage';
 
 
 export const AssetInvitePage: React.FC = () => {

@@ -7,7 +7,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Card, CardContent, IconButton } from '@mui/material';
 import { SendForm } from '../components/SendForm/SendForm';
 import { isMobile } from '../platform/platform';
-import { usePageStyles } from './AssetProfilePages';
+import { usePageStyles } from './AssetProfilePage';
 
 
 

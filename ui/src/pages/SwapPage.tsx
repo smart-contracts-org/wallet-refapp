@@ -7,7 +7,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Card, CardContent, IconButton } from '@mui/material';
 import { SwapForm } from '../components/SwapForm/SwapForm';
 import { isMobile } from '../platform/platform';
-import { usePageStyles } from './AssetProfilePages';
+import { usePageStyles } from './AssetProfilePage';
 
 
 export const SwapPage: React.FC = () => {
