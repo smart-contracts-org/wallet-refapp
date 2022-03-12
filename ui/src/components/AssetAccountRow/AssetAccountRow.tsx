@@ -9,7 +9,8 @@ import { RowChip } from '../RowChip/RowChip';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { AssetAction } from '../../types/AssetAction';
-import { Avatar } from '@mui/material';
+import { Avatar, CardActionArea } from '@mui/material';
+import { Link } from "react-router-dom";
 
 //TODO: issuer and owner currently hardcoded as 'me'
 
@@ -41,6 +42,7 @@ export interface AssetAccountRowProps {
 
 export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({ issuer, isIssuedByMeTab, ticker, quantity, owner, isShareable, isFungible, isAirdroppable }) => {
   const classes = useStyles()
+  const assetProfilePath = `/asset/${issuer}/${ticker}`
   const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)
 
   const selectPopupContent = (contentType: AssetAction) => {
@@ -50,9 +52,13 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({ issuer, isIssu
     setPopupContent(undefined);
   }
 
+
   return (
     <>
       <Card sx={{ minWidth: 275 }} className={classes.root}>
+        <CardActionArea component={Link} to={assetProfilePath} sx={{display: 'flex', flexDirection: 'row'}}>
+
+        
         <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
           <Avatar sx={{ marginRight: 1 }}>
             {ticker[0]}
@@ -71,11 +77,18 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({ issuer, isIssu
 
           {isIssuedByMeTab && <Button variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.IssueAirdrop)}>Issue / Airdrop</Button>
           }
-          {!isIssuedByMeTab && <Button disabled={issuer !== owner && !isShareable} variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Send)}>Send</Button>}
-          {!isIssuedByMeTab && <Button disabled={issuer !== owner && !isShareable} variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Swap)}>Swap</Button>}
-          <Button variant='outlined' disabled={issuer !== owner && !isShareable} size="small" onClick={() => selectPopupContent(AssetAction.InviteNewAssetOwner)} >Invite New Asset Owner</Button>
-          <Button variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Details)} >Details</Button>
+          {!isIssuedByMeTab && <Button component={Link} to={`/send/${issuer}/${ticker}`} disabled={issuer !== owner && !isShareable} variant='outlined' size="small" 
+          // onClick={() => selectPopupContent(AssetAction.Send)}
+          >Send</Button>}
+          {!isIssuedByMeTab && <Button component={Link} to={`/swap/${issuer}/${ticker}`} disabled={issuer !== owner && !isShareable} variant='outlined' size="small" 
+          // onClick={() => selectPopupContent(AssetAction.Swap)}
+          >Swap</Button>}
+          <Button variant='outlined' component={Link} to={`/invite/${issuer}/${ticker} `} disabled={issuer !== owner && !isShareable} size="small" 
+          // onClick={() => selectPopupContent(AssetAction.InviteNewAssetOwner)} 
+          >Invite New Asset Owner</Button>
+          {/* <Button variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Details)} >Details</Button> */}
         </CardActions>
+        </CardActionArea>
       </Card>
       <PopUp
         issuer={issuer}

@@ -5,14 +5,13 @@ import { Link } from "react-router-dom";
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { PopUp } from '../PopUp/PopUp';
 import { RowChip } from '../RowChip/RowChip';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { AssetAction } from '../../types/AssetAction';
 import { AssetAccountRowProps } from '../AssetAccountRow/AssetAccountRow';
 import Collapse from '@mui/material/Collapse';
-import { Box, IconButton, SwipeableDrawer } from '@mui/material';
+import { Box, CardActionArea, IconButton, SwipeableDrawer } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import clx from 'clsx'
@@ -23,7 +22,6 @@ import { AssetDetailsPopupContent } from '../AssetDetailsPopupContent/AssetDetai
 import { PopupContent } from '../PopupContent/PopupContent';
 
 //TODO: issuer and owner currently hardcoded as 'me'
-const enableMobilePopup = false;
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
@@ -69,7 +67,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, isIssuedByMeTab, ticker, quantity, owner, isShareable, isFungible, isAirdroppable }) => {
   const classes = useStyles()
-  const buttonVariant='contained';
+  const buttonVariant = 'contained';
+  const assetProfilePath = `/asset/${issuer}/${ticker}`
   const [isExpanded, setExpand] = React.useState<boolean>(false);
   const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)
   const toggleExpand = () => {
@@ -77,7 +76,7 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
   }
 
   const [open, setOpen] = React.useState(false);
-  const selectPopupContent =  (contentType: AssetAction) => {
+  const selectPopupContent = (contentType: AssetAction) => {
     setPopupContent(contentType)
     setOpen(!open)
   }
@@ -115,40 +114,34 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
   return (
     <>
       <Card className={classes.root}  >
-        <CardContent className={classes.nameAndMoreContainer}>
-          <Avatar className={classes.avatar}>
-            {ticker[0]}
-          </Avatar>
-          <div className={classes.nameValueContainer}>
-            <Typography sx={{ fontSize: 14, marginRight: 1 }} color="text.primary" >
-              {ticker}
-            </Typography>
-            <Typography className={classes.quantity} sx={{ fontSize: 14 }} color="text.secondary" >
-              {quantity}
-            </Typography>
-          </div>
-          {!isIssuedByMeTab && issuer === owner && <div className={classes.expandButton}><RowChip requestType={'issuer'} label='Issuer' /></div>}
+        <CardActionArea component={Link} to={assetProfilePath}>
+          <CardContent className={classes.nameAndMoreContainer}>
+            <Avatar className={classes.avatar}>
+              {ticker[0]}
+            </Avatar>
+            <div className={classes.nameValueContainer}>
+              <Typography sx={{ fontSize: 14, marginRight: 1 }} color="text.primary" >
+                {ticker}
+              </Typography>
+              <Typography className={classes.quantity} sx={{ fontSize: 14 }} color="text.secondary" >
+                {quantity}
+              </Typography>
+            </div>
+            {!isIssuedByMeTab && issuer === owner && <div className={classes.expandButton}><RowChip requestType={'issuer'} label='Issuer' /></div>}
 
-          <IconButton className={clx((isIssuedByMeTab || issuer !== owner) && classes.expandButton)} onClick={toggleExpand}>
-            {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </IconButton>
-        </CardContent>
+            <IconButton className={clx((isIssuedByMeTab || issuer !== owner) && classes.expandButton)} onClick={toggleExpand}>
+              {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </IconButton>
+          </CardContent>
 
-        <Collapse timeout="auto" in={isExpanded} className={classes.expandContainer}>
-          {expandContent}
-        </Collapse>
+          <Collapse timeout="auto" in={isExpanded} className={classes.expandContainer}>
+            {expandContent}
+          </Collapse>
+        </CardActionArea>
+
       </Card>
-      {enableMobilePopup && <PopUp
-        issuer={issuer}
-        owner={owner}
-        isAirdroppable={!!isAirdroppable}
-        isFungible={!!isFungible}
-        quantity={quantity || 0}
-        isShareable={isShareable || false}
-        ticker={ticker}
-        assetAction={popupContent}
-        handleClose={handleClose} />}
-        
+  
+
       <SwipeableDrawer
         anchor="bottom"
         open={open}
@@ -160,18 +153,18 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
         }}
         className={classes.drawer}
       >
-        <Box style={{height: '500px'}}>
-        <PopupContent
-          issuer={issuer}
-          owner={owner}
-          isAirdroppable={!!isAirdroppable}
-          isFungible={!!isFungible}
-          quantity={quantity || 0}
-          isShareable={isShareable || false}
-          ticker={ticker}
-          contentType={popupContent}
-          handleClose={toggleDrawer(false)} />
-          </Box>
+        <Box style={{ height: '500px' }}>
+          <PopupContent
+            issuer={issuer}
+            owner={owner}
+            isAirdroppable={!!isAirdroppable}
+            isFungible={!!isFungible}
+            quantity={quantity || 0}
+            isShareable={isShareable || false}
+            ticker={ticker}
+            contentType={popupContent}
+            handleClose={toggleDrawer(false)} />
+        </Box>
       </SwipeableDrawer>
     </>
   );
