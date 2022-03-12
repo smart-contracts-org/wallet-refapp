@@ -14,8 +14,7 @@ This repository contains a template to get started with developing full-stack
 2. A UI written in [TypeScript](https://www.typescriptlang.org/) and [React](https://reactjs.org/)
 
 The UI is developed using [React](https://reactjs.org/),
-[Semantic UI](https://react.semantic-ui.com/) and its
-official [React integration](https://react.semantic-ui.com/).
+
 The whole project was bootstrapped with
 [Create React App](https://github.com/facebook/create-react-app).
 Regardless of these choices, all Daml specific aspects of the UI client are

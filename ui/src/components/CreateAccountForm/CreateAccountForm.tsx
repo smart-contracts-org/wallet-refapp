@@ -10,7 +10,10 @@ import { ContractsContext } from '../../providers/ContractsProvider';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { isMobile } from '../../platform/platform';
-
+import { useParty } from '@daml/react';
+import { Account } from '@daml.js/wallet-refapp';
+import { useLedger } from '@daml/react';
+import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 interface CreateAccountFormProps {
   handleClose: () => void;
   handleSubmit?: () => void;
@@ -41,13 +44,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleSubmit, handleClose }) => {
   const [isLoading, setLoading] = React.useState<boolean>(false);
+  const [hasError, setError] = React.useState<boolean>(false);
+  const party = useParty();
+  const ledgerHooks = useLedgerHooks();
   const classes = useStyles();
-  const [ticker, setTicker] = React.useState<string>('')
+  const [ticker, setTicker] = React.useState<string | undefined>(undefined)
   const [isShareable, setShareable] = React.useState<boolean>(true);
   const [isFungible, setFungible] = React.useState<boolean>(true);
   const [isAirdroppable, setIsAirdroppable] = React.useState<boolean>(true);
 
-  const contractsContext = React.useContext(ContractsContext)
 
   const toggleSubmitting = () => {
     setLoading(!isLoading);
@@ -57,17 +62,24 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleSubm
     setTicker(event.target.value)
   }
 
-  const submit = () => {
-    contractsContext.addNewAccounts({
-      quantity: 0,
-      ticker,
-      issuer: 'me',
-      owner: 'me',
-      isShareable,
-      isFungible,
-      isAirdroppable
-    })
-    console.log('form')
+  const submit = async () => {
+    if(!ticker){
+      setError(true);
+      return;
+    }
+    try {
+      const result = await ledgerHooks.createAssetAccount({
+        ticker,
+        isFungible, 
+        reference: '',
+        isAirdroppable, 
+        isShareable, 
+      })
+    } catch (e) {
+      console.log(e)
+      setError(true);
+        alert(e)
+    }
 
     toggleSubmitting();
     setTimeout(() => {
@@ -89,7 +101,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleSubm
             Issuer:
           </Typography>
           <Typography variant='caption' color='primary'>
-            you-user-id
+            {party || 'Demo Party ID'}
          </Typography>
         </div>
       </div>
@@ -102,6 +114,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleSubm
           fullWidth
           variant="outlined"
           size='small'
+          error={hasError}
           onChange={(e) => onTextChange(e)}
         />
         <Typography variant='caption' color='text.secondary' mb={1}>
