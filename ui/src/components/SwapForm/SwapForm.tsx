@@ -73,7 +73,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
 
   const classes = useStyles();
   return (
-    <Box display='flex' flexDirection='column' sx={{ width: isMobile() ? '100%': '500px'}}>
+    <Box display='flex' flexDirection='column'>
       <Box sx={{display: 'flex'}} >
         <Typography color='text.secondary' variant='body2' marginRight={1} gutterBottom>
           Swapping
@@ -94,9 +94,6 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
             size='small'
             className={classes.recipientTextField}
           />
-          <Typography color='text.secondary' variant='caption'>
-            Specify who you want to swap with
-        </Typography>
         </Box>
         <div className={classes.swapAssetContainer} >
           <Box display='flex' flexDirection='column' justifyContent='center'>

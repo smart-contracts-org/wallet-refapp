@@ -3,7 +3,7 @@ import React from 'react';
 import { SideMenu } from './components/SideMenu/SideMenu';
 import { TopAppBar } from './components/TopAppBar/TopAppBar';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, HashRouter } from "react-router-dom";
 import { Pages } from './pages/Pages';
 
 
@@ -48,11 +48,12 @@ export const App: React.FC = () => {
 
   
   return (
-    <BrowserRouter>
+    <HashRouter>
       <ContractsProvider>
         <ThemeProvider theme={theme}>
           <CssBaseline/>
           <TopAppBar party={ partyId || credentials?.party} onLogout={ onLogout} isOpen={isOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} />
+
           <Toolbar/>
           {
            ( token || credentials) ? 
@@ -75,7 +76,7 @@ export const App: React.FC = () => {
           }
         </ThemeProvider>
       </ContractsProvider>
-    </BrowserRouter>
+    </HashRouter>
 
   );
 }
