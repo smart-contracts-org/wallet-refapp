@@ -1,5 +1,4 @@
 import React from 'react';
-import { isMobile } from '../../platform/platform';
 import { PendingRow, PendingRowProps } from '../PendingRow/PendingRow';
 
 // TODO: query templates
@@ -31,10 +30,9 @@ const inboundData: PendingRowProps[] = [
 
 export const PendingInboundActivities: React.FC = () => {
   // TODO: fetch pending contracts
-  const isNarrow = isMobile();
   const pendingRows = inboundData.map((asset, i)=> {
     return (
-      <PendingRow  {...asset} isInbound={true} isNarrow={isNarrow} key={i}/>
+      <PendingRow  {...asset} isInbound={true} isNarrow={true} key={i}/>
     )
   })
   return (

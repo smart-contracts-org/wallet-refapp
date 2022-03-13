@@ -12,7 +12,6 @@ import { makeStyles } from '@mui/styles';
 import { getCookieValue } from '../utils/getCookieValue';
 import { partyFromToken } from '../utils/getPartyFromToken';
 import { LoadingButton } from '@mui/lab';
-import { isMobile } from '../platform/platform';
 
 type Props = {
   onLogin: (credentials: Credentials) => void;

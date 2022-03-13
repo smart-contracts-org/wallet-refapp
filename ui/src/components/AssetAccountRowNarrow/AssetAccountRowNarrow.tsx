@@ -11,12 +11,10 @@ import { makeStyles } from '@mui/styles';
 import { AssetAction } from '../../types/AssetAction';
 import { AssetAccountRowProps } from '../AssetAccountRow/AssetAccountRow';
 import Collapse from '@mui/material/Collapse';
-import { Box, CardActionArea, IconButton, SwipeableDrawer } from '@mui/material';
-import clx from 'clsx'
+import { Box, CardActionArea, SwipeableDrawer } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import { AssetDetailsPopupContent } from '../AssetDetailsPopupContent/AssetDetailsPopupContent';
-// import { SendForm } from '../SendForm/SendForm';
-// import { SendPopupContent } from '../SendPopupContent/SendPopupContent';
+
 import { PopupContent } from '../PopupContent/PopupContent';
 
 //TODO: issuer and owner currently hardcoded as 'me'
@@ -77,9 +75,6 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
   const selectPopupContent = (contentType: AssetAction) => {
     setPopupContent(contentType)
     setOpen(!open)
-  }
-  const handleClose = () => {
-    setPopupContent(undefined);
   }
 
   const toggleDrawer = (newOpen: boolean) => () => {

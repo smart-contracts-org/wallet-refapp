@@ -1,29 +1,20 @@
 import React from 'react';
-import Card from '@mui/material/Card';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import clx from 'clsx'
-import { PendingSwapRowProps } from '../PendingSwapRow/PendingSwapRow';
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import { Avatar, CardContent, Collapse, Divider, IconButton } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { useNarrowPendingStyles } from '../PendingSendRowNarrow/PendingSendRowNarrow';
+import {  Divider } from '@mui/material';
+import { useNarrowPendingStyles } from '../PendingRowContents/PendingRowContents';
 
-export const PendingSwapRowNarrow: React.FC<PendingSwapRowProps> = ({ isInbound, outboundQuantity, outboundTicker, sender, inboundTicker, inboundQuantity }) => {
+export interface PendingSwapRowProps {
+  inboundTicker?: string;
+  inboundQuantity?: number;
+  outboundTicker?: string;
+  outboundQuantity?: number;
+  sender?: string;
+  isInbound?: boolean;
+}
+
+export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = ({ isInbound, outboundQuantity, outboundTicker, sender, inboundTicker, inboundQuantity }) => {
   const classes = useNarrowPendingStyles();
-  const [isExpanded, setExpand] = React.useState<boolean>(false);
-  const toggleExpand = () => {
-    setExpand(!isExpanded);
-  }
-  // const [isOpen, setIsOpen] = React.useState<boolean>(false)
-  // const handleOpen = () => {
-  //   setIsOpen(true)
-  // }
-  // const handleClose = () => {
-  //   setIsOpen(false);
-  // }
-
   const inboundMessage = (
     <>
       <div>
@@ -99,29 +90,10 @@ export const PendingSwapRowNarrow: React.FC<PendingSwapRowProps> = ({ isInbound,
 
   return (
     <>
-      <Card className={classes.card}>
-        <div className={classes.symbolTextContainer} >
-          <IconButton size='small'>
-            <Avatar>
-              <SwapHorizIcon />
-            </Avatar>
-          </IconButton>
+          
           {isInbound ? inboundMessage : outboundMessage}
-          <IconButton onClick={toggleExpand} className={classes.moreButton} size='medium'>
-            {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </IconButton>
-        </div>
-        <Collapse in={isExpanded} className={clx(classes.actions)}>
-          <CardContent>
-            {isInbound && <Button fullWidth className={classes.button} variant='outlined' color='success' size="medium">Accept</Button>}
-            <Button fullWidth className={classes.button} variant='outlined' color='error' size="medium">{isInbound ? 'Reject' : 'Cancel'}</Button>
-            <Button fullWidth variant='outlined' size="medium"
-            // onClick={handleOpen} 
-            >Details</Button>
-          </CardContent>
-        </Collapse>
-      </Card>
-      {/* <PopUp isOpen={isOpen} handleClose={handleClose}/> */}
+         
+    
     </>
   );
 }

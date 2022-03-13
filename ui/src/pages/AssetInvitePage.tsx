@@ -1,8 +1,5 @@
 import React from 'react';
-import { SendPopupContent } from '../components/SendPopupContent/SendPopupContent';
-import { useNavigate, useLocation, useParams } from 'react-router-dom'
-import { Theme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
+import { useNavigate, useParams } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { InviteNewAssetOwnerForm } from '../components/InviteNewAssetOwnerForm/InviteNewAssetOwnerForm';
@@ -18,7 +15,6 @@ export const AssetInvitePage: React.FC = () => {
   }
   // TODO: 
   // Fetch token quantity
-  const demoDataQuantity = 100
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer}>

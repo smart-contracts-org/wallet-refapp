@@ -45,9 +45,6 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({ issuer, isIssu
   const assetProfilePath = `/asset/${issuer}/${ticker}`
   const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)
 
-  const selectPopupContent = (contentType: AssetAction) => {
-    setPopupContent(contentType)
-  }
   const handleClose = () => {
     setPopupContent(undefined);
   }
@@ -83,7 +80,6 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({ issuer, isIssu
           >Swap</Button>}
           <Button variant='outlined' component={Link} to={`/invite/${issuer}/${ticker} `} disabled={issuer !== owner && !isShareable} size="small" 
           >Invite New Asset Owner</Button>
-          {/* <Button variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Details)} >Details</Button> */}
         </CardActions>
         </CardActionArea>
       </Card>

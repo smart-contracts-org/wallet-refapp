@@ -31,10 +31,9 @@ const outboundData: PendingRowProps[] = [
 
 export const PendingOutboundActivities: React.FC = () => {
   // TODO: fetch pending contracts
-  const isNarrow = isMobile();
   const pendingRows = outboundData.map((asset, i)=> {
     return (
-      <PendingRow  {...asset} isInbound={false} isNarrow={isNarrow} key={i}/>
+      <PendingRow  {...asset} isInbound={false} isNarrow={true} key={i}/>
     )
   })
   return (
