@@ -4,14 +4,14 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Card, CardContent, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { SendForm } from '../components/SendForm/SendForm';
 import { isMobile } from '../platform/platform';
 import { usePageStyles } from './AssetProfilePage';
 
 
 
-export const SendPageWide: React.FC = () => {
+export const SendPage: React.FC = () => {
   const nav = useNavigate();
   const params = useParams();
   const classes = usePageStyles();
@@ -23,20 +23,24 @@ export const SendPageWide: React.FC = () => {
   const demoDataQuantity = 100
   return (
     <div className={classes.root}>
-      <div className={classes.buttonContainer} onClick={onBack}>
-        <IconButton  color='primary'>
+      {!isMobile() && <div className={classes.buttonContainer}>
+        <IconButton color='primary' onClick={onBack}>
           <ArrowBackIosNewIcon />
         </IconButton>
-{isMobile() &&         <Typography color='primary'>Back</Typography>
-}      </div>
-      <Card variant='outlined' >
-        <CardContent className={classes.cardContent}>
-          <Avatar className={classes.avatar}>
-            {params?.ticker?.[0] || 'undefined'}
-          </Avatar>
-          <SendForm quantity={demoDataQuantity} ticker={params.ticker || 'NA'}/>
-        </CardContent>
-      </Card>
+      </div>}
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography sx={{ marginBottom: 0.5 }} color='primary' variant='h6'>
+          Send
+          </Typography>
+        <Card variant='outlined' >
+          <CardContent className={classes.cardContent}>
+            <Avatar className={classes.avatar}>
+              {params?.ticker?.[0] || 'undefined'}
+            </Avatar>
+            <SendForm quantity={demoDataQuantity} ticker={params.ticker || 'NA'} />
+          </CardContent>
+        </Card>
+      </Box>
     </div>
   )
 }

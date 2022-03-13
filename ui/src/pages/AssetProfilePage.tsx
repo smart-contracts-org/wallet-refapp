@@ -30,6 +30,14 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     width: isMobile() ? '100%' : '500px',
     flexDirection: 'column',
   },
+  header: {
+    display: 'flex', 
+    flexDirection: 'row', 
+    alignItems: 'center'
+  },
+  headerText: {
+    justifySelf: 'center'
+  },
   card: {
     // margin: theme.spacing(1), 
   },
@@ -83,7 +91,7 @@ export const AssetProfilePage: React.FC = () => {
         <IconButton  color='primary'>
           <ArrowBackIosNewIcon />
         </IconButton>
-{isMobile() &&         <Typography color='primary'>Back</Typography>
+{isMobile() &&         <Typography color='primary'>Accounts / {params?.ticker}</Typography>
 }      </div>
       <Card variant='outlined' className={classes.card} >
         <CardContent className={classes.cardContent}>

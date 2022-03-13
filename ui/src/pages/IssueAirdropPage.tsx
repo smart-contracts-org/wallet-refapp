@@ -32,6 +32,10 @@ export const IssueAirdropPage: React.FC = () => {
         </IconButton>
         {isMobile() && <Typography color='primary'>Back</Typography>}
       </div>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography sx={{ marginBottom: 0.5 }} color='primary' variant='h6'>
+          Issue / Airdrop
+          </Typography>
       <Card variant='outlined' className={classes.card} >
         <CardContent className={classes.cardContent}>
           
@@ -39,13 +43,14 @@ export const IssueAirdropPage: React.FC = () => {
             {params?.ticker?.[0] || 'undefined'}
           </Avatar>
           <Box sx={{ marginBottom: 1, display: 'flex', flexDirection: 'row', width: '100%' }}>
-            <Button sx={{ marginRight: 0.5 }} onClick={() => { onButtonClick(1) }} fullWidth variant={index === 1 ? 'contained' : 'outlined'} >Issue</Button>
+            <Button sx={{ marginRight: 0.5 }} onClick={() => { onButtonClick(1) }} fullWidth variant={index === 1 ? 'contained' : 'outlined'} >Issue to Self</Button>
             <Button sx={{ marginLeft: 0.5 }} onClick={() => { onButtonClick(2) }} fullWidth variant={index === 2 ? 'contained' : 'outlined'}>Airdrop</Button>
           </Box>
           {index === 1 && <IssueToSelfForm />}
           {index === 2 && <AirdropForm />}
         </CardContent>
       </Card>
+      </Box>
      {enableFabBack && isMobile() && <Fab  sx={{ position: 'fixed', bottom: 20, right: 30 }}>
         <IconButton  color='primary' onClick={onBack}>
           <ArrowBackIosNewIcon  color='info'/>

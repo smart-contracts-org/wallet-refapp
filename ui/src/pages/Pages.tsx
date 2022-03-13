@@ -8,7 +8,7 @@ import { IssueAirdropPage } from './IssueAirdropPage';
 import { LoginPage } from './LoginPage';
 import { MyActiveAccountsPage } from './MyActiveAccounts';
 import { PendingActivitiesPage } from './PendingActivitiesPage';
-import { SendPageWide } from './SendPageWide';
+import { SendPage} from './SendPage';
 import { SwapPage } from './SwapPage';
 
 interface PagesProps {
@@ -20,7 +20,7 @@ export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
     <Routes>
       <Route path='/pending' element={<PendingActivitiesPage />
       } />
-      <Route path='/send/:issuer/:ticker' element={<SendPageWide />
+      <Route path='/send/:issuer/:ticker' element={<SendPage />
       } />
       <Route path='/swap/:issuer/:ticker' element={<SwapPage />
       } />

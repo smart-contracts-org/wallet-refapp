@@ -1,11 +1,12 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import { Box, Card, FormControl, Link, Typography } from '@mui/material';
+import { Box, Button, Card, FormControl, Link, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useNavigate } from 'react-router-dom';
 
 interface SendFormProps {
   ticker: string;
@@ -31,6 +32,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const SendForm: React.FC<SendFormProps> = ({ quantity, ticker }) => {
   const classes = useStyles();
+  const nav = useNavigate();
+  const onCancel = () => {
+    nav(-1)
+  }
   const [recipient, setRecipient] = React.useState("");
   const [amount, setAmount] = React.useState("");
   const [isLoading, setLoading] = React.useState<boolean>(false);
@@ -117,6 +122,9 @@ export const SendForm: React.FC<SendFormProps> = ({ quantity, ticker }) => {
         >
           {isSuccessful ? 'Complete, make another transaction' : 'Send'}
         </LoadingButton>
+        <Button variant='outlined' onClick={onCancel}>
+          Cancel
+        </Button>
       </FormControl>
     </>
   );
