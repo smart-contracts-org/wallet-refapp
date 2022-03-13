@@ -12,8 +12,6 @@ import { AssetAction } from '../../types/AssetAction';
 import { AssetAccountRowProps } from '../AssetAccountRow/AssetAccountRow';
 import Collapse from '@mui/material/Collapse';
 import { Box, CardActionArea, IconButton, SwipeableDrawer } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import clx from 'clsx'
 import Avatar from '@mui/material/Avatar';
 import { AssetDetailsPopupContent } from '../AssetDetailsPopupContent/AssetDetailsPopupContent';
@@ -129,9 +127,7 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
             </div>
             {!isIssuedByMeTab && issuer === owner && <div className={classes.expandButton}><RowChip requestType={'issuer'} label='Issuer' /></div>}
 
-            <IconButton className={clx((isIssuedByMeTab || issuer !== owner) && classes.expandButton)} onClick={toggleExpand}>
-              {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            </IconButton>
+           
           </CardContent>
 
           <Collapse timeout="auto" in={isExpanded} className={classes.expandContainer}>

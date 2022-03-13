@@ -8,10 +8,14 @@ import { CreateAssetAccountPage } from './CreateAssetAccountPage';
 import { isMobile } from '../platform/platform';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
+import { Link, Route, Routes } from 'react-router-dom';
+import Switch from '@mui/material/Switch';
+import { Stack, Typography } from '@mui/material';
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    padding: isMobile() ? theme.spacing(0,0, 0, 0) : theme.spacing(3)
+    padding: isMobile() ? theme.spacing(0, 0, 0, 0) : theme.spacing(3)
   }
 }))
 interface TabPanelProps {
@@ -22,7 +26,7 @@ interface TabPanelProps {
 
 export const TabPanel: React.FC<TabPanelProps> = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
- 
+
   return (
     <div
       role="tabpanel"
@@ -47,7 +51,7 @@ function a11yProps(index: number) {
   };
 }
 
-export const BasicTabs: React.FC<unknown> =() => {
+export const BasicTabs: React.FC<unknown> = () => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -57,26 +61,16 @@ export const BasicTabs: React.FC<unknown> =() => {
 
   return (
     <>
-      <Box sx={{ marginBottom:1, borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Owned By Me" {...a11yProps(1)} />
-          <Tab label="Issued By Me" {...a11yProps(0)} />
-          <Tab label="Create" {...a11yProps(1)} />
-
-        </Tabs>
+      
+      <Box sx={{ marginLeft: isMobile() ? 1 : 0, marginRight: isMobile() ? 1 : 0 }}>
+        <TabPanel value={value} index={1}>
+          <IssuedByMeTab />
+        </TabPanel>
+        <TabPanel value={value} index={0}>
+          <OwnedByMeTab />
+        </TabPanel>
       </Box>
-      <Box sx={{marginLeft: isMobile() ? 1 : 0, marginRight: isMobile()? 1 : 0}}>
-      <TabPanel value={value} index={1}>
-        <IssuedByMeTab/>
-      </TabPanel>
-      <TabPanel value={value} index={0}>
-        <OwnedByMeTab/>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <CreateAssetAccountPage/>
-      </TabPanel>
-      </Box>
-      </>
+    </>
   );
 }
 
@@ -84,8 +78,8 @@ export const MyActiveAccountsPage: React.FC = () => {
   const classes = useStyles();
 
   return (
-      <Box component="main" sx={{ flexGrow: 1, }} className={classes.root}>
-        <BasicTabs/>
-      </Box>
+    <Box component="main" sx={{ flexGrow: 1, }} className={classes.root}>
+      <BasicTabs />
+    </Box>
   )
 }

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
-
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Button, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
@@ -17,7 +17,7 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     justifyContent: 'center',
     alignItems: isMobile() ? undefined : 'center',
     width: '100%',
-    flexDirection: isMobile() ? 'column' : 'row', 
+    flexDirection: isMobile() ? 'column' : 'row',
     margin: theme.spacing(1)
   },
   cardContent: {
@@ -43,13 +43,13 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: '50%',
+    width: isMobile() ? '90%' : '50%',
     margin: theme.spacing(1)
   },
   tickerAmount: {
     display: 'flex',
     flexDirection: 'row'
-  }, 
+  },
   buttonContainer: {
     marginBottom: theme.spacing(0.5)
   }
@@ -62,6 +62,7 @@ export const AssetProfilePage: React.FC = () => {
   const sendPath = `/send/${params?.issuer}/${params?.ticker}`
   const swapPath = `/swap/${params?.issuer}/${params?.ticker}`
   const assetInvitePath = `/invite/${params?.issuer}/${params?.ticker}`
+  const issueAirdropPath = `/issue/${params?.issuer}/${params?.ticker}`
   const onBack = () => {
     nav(-1)
   }
@@ -71,7 +72,7 @@ export const AssetProfilePage: React.FC = () => {
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer}>
-        <IconButton  onClick={onBack} color='primary'>
+        <IconButton onClick={onBack} color='primary'>
           <ArrowBackIosNewIcon />
         </IconButton>
       </div>
@@ -89,7 +90,19 @@ export const AssetProfilePage: React.FC = () => {
             </Typography>
           </div>
           <div className={classes.actions}>
+            {<div className={classes.actionContainer}>
+
+
+              <IconButton color='primary' component={Link} to={issueAirdropPath}>
+                <AddBoxIcon />
+              </IconButton>
+              <Typography variant='caption'>
+                issue / airdrop
+                </Typography>
+            </div>}
             <div className={classes.actionContainer}>
+
+
               <IconButton color='primary' component={Link} to={sendPath}>
                 <SendIcon />
               </IconButton>
