@@ -13,6 +13,7 @@ import { Avatar, CardActionArea } from '@mui/material';
 import { PendingRowProps } from '../PendingRow/PendingRow';
 import { PendingSwapRowContents } from '../PendingSwapRowContents/PendingSwapRowContents';
 import { PendingAssetInviteRowContent } from '../PendingAssetInviteRowContent/PendingAssetInviteRowContent';
+import { isMobile } from '../../platform/platform';
 export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   card: {
     display: 'flex',
@@ -102,13 +103,13 @@ export const PendingRowContents: React.FC<PendingRowProps> = ({outboundQuantity,
             {
               templateName !== 'send' && templateName !== 'swap' && <PendingAssetInviteRowContent isInbound={isInbound} sender={sender} inboundTicker={inboundTicker}/>
             }
-            <div className={classes.actions}>
+            {!isMobile() && <div className={classes.actions}>
               {isInbound && <Button className={classes.button} variant='outlined' size="small">Accept</Button>}
               <Button className={classes.button} variant='outlined' size="small">{isInbound ? 'Reject' : 'Cancel'}</Button>
               <Button className={classes.button} variant='outlined' size="small"
               // onClick={handleOpen} 
               >Details</Button>
-            </div>
+            </div>}
           </div>
         </CardActionArea>
       </Card>
