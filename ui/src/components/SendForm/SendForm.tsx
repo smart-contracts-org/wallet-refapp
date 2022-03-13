@@ -54,10 +54,10 @@ export const SendForm: React.FC<SendFormProps> = ({ quantity, ticker }) => {
   return (
     <>
       <FormControl className={classes.root}>
-        <Box display='flex'>
+        <Box display='flex' alignItems='center' justifyContent='center'>
           <Typography color='text.secondary' variant='body2' gutterBottom>
             Sending
-      </Typography>
+        </Typography>
           <Typography marginLeft={1} color='primary' variant='body2'>
             {ticker || 'No ticker defined'}
           </Typography>

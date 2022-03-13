@@ -1,13 +1,10 @@
 import React from 'react';
-import { SendPopupContent } from '../components/SendPopupContent/SendPopupContent';
-import { useNavigate, useLocation, useParams } from 'react-router-dom'
-import { Theme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
+import { useNavigate, useParams } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Card, CardContent, IconButton } from '@mui/material';
+import { Avatar, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { SwapForm } from '../components/SwapForm/SwapForm';
-import { isMobile } from '../platform/platform';
 import { usePageStyles } from './AssetProfilePage';
+import { isMobile } from '../platform/platform';
 
 
 export const SwapPage: React.FC = () => {
@@ -22,10 +19,11 @@ export const SwapPage: React.FC = () => {
   const demoDataQuantity = 100
   return (
     <div className={classes.root}>
-      <div className={classes.buttonContainer}>
-        <IconButton onClick={onBack} color='primary'>
+      <div className={classes.buttonContainer} onClick={onBack}>
+        <IconButton  color='primary'>
           <ArrowBackIosNewIcon />
         </IconButton>
+        {isMobile() && <Typography color='primary'>Back</Typography>}
       </div>
       <Card variant='outlined' >
         <CardContent className={classes.cardContent}>

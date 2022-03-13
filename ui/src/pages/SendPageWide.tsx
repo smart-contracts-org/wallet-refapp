@@ -4,7 +4,7 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom'
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Card, CardContent, IconButton } from '@mui/material';
+import { Avatar, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { SendForm } from '../components/SendForm/SendForm';
 import { isMobile } from '../platform/platform';
 import { usePageStyles } from './AssetProfilePage';
@@ -23,12 +23,12 @@ export const SendPageWide: React.FC = () => {
   const demoDataQuantity = 100
   return (
     <div className={classes.root}>
-      <div className={classes.buttonContainer}
-      >
-        <IconButton color='primary' onClick={onBack}>
+      <div className={classes.buttonContainer} onClick={onBack}>
+        <IconButton  color='primary'>
           <ArrowBackIosNewIcon />
         </IconButton>
-      </div>
+{isMobile() &&         <Typography color='primary'>Back</Typography>
+}      </div>
       <Card variant='outlined' >
         <CardContent className={classes.cardContent}>
           <Avatar className={classes.avatar}>

@@ -5,12 +5,14 @@ import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Button, Card, CardContent, IconButton, Typography } from '@mui/material';
+import { Avatar, Button, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
 import SendIcon from '@mui/icons-material/Send';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import SwapHorizontalCircleIcon from '@mui/icons-material/SwapHorizontalCircle';
 import { isMobile } from '../platform/platform';
+import { enableFabBack } from './IssueAirdropPage';
+import { chipColors } from '../components/RowChip/RowChip';
 export const usePageStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
@@ -18,7 +20,8 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     alignItems: isMobile() ? undefined : 'center',
     width: '100%',
     flexDirection: isMobile() ? 'column' : 'row',
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
+    paddingBottom: isMobile() ? '10%' : undefined
   },
   cardContent: {
     display: 'flex',
@@ -51,7 +54,12 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'row'
   },
   buttonContainer: {
-    marginBottom: theme.spacing(0.5)
+    marginBottom: theme.spacing(0.5), 
+    display: 'flex', 
+    alignItems: 'center'
+  }, 
+  issueButton: {
+    color: chipColors.issuer
   }
 }))
 
@@ -71,11 +79,12 @@ export const AssetProfilePage: React.FC = () => {
   const demoDataQuantity = 100
   return (
     <div className={classes.root}>
-      <div className={classes.buttonContainer}>
-        <IconButton onClick={onBack} color='primary'>
+      <div className={classes.buttonContainer} onClick={onBack}>
+        <IconButton  color='primary'>
           <ArrowBackIosNewIcon />
         </IconButton>
-      </div>
+{isMobile() &&         <Typography color='primary'>Back</Typography>
+}      </div>
       <Card variant='outlined' className={classes.card} >
         <CardContent className={classes.cardContent}>
           <Avatar className={classes.avatar}>
@@ -93,10 +102,10 @@ export const AssetProfilePage: React.FC = () => {
             {<div className={classes.actionContainer}>
 
 
-              <IconButton color='primary' component={Link} to={issueAirdropPath}>
+              <IconButton className={classes.issueButton}  component={Link} to={issueAirdropPath}>
                 <AddBoxIcon />
               </IconButton>
-              <Typography variant='caption'>
+              <Typography  variant='caption'>
                 issue / airdrop
                 </Typography>
             </div>}
@@ -130,9 +139,12 @@ export const AssetProfilePage: React.FC = () => {
           <AssetDetails quantity={demoDataQuantity} ticker={params.ticker || 'NA'} />
         </CardContent>
       </Card>
-      {isMobile() && <Button variant='outlined' onClick={onBack}>
-        back
-      </Button>}
+    
+      {enableFabBack &&  isMobile() && <Fab sx={{ position: 'fixed', bottom: 20, right: 30 }}>
+        <IconButton color='primary' onClick={onBack}>
+          <ArrowBackIosNewIcon color='info' />
+        </IconButton>
+      </Fab>}
     </div>
   )
 }

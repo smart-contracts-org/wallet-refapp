@@ -8,7 +8,6 @@ import EastIcon from '@mui/icons-material/East';
 import WestIcon from '@mui/icons-material/West';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { isMobile } from '../../platform/platform';
 
 
 interface SwapFormProps {
@@ -74,7 +73,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
   const classes = useStyles();
   return (
     <Box display='flex' flexDirection='column'>
-      <Box sx={{display: 'flex'}} >
+      <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
         <Typography color='text.secondary' variant='body2' marginRight={1} gutterBottom>
           Swapping
         </Typography>
