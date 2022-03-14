@@ -37,7 +37,7 @@ export const SwapDetails: React.FC<PendingRowProps> = ({ receiver, isInbound, se
   return (
 
     <div className={classes.root}>
-                  <PendingSwapRowContents sender={sender} receiver={receiver} isInbound={isInbound} inboundQuantity={inboundQuantity} inboundTicker={inboundTicker} outboundQuantity={outboundQuantity} outboundTicker={outboundTicker}/>
+        <PendingSwapRowContents isSwapDetailsPage={true} sender={sender} receiver={receiver} isInbound={isInbound} inboundQuantity={inboundQuantity} inboundTicker={inboundTicker} outboundQuantity={outboundQuantity} outboundTicker={outboundTicker}/>
       <Divider sx={{marginBottom:2}}/>
       {swaps.map((swap, i) => {
         return (

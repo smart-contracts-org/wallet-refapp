@@ -84,6 +84,31 @@ export const PendingActivityDetailsPage: React.FC = () => {
   const nav = useNavigate();
   const query = useQuery()
   const isInbound = query.get('isInbound')
+
+  //TODO: Delete
+  const inboundTicker = 'REPL';
+  const outboundTicker = 'REPL'
+  const inboundQuantity = 1000;
+  const outboundQuantity = 400;
+  const sendAmount = 500;
+  const sender = demoPartyId;
+  const receiver = demoPartyId
+
+  const replaceProps = {
+    inboundQuantity : inboundQuantity, 
+    outboundQuantity : outboundQuantity, 
+    inboundTicker : inboundTicker,
+    sendAmount: sendAmount,
+    outboundTicker : outboundTicker, 
+    sender : sender, 
+    receiver : receiver, 
+    isFungible: false,
+    isShareable: false, 
+    isAirdroppable: false, 
+    issuer: demoPartyId, 
+    owner: demoPartyId
+  }
+
   const actionLabel = query.get('templateName')
   const params = useParams();
   const classes = usePageStyles();
@@ -106,7 +131,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
       </div>}
       <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
         <Typography variant='h6' color='primary' sx={{marginBottom: 0.5, textTransform: 'capitalize'}}>
-          {isInbound === 'true' ? 'Inbound' : 'Outboune'} {actionLabel} Request
+          {isInbound === 'true' ? 'Inbound' : 'Outbound'} {actionLabel} Request
           </Typography>
         <Card variant='outlined' className={classes.card} >
 
@@ -123,16 +148,16 @@ export const PendingActivityDetailsPage: React.FC = () => {
               {params?.ticker?.[0] || 'U'}
             </Avatar>}
             {actionLabel !== 'swap' && <div className={classes.tickerAmount}>
-              <Typography sx={{ marginRight: 1 }}>
+              {actionLabel !== 'assetInvite' && <Typography sx={{ marginRight: 1 }}>
                 {demoDataQuantity || 0}
-              </Typography>
+              </Typography>}
               <Typography>
-                {params?.ticker || '[TickerName]'}
+                { params?.ticker || '[TickerName]'}
               </Typography>
             </div>}
 
-            {actionLabel === 'swap' && <SwapDetails isInbound={isInbound === 'true' ? true : false} />}
-            {actionLabel !== 'swap' && <AssetDetails quantity={demoDataQuantity} ticker={params.ticker || 'NA'} />}
+            {actionLabel === 'swap' && <SwapDetails isInbound={isInbound === 'true' ? true : false} {...replaceProps} />}
+            {actionLabel !== 'swap' && <AssetDetails quantity={replaceProps.sendAmount} ticker={params.ticker || 'NA'} {...replaceProps} />}
           </CardContent>
           <div className={classes.actions}>
             {isInbound === 'true' && <Button fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >

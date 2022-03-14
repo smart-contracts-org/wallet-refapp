@@ -12,20 +12,21 @@ export interface PendingSwapRowProps {
   sender: string;
   isInbound?: boolean;
   receiver: string;
+  isSwapDetailsPage?: boolean;
 }
 
-export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = ({recipient, isInbound, outboundQuantity, outboundTicker, sender, inboundTicker, inboundQuantity }) => {
+export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = ({receiver,isSwapDetailsPage, isInbound, outboundQuantity, outboundTicker, sender, inboundTicker, inboundQuantity }) => {
   const classes = useNarrowPendingStyles();
   const inboundMessage = (
     <>
       <div>
         <div className={classes.divider} />
-        <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
+        {!isSwapDetailsPage && <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
           {sender}
-        </Typography>
+        </Typography>}
         <Divider className={classes.divider} />
         <Typography variant='body2' color='text.secondary' className={classes.text} >
-          wants to swap
+          {!isSwapDetailsPage ? 'wants to swap' : 'swapping'}
           </Typography>
         <Divider className={classes.divider} />
 
@@ -58,13 +59,13 @@ export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = ({recipient
       <div>
         <div className={classes.divider} />
         <Typography variant='body2' color='text.secondary' className={classes.text} >
-          you want to swap with
+          {isSwapDetailsPage ? 'swapping' : 'you want to swap with'}
           </Typography>
         <Divider className={classes.divider} />
-        <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
+        {!isSwapDetailsPage && <><Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
           {sender}
         </Typography>
-        <Divider className={classes.divider} />
+        <Divider className={classes.divider} /></>}
 
         <div className={classes.inboundForOutboundContainer}>
           <Typography variant='body2' className={clx(classes.text, classes.outboundQuantity)} color="text.secondary"  >
