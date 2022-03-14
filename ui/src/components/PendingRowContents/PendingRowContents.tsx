@@ -84,6 +84,20 @@ export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
 
 export const PendingRowContents: React.FC<PendingRowProps> = ({receiver, outboundQuantity, sendAmount, sendTicker, outboundTicker, templateName, isNarrow, isInbound, sender, inboundTicker, inboundQuantity }) => {
   const classes = useNarrowPendingStyles();
+  
+  const onAccept = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+  }
+
+  const onCancel = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+  }
+  const onReject = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+  }
+  
+
+
   const pendingDetailsPath = `/pending-activity?isInbound=${isInbound ? 'true': 'false'}&templateName=${templateName}&sender=${sender}&inboundTicker=${inboundTicker}`
 
   return (
@@ -107,8 +121,8 @@ export const PendingRowContents: React.FC<PendingRowProps> = ({receiver, outboun
               templateName !== 'send' && templateName !== 'swap' && <PendingAssetInviteRowContent isInbound={isInbound} sender={sender} inboundTicker={inboundTicker}/>
             }
             {!isMobile() && <div className={classes.actions}>
-              {isInbound && <Button className={classes.button} variant='outlined' size="small">Accept</Button>}
-              <Button className={classes.button} variant='outlined' size="small">{isInbound ? 'Reject' : 'Cancel'}</Button>
+              {isInbound && <Button className={classes.button} variant='outlined' size="small" onClick={onAccept}>Accept</Button>}
+              <Button onClick={isInbound? onReject : onCancel} className={classes.button} variant='outlined' size="small">{isInbound ? 'Reject' : 'Cancel'}</Button>
               <Button className={classes.button} variant='outlined' size="small"
               >Details</Button>
             </div>}
