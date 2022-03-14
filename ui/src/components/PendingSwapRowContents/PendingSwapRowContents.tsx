@@ -9,11 +9,12 @@ export interface PendingSwapRowProps {
   inboundQuantity?: number;
   outboundTicker?: string;
   outboundQuantity?: number;
-  sender?: string;
+  sender: string;
   isInbound?: boolean;
+  receiver: string;
 }
 
-export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = ({ isInbound, outboundQuantity, outboundTicker, sender, inboundTicker, inboundQuantity }) => {
+export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = ({recipient, isInbound, outboundQuantity, outboundTicker, sender, inboundTicker, inboundQuantity }) => {
   const classes = useNarrowPendingStyles();
   const inboundMessage = (
     <>

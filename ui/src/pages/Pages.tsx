@@ -8,6 +8,7 @@ import { IssueAirdropPage } from './IssueAirdropPage';
 import { LoginPage } from './LoginPage';
 import { MyActiveAccountsPage } from './MyActiveAccounts';
 import { PendingActivitiesPage } from './PendingActivitiesPage';
+import { PendingActivityDetailsPage } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { SendPage} from './SendPage';
 import { SwapPage } from './SwapPage';
 
@@ -15,10 +16,11 @@ interface PagesProps {
   setCredentials: (credentials: Credentials) => void
 }
 export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
-
   return (
     <Routes>
-      <Route path='/pending' element={<PendingActivitiesPage />
+      <Route path='/pending/:direction' element={<PendingActivitiesPage />
+      } />
+      <Route path='/pending-activity' element={<PendingActivityDetailsPage />
       } />
       <Route path='/send/:issuer/:ticker' element={<SendPage />
       } />

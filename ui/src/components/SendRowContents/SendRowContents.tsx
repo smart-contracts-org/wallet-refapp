@@ -52,9 +52,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-export const SendRowContents: React.FC<PendingRowProps> = ({ isNarrow, isInbound, sender, inboundTicker, inboundQuantity }) => {
+export const SendRowContents: React.FC<PendingRowProps> = ({sendAmount, sendTicker, receiver, isNarrow, isInbound, sender, inboundTicker, inboundQuantity, outboundQuantity, outboundTicker }) => {
   const classes = useStyles();
-
   const inboundMessage = (
     <>
       <div className={classes.divider} />
@@ -76,7 +75,7 @@ export const SendRowContents: React.FC<PendingRowProps> = ({ isNarrow, isInbound
   </Typography>
       <Divider className={classes.divider} />
       <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
-        {sender}
+        {receiver || '[name]'}
       </Typography>
       <Divider className={classes.divider} />
 
@@ -88,11 +87,10 @@ export const SendRowContents: React.FC<PendingRowProps> = ({ isNarrow, isInbound
       {isInbound ? inboundMessage : outboundMessage}
       <div className={ classes.row}>
         <Typography variant='body2' className={classes.text} color="text.secondary"  >
-          {inboundQuantity}
+          {sendAmount}
         </Typography>
         <Typography variant='body2' className={clx(classes.text, classes.assetName)} color="text.secondary" >
-          {inboundTicker}
-        </Typography>
+{sendTicker}        </Typography>
       </div>
       <div className={classes.divider} />
 

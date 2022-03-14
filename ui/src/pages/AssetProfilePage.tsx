@@ -21,7 +21,6 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     width: '100%',
     flexDirection: isMobile() ? 'column' : 'row',
     margin: theme.spacing(1),
-    paddingBottom: isMobile() ? '10%' : undefined
   },
   cardContent: {
     display: 'flex',

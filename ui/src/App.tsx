@@ -74,6 +74,7 @@ export const App: React.FC = () => {
              <LoginPage onLogin={setCredentials}/>
 
           }
+          <Box paddingBottom={10}/>
         </ThemeProvider>
       </ContractsProvider>
     </HashRouter>

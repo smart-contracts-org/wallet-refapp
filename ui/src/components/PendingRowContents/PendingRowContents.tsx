@@ -6,9 +6,9 @@ import { makeStyles } from '@mui/styles';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import SendIcon from '@mui/icons-material/Send';
+import { Link } from "react-router-dom";
 
 import { SendRowContents } from '../SendRowContents/SendRowContents';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Avatar, CardActionArea } from '@mui/material';
 import { PendingRowProps } from '../PendingRow/PendingRow';
 import { PendingSwapRowContents } from '../PendingSwapRowContents/PendingSwapRowContents';
@@ -82,12 +82,14 @@ export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-export const PendingRowContents: React.FC<PendingRowProps> = ({outboundQuantity, outboundTicker, templateName, isNarrow, isInbound, sender, inboundTicker, inboundQuantity }) => {
+export const PendingRowContents: React.FC<PendingRowProps> = ({receiver, outboundQuantity, sendAmount, sendTicker, outboundTicker, templateName, isNarrow, isInbound, sender, inboundTicker, inboundQuantity }) => {
   const classes = useNarrowPendingStyles();
+  const pendingDetailsPath = `/pending-activity?isInbound=${isInbound ? 'true': 'false'}&templateName=${templateName}&sender=${sender}&inboundTicker=${inboundTicker}`
+
   return (
     <>
       <Card className={classes.card}>
-        <CardActionArea>
+        <CardActionArea component={Link} to={pendingDetailsPath}>
           <div className={classes.symbolTextContainer} >
             <Avatar className={classes.avatar}>
               {templateName === 'send' && <SendIcon />}
@@ -95,10 +97,11 @@ export const PendingRowContents: React.FC<PendingRowProps> = ({outboundQuantity,
               {templateName !== 'swap' && templateName!== 'send' && <AccountBalanceWalletIcon />}
             </Avatar>
             {
-              templateName==='send' &&  <SendRowContents isInbound={isInbound} isNarrow={isNarrow} sender={sender} inboundQuantity={inboundQuantity} inboundTicker={inboundTicker} />
+              templateName==='send' &&  <SendRowContents isInbound={isInbound} receiver={receiver} sendAmount={sendAmount} isNarrow={isNarrow} sender={sender} sendTicker={sendTicker} outboundTicker={outboundTicker} />
             }
             {
-              templateName==='swap' &&  <PendingSwapRowContents outboundQuantity={outboundQuantity} outboundTicker={outboundTicker} isInbound={isInbound} sender={sender} inboundQuantity={inboundQuantity} inboundTicker={inboundTicker} />
+              templateName==='swap' &&  <PendingSwapRowContents 
+                receiver={receiver} outboundQuantity={outboundQuantity} outboundTicker={outboundTicker} isInbound={isInbound} sender={sender} inboundQuantity={inboundQuantity} inboundTicker={inboundTicker} />
             }
             {
               templateName !== 'send' && templateName !== 'swap' && <PendingAssetInviteRowContent isInbound={isInbound} sender={sender} inboundTicker={inboundTicker}/>
@@ -107,7 +110,6 @@ export const PendingRowContents: React.FC<PendingRowProps> = ({outboundQuantity,
               {isInbound && <Button className={classes.button} variant='outlined' size="small">Accept</Button>}
               <Button className={classes.button} variant='outlined' size="small">{isInbound ? 'Reject' : 'Cancel'}</Button>
               <Button className={classes.button} variant='outlined' size="small"
-              // onClick={handleOpen} 
               >Details</Button>
             </div>}
           </div>

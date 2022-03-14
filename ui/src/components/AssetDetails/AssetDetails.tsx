@@ -2,6 +2,7 @@ import {  Divider, Typography } from '@mui/material';
 import React from 'react';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
+import { demoPartyId } from '../TopAppBar/TopAppBar';
 
 const useStyles = makeStyles((theme: Theme) => ({
   row: {
@@ -30,7 +31,7 @@ export interface AssetDetailsProps {
   isAirdroppable: boolean;
 }
 
-const dataColor = 'secondary'
+const dataColor = 'primary'
 
 export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quantity, isShareable, isFungible, isAirdroppable, ticker }) => {
   const classes = useStyles();
@@ -50,7 +51,7 @@ export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quant
           Issuer
         </Typography>
         <Typography color={dataColor} variant='caption'>
-          {issuer || 'undefined'}
+          {issuer || demoPartyId}
         </Typography>
         <Divider />
       </div>
@@ -59,7 +60,7 @@ export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quant
           Owner
         </Typography>
         <Typography color={dataColor} variant='caption'>
-          {owner || 'undefined'}
+          {owner || demoPartyId}
         </Typography>
         <Divider />
       </div>
