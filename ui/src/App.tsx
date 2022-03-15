@@ -3,7 +3,7 @@ import React from 'react';
 import { SideMenu } from './components/SideMenu/SideMenu';
 import { TopAppBar } from './components/TopAppBar/TopAppBar';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { BrowserRouter, HashRouter } from "react-router-dom";
+import {  HashRouter } from "react-router-dom";
 import { Pages } from './pages/Pages';
 
 
@@ -74,6 +74,7 @@ export const App: React.FC = () => {
              <LoginPage onLogin={setCredentials}/>
 
           }
+          <Box paddingBottom={10}/>
         </ThemeProvider>
       </ContractsProvider>
     </HashRouter>

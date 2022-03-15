@@ -7,7 +7,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 export const useMessageCardsStyles = makeStyles((theme: Theme) => ({
   success: {
-    background: theme.palette.success.main,
+    background: theme.palette.success.dark,
     display: 'flex',
     justifyContent: 'center',
     width: '100%'

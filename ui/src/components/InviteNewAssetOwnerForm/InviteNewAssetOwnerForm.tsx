@@ -1,11 +1,12 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import { Card, FormControl, Typography } from '@mui/material';
+import { Button, Card, FormControl, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useNavigate } from 'react-router-dom';
 
 interface InviteNewAssetOwnerFormProps {
 
@@ -35,7 +36,10 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
   const classes = useStyles();
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
-
+  const nav = useNavigate();
+  const onCancel = () => {
+    nav(-1)
+  }
   const onSubmit = () => {
     setLoading(true);
     setTimeout(() => {
@@ -75,6 +79,9 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
       >
         {isSuccessful ? 'Sent, send another' : 'Invite'}
       </LoadingButton>
+      <Button fullWidth variant='outlined' onClick={onCancel}>
+        cancel
+      </Button>
       </FormControl>
       </>
   );

@@ -9,7 +9,7 @@ import { isMobile } from '../../platform/platform';
 import { SvgIcon } from '../SvgIcon/SvgIcon';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-const demoPartyId = 'DEMO-ledger-party-03568cfb-dc57-4c54-90d6-7db79f0e3dc2'
+export const demoPartyId = 'DEMO-ledger-party-03568cfb-dc57-4c54-90d6-7db79f0e3dc2'
 interface TopAppBarProps {
   handleDrawerOpen: () => void;
   handleDrawerClose: () => void;

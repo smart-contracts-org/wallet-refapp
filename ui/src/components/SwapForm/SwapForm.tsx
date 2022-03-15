@@ -1,6 +1,6 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import { Box, Card, FormControl, Typography, Link } from '@mui/material';
+import { Box, Card, FormControl, Typography, Link, Button } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -8,7 +8,7 @@ import EastIcon from '@mui/icons-material/East';
 import WestIcon from '@mui/icons-material/West';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { isMobile } from '../../platform/platform';
+import { useNavigate } from 'react-router-dom';
 
 
 interface SwapFormProps {
@@ -59,7 +59,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
-
+  const nav = useNavigate();
+  const onCancel = () => {
+    nav(-1)
+  }
   const onSubmit = () => {
     setLoading(true);
     setTimeout(() => {
@@ -74,7 +77,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
   const classes = useStyles();
   return (
     <Box display='flex' flexDirection='column'>
-      <Box sx={{display: 'flex'}} >
+      <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
         <Typography color='text.secondary' variant='body2' marginRight={1} gutterBottom>
           Swapping
         </Typography>
@@ -180,6 +183,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
         >
           {isSuccessful ? "Swap Request Sent" : "Request Swap"}
       </LoadingButton>
+      <Button variant='outlined' onClick={onCancel}>Cancel</Button>
       </FormControl>
     </Box>
   );

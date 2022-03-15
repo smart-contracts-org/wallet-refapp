@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.warning.light
   },
   accepted: {
-    color: theme.palette.success.light
+    color: theme.palette.success.dark
   }
 }))
 

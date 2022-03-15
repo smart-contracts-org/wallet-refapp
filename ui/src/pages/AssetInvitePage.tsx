@@ -1,12 +1,12 @@
 import React from 'react';
-import { SendPopupContent } from '../components/SendPopupContent/SendPopupContent';
-import { useNavigate, useLocation, useParams } from 'react-router-dom'
-import { Theme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
+import { useNavigate, useParams } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Card, CardContent, IconButton } from '@mui/material';
+import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { InviteNewAssetOwnerForm } from '../components/InviteNewAssetOwnerForm/InviteNewAssetOwnerForm';
 import { usePageStyles } from './AssetProfilePage';
+import { enableFabBack } from './IssueAirdropPage';
+import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
+import { isMobile } from '../platform/platform';
 
 
 export const AssetInvitePage: React.FC = () => {
@@ -18,22 +18,28 @@ export const AssetInvitePage: React.FC = () => {
   }
   // TODO: 
   // Fetch token quantity
-  const demoDataQuantity = 100
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer}>
         <IconButton color='primary' onClick={onBack}>
-          <ArrowBackIosNewIcon  />
+          <ArrowBackIosNewIcon />
         </IconButton>
       </div>
-      <Card variant='outlined' className={classes.card} >
-        <CardContent className={classes.cardContent}>
-          <Avatar className={classes.avatar}>
-            {params?.ticker?.[0] || 'undefined'}
-          </Avatar>
-          <InviteNewAssetOwnerForm/>
-        </CardContent>
-      </Card>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography sx={{ marginBottom: 0.5 }} color='primary' variant='h6'>
+          Invite
+          </Typography>
+        <Card variant='outlined' className={classes.card} >
+          <CardContent className={classes.cardContent}>
+            <Avatar className={classes.avatar}>
+              {params?.ticker?.[0] || 'undefined'}
+            </Avatar>
+            <InviteNewAssetOwnerForm />
+          </CardContent>
+        </Card>
+      </Box>
+      {enableFabBack &&  isMobile() && <FloatingBackButton/>}
+
     </div>
   )
 }

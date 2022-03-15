@@ -25,16 +25,6 @@ export const IssuedByMeTab: React.FC = () => {
 
   return (
     <Box>
-      {isFabActivated && 
-      <Button
-      // component={Link} 
-      // to='/create-asset-account' 
-      size='small' color='primary' variant='contained' 
-      onClick={() => selectPopupContent(AssetAction.CreateAccount)}
-      >
-        <AddIcon />
-        Create asset account
-      </Button>}
       {Object.values(allContracts.assetAccounts).map((assetAccount, i) => {
         return (isMobile() ? <AssetAccountRowNarrow
           key={assetAccount.ticker + i}
