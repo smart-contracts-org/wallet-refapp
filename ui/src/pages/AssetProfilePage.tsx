@@ -5,7 +5,7 @@ import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Button, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
 import SendIcon from '@mui/icons-material/Send';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -13,7 +13,14 @@ import SwapHorizontalCircleIcon from '@mui/icons-material/SwapHorizontalCircle';
 import { isMobile } from '../platform/platform';
 import { enableFabBack } from './IssueAirdropPage';
 import { chipColors } from '../components/RowChip/RowChip';
+import { useParty } from '@daml/react';
+import Drawer from '@mui/material/Drawer';
+import { SendPage } from './SendPage';
+import { SwapPage } from './SwapPage';
+
 export const usePageStyles = makeStyles((theme: Theme) => ({
+  
+  
   root: {
     display: 'flex',
     justifyContent: 'center',
@@ -72,6 +79,7 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
 
 export const AssetProfilePage: React.FC = () => {
   const nav = useNavigate();
+  const party = useParty();
   const params = useParams();
   const classes = usePageStyles();
   const sendPath = `/send/${params?.issuer}/${params?.ticker}`
@@ -98,15 +106,15 @@ export const AssetProfilePage: React.FC = () => {
             {params?.ticker?.[0] || 'undefined'}
           </Avatar>
           <div className={classes.tickerAmount}>
-            <Typography sx={{ marginRight: 1 }}>
+            <Typography sx={{ marginRight: 1 }} variant='h6'>
               {demoDataQuantity || 0}
             </Typography>
-            <Typography>
+            <Typography variant='h6'>
               {params?.ticker || 'undefined'}
             </Typography>
           </div>
           <div className={classes.actions}>
-            {<div className={classes.actionContainer}>
+            {params.issuer === party && <div className={classes.actionContainer}>
 
 
               <IconButton className={classes.issueButton}  component={Link} to={issueAirdropPath}>
@@ -146,6 +154,7 @@ export const AssetProfilePage: React.FC = () => {
           <AssetDetails quantity={demoDataQuantity} ticker={params.ticker || 'NA'} />
         </CardContent>
       </Card>
+      
     
       {enableFabBack &&  isMobile() && <Fab sx={{ position: 'fixed', bottom: 20, right: 30 }}>
         <IconButton color='primary' onClick={onBack}>

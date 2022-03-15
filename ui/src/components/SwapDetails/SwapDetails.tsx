@@ -26,10 +26,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'row'
   },
+  avatar: {
+    margin: theme.spacing(1)
+  }
 }))
-
-
-
 
 export const SwapDetails: React.FC<PendingRowProps> = ({ receiver, isInbound, sender, inboundQuantity, inboundTicker, outboundTicker, outboundQuantity }) => {
   const classes = useStyles();
@@ -42,12 +42,12 @@ export const SwapDetails: React.FC<PendingRowProps> = ({ receiver, isInbound, se
       {swaps.map((swap, i) => {
         return (
           <div className={classes.direction}>
-            <Typography variant='caption'>
-              {i === 0 ? 'outgoing' : 'incoming'}
+            <Typography sx={{marginLeft: 1}} variant='h6'>
+              {i === 0 ? 'Outgoing' : 'Incoming'}
             </Typography>
-            <Card variant='outlined' sx={{ margin: 0.5 }} >
+            <Card variant='outlined' sx={{ margin: 0.5, marginBottom: 1 }} >
               <CardContent sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <Avatar></Avatar>
+              <Avatar className={classes.avatar}></Avatar>
               <div className={classes.tickerAmount}>
             <Typography sx={{ marginRight: 1 }}>
               {10000}

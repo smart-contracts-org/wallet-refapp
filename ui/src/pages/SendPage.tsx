@@ -24,7 +24,7 @@ export const SendPage: React.FC = () => {
         </IconButton>
       </div>}
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography sx={{ marginBottom: 0.5 }} color='primary' variant='h6'>
+        <Typography sx={{ marginBottom: 0.5 }} color='primary' variant='h5'>
           Send
           </Typography>
         <Card variant='outlined' >

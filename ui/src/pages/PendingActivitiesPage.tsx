@@ -64,7 +64,7 @@ export const BasicTabs: React.FC<unknown> =() => {
   return (
     <>
       <Box sx={{ marginBottom:1, borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+        <Tabs variant={isMobile() ? 'fullWidth': undefined} value={value} onChange={handleChange} aria-label="basic tabs example">
           <Tab label="Inbound" {...a11yProps(0)} component={Link} to={'/pending/inbound'} />
           <Tab component={Link} to={'/pending/outbound'} label="Outbound" {...a11yProps(1)} />
 

@@ -110,6 +110,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
   }
 
   const actionLabel = query.get('templateName')
+  const tickerFromQuery = query.get('sendTicker')
   const params = useParams();
   const classes = usePageStyles();
 
@@ -118,7 +119,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
     nav(-1)
   }
   // TODO: 
-  // Fetch token details
+  // Fetch token details useQuery
   const demoDataQuantity = 100
   return (
     <div className={classes.root}>
@@ -145,19 +146,19 @@ export const PendingActivityDetailsPage: React.FC = () => {
               </Typography>
             </div>
             {actionLabel !== 'swap' && <Avatar className={classes.avatar}>
-              {params?.ticker?.[0] || 'U'}
+              {tickerFromQuery?.[0] || 'U'}
             </Avatar>}
             {actionLabel !== 'swap' && <div className={classes.tickerAmount}>
               {actionLabel !== 'assetInvite' && <Typography sx={{ marginRight: 1 }}>
                 {demoDataQuantity || 0}
               </Typography>}
               <Typography>
-                { params?.ticker || '[TickerName]'}
+                { tickerFromQuery || '[TickerName]'}
               </Typography>
             </div>}
 
             {actionLabel === 'swap' && <SwapDetails isInbound={isInbound === 'true' ? true : false} {...replaceProps} />}
-            {actionLabel !== 'swap' && <AssetDetails quantity={replaceProps.sendAmount} ticker={params.ticker || 'NA'} {...replaceProps} />}
+            {actionLabel !== 'swap' && <AssetDetails quantity={replaceProps.sendAmount} ticker={tickerFromQuery || '[Ticker]'} {...replaceProps} />}
           </CardContent>
           <div className={classes.actions}>
             {isInbound === 'true' && <Button fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >

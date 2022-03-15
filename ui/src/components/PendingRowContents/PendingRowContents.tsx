@@ -95,10 +95,21 @@ export const PendingRowContents: React.FC<PendingRowProps> = ({receiver, outboun
   const onReject = (event: React.SyntheticEvent) => {
     event.preventDefault();
   }
+
+  const props: PendingRowProps = {
+    receiver, 
+    sender, 
+    inboundQuantity,
+    inboundTicker,
+    outboundQuantity,
+    outboundTicker,
+    sendAmount,
+    sendTicker
+  }
   
+ 
 
-
-  const pendingDetailsPath = `/pending-activity?isInbound=${isInbound ? 'true': 'false'}&templateName=${templateName}&sender=${sender}&inboundTicker=${inboundTicker}`
+  const pendingDetailsPath = `/pending-activity?isInbound=${isInbound ? 'true': 'false'}&templateName=${templateName}&sender=${sender}&inboundTicker=${inboundTicker}&sendAmount=${sendAmount}&sendTicker=${sendTicker}&outboundTicker=${outboundTicker}&outboundQuantity=${outboundQuantity}&receiver=${receiver}`
 
   return (
     <>
@@ -118,7 +129,7 @@ export const PendingRowContents: React.FC<PendingRowProps> = ({receiver, outboun
                 receiver={receiver} outboundQuantity={outboundQuantity} outboundTicker={outboundTicker} isInbound={isInbound} sender={sender} inboundQuantity={inboundQuantity} inboundTicker={inboundTicker} />
             }
             {
-              templateName !== 'send' && templateName !== 'swap' && <PendingAssetInviteRowContent isInbound={isInbound} sender={sender} inboundTicker={inboundTicker}/>
+              templateName === 'assetInvite' && <PendingAssetInviteRowContent receiver={receiver} isInbound={isInbound} sender={sender} inboundTicker={inboundTicker}/>
             }
             {!isMobile() && <div className={classes.actions}>
               {isInbound && <Button className={classes.button} variant='outlined' size="small" onClick={onAccept}>Accept</Button>}
