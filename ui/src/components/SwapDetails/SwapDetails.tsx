@@ -1,10 +1,11 @@
-import { Avatar, Card, CardContent, Divider, Typography } from '@mui/material';
+import { Avatar, Card, CardContent, Chip, Divider, Typography } from '@mui/material';
 import React from 'react';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { PendingRowProps } from '../PendingRow/PendingRow';
 import { AssetDetails } from '../AssetDetails/AssetDetails';
 import { PendingSwapRowContents } from '../PendingSwapRowContents/PendingSwapRowContents';
+import clx from 'clsx'
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -28,35 +29,65 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   avatar: {
     margin: theme.spacing(1)
+  }, 
+  directionLabel: {
+    padding: theme.spacing(1), 
+    margin: theme.spacing(0.5),
+    borderRadius: 2
+  },
+  swappingOut: {
+    backgroundColor: theme.palette.error.dark, 
+  },
+  swappingIn: {
+    backgroundColor: theme.palette.success.dark, 
   }
 }))
 
 export const SwapDetails: React.FC<PendingRowProps> = ({ receiver, isInbound, sender, inboundQuantity, inboundTicker, outboundTicker, outboundQuantity }) => {
   const classes = useStyles();
-  const swaps = [1, 1];
+  
+  const swappingOut = {
+    label: 'Swapping Out',
+    quantity:outboundQuantity,
+    ticker: outboundTicker, 
+  }
+
+  const swappingIn = {
+    label: 'Swapping In',
+    ticker: inboundTicker, 
+    quantity: inboundQuantity
+  }
+  
+  // User receiving a swap request
+  // display what user is swapping in (recieving)
+  const inboundSwap = [swappingIn, swappingOut];
+  const outboundSwap = [swappingOut, swappingIn]
   return (
 
     <div className={classes.root}>
         <PendingSwapRowContents isSwapDetailsPage={true} sender={sender} receiver={receiver} isInbound={isInbound} inboundQuantity={inboundQuantity} inboundTicker={inboundTicker} outboundQuantity={outboundQuantity} outboundTicker={outboundTicker}/>
       <Divider sx={{marginBottom:2}}/>
-      {swaps.map((swap, i) => {
+      {(isInbound ? inboundSwap : outboundSwap).map((swap, i) => {
         return (
           <div className={classes.direction}>
-            <Typography sx={{marginLeft: 1}} variant='h6'>
-              {i === 0 ? 'Outgoing' : 'Incoming'}
+            <div>
+
+            <Typography className={clx(classes.directionLabel, swap.label==='Swapping In' ? classes.swappingIn : classes.swappingOut) } sx={{marginLeft: 1}} variant='h6'>
+              {swap.label}
             </Typography>
+            </div>
             <Card variant='outlined' sx={{ margin: 0.5, marginBottom: 1 }} >
               <CardContent sx={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <Avatar className={classes.avatar}></Avatar>
               <div className={classes.tickerAmount}>
             <Typography sx={{ marginRight: 1 }}>
-              {10000}
+              {swap.quantity}
             </Typography>
             <Typography>
-              {'[TickerName]'}
+              {swap.ticker || '[TickerName]'}
             </Typography>
           </div>
-                <AssetDetails />
+                <AssetDetails ticker={swap.ticker || 'ticker'} />
               </CardContent>
             </Card>
           </div>

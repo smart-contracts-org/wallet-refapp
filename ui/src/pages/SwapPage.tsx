@@ -5,6 +5,8 @@ import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/mat
 import { SwapForm } from '../components/SwapForm/SwapForm';
 import { usePageStyles } from './AssetProfilePage';
 import { isMobile } from '../platform/platform';
+import { enableFabBack } from './IssueAirdropPage';
+import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 
 
 export const SwapPage: React.FC = () => {
@@ -38,6 +40,8 @@ export const SwapPage: React.FC = () => {
         </CardContent>
       </Card>
       </Box>
+      {enableFabBack &&  isMobile() && <FloatingBackButton/>}
+
     </div>
   )
 }

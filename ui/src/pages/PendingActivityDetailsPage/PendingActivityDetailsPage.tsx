@@ -76,6 +76,10 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
     width: '100%'
   },
+  from: {
+    fontWeight: 'bold'
+
+  }
 }))
 
 export const PendingActivityDetailsPage: React.FC = () => {
@@ -138,7 +142,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
 
           <CardContent className={classes.cardContent}>
             <div className={classes.fromContainer}>
-              <Typography variant='caption'>
+              <Typography className={classes.from} variant='caption'>
                 {isInbound === 'true' ? 'From:' : 'To:'}
               </Typography>
               <Typography variant='caption' color='primary'>

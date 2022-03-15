@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
 import { SendForm } from '../components/SendForm/SendForm';
 import { isMobile } from '../platform/platform';
 import { usePageStyles } from './AssetProfilePage';
+import { enableFabBack } from './IssueAirdropPage';
+import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 
 export const SendPage: React.FC = () => {
   const nav = useNavigate();
@@ -36,6 +38,7 @@ export const SendPage: React.FC = () => {
           </CardContent>
         </Card>
       </Box>
+      {enableFabBack &&  isMobile() && <FloatingBackButton/>}
     </div>
   )
 }

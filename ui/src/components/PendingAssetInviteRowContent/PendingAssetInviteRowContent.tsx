@@ -32,9 +32,13 @@ export const PendingAssetInviteRowContent: React.FC<PendingRowProps> = ({ isInbo
     <>
       <div className={classes.divider} />
       <Typography variant='body2' color='text.secondary' className={classes.text} >
-        You are inviting {sender} to create asset holding account for
+        You are inviting {sender}
     </Typography>
       <Divider className={classes.divider} />
+      <Typography className={classes.text} variant='body2' color='text.secondary'>
+      to create asset holding account for
+      </Typography>
+      <Divider className={classes.divider}/>
       <Typography variant='body2' className={clx(classes.text, classes.assetName)} color="text.secondary" >
         {inboundTicker}
       </Typography>

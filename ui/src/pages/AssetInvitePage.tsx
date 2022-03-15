@@ -4,6 +4,9 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { InviteNewAssetOwnerForm } from '../components/InviteNewAssetOwnerForm/InviteNewAssetOwnerForm';
 import { usePageStyles } from './AssetProfilePage';
+import { enableFabBack } from './IssueAirdropPage';
+import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
+import { isMobile } from '../platform/platform';
 
 
 export const AssetInvitePage: React.FC = () => {
@@ -35,6 +38,8 @@ export const AssetInvitePage: React.FC = () => {
           </CardContent>
         </Card>
       </Box>
+      {enableFabBack &&  isMobile() && <FloatingBackButton/>}
+
     </div>
   )
 }
