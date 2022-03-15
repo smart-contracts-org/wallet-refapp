@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Button, Card, CardContent, Divider, Fab, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
 import { isMobile } from '../../platform/platform';
 import { AssetDetails } from '../../components/AssetDetails/AssetDetails';
 import { enableFabBack } from '../IssueAirdropPage';
