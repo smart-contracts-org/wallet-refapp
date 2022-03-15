@@ -16,6 +16,7 @@ import Avatar from '@mui/material/Avatar';
 import { AssetDetailsPopupContent } from '../AssetDetailsPopupContent/AssetDetailsPopupContent';
 
 import { PopupContent } from '../PopupContent/PopupContent';
+import { AssetProfilePage } from '../../pages/AssetProfilePage';
 
 //TODO: issuer and owner currently hardcoded as 'me'
 const useStyles = makeStyles((theme: Theme) => ({
@@ -57,7 +58,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(0.5)
   },
   drawer: {
-    height: '80%'
+    // height: '80%', 
+    padding: 0, 
+    margin: 0, 
   }
 }))
 
@@ -107,7 +110,10 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
   return (
     <>
       <Card className={classes.root}  >
-        <CardActionArea component={Link} to={assetProfilePath}>
+        <CardActionArea 
+        component={Link} 
+        to={assetProfilePath}
+        >
           <CardContent className={classes.nameAndMoreContainer}>
             <Avatar className={classes.avatar}>
               {ticker[0]}
@@ -129,12 +135,10 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
             {expandContent}
           </Collapse>
         </CardActionArea>
-
       </Card>
-  
 
       <SwipeableDrawer
-        anchor="bottom"
+        anchor="right"
         open={open}
         onClose={toggleDrawer(false)}
         onOpen={toggleDrawer(true)}
@@ -144,18 +148,7 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
         }}
         className={classes.drawer}
       >
-        <Box style={{ height: '500px' }}>
-          <PopupContent
-            issuer={issuer}
-            owner={owner}
-            isAirdroppable={!!isAirdroppable}
-            isFungible={!!isFungible}
-            quantity={quantity || 0}
-            isShareable={isShareable || false}
-            ticker={ticker}
-            contentType={popupContent}
-            handleClose={toggleDrawer(false)} />
-        </Box>
+       <AssetProfilePage/>
       </SwipeableDrawer>
     </>
   );
