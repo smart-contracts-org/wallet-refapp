@@ -44,6 +44,7 @@ export const SendForm: React.FC<SendFormProps> = ({ quantity, ticker }) => {
   // TODO: 
   // Create Form to send
   const onSubmit = () => {
+    console.log(amount)
     setLoading(true);
     setTimeout(() => {
       setLoading(false)

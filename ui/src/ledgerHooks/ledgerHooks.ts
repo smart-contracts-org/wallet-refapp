@@ -1,6 +1,5 @@
 import { useLedger, useParty } from '@daml/react';
 import { Account, Asset } from '@daml.js/wallet-refapp';
-import { Party } from '@daml/types';
 import { useStreamQueries } from '@daml/react';
 
 export const useGetAllAssetAccounts = () => {
@@ -14,7 +13,7 @@ export const useGetMyIssuedAssetAccounts = () => {
   const assetHoldingAccounts = useStreamQueries(Account.AssetHoldingAccount, () => [{assetType: {issuer: party}}]);
   return assetHoldingAccounts
 }
-interface useGetMyOwnedAssetsByAssetType {
+interface UseGetMyOwnedAssetsByAssetType {
   issuer: string;
   owner: string;
   symbol: string;
@@ -23,7 +22,7 @@ interface useGetMyOwnedAssetsByAssetType {
 }
 
 // Get all Asset owned templates based on fields
-export const useGetMyOwnedAssetsByAssetType = ({issuer, symbol, isFungible, owner, reference}: useGetMyOwnedAssetsByAssetType) => {
+export const useGetMyOwnedAssetsByAssetType = ({issuer, symbol, isFungible, owner, reference}: UseGetMyOwnedAssetsByAssetType) => {
   const assetHoldingAccounts = useStreamQueries(Asset.Asset, () => [{owner, assetType: {issuer, symbol, fungible: isFungible, reference}}]);
   return assetHoldingAccounts
 }

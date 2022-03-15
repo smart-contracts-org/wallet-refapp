@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Box, Button, Card, CardContent, IconButton, Typography } from '@mui/material';
-import { InviteNewAssetOwnerForm } from '../components/InviteNewAssetOwnerForm/InviteNewAssetOwnerForm';
 import { usePageStyles } from './AssetProfilePage';
 import { IssueToSelfForm } from '../components/IssueToSelfForm/IssueToSelfForm';
 import { AirdropForm } from '../components/AirdropForm/AirdropForm';

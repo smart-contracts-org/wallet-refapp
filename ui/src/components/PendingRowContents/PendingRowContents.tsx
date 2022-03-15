@@ -96,17 +96,7 @@ export const PendingRowContents: React.FC<PendingRowProps> = ({receiver, outboun
     event.preventDefault();
   }
 
-  const props: PendingRowProps = {
-    receiver, 
-    sender, 
-    inboundQuantity,
-    inboundTicker,
-    outboundQuantity,
-    outboundTicker,
-    sendAmount,
-    sendTicker
-  }
-  
+
  
 
   const pendingDetailsPath = `/pending-activity?isInbound=${isInbound ? 'true': 'false'}&templateName=${templateName}&sender=${sender}&inboundTicker=${inboundTicker}&sendAmount=${sendAmount}&sendTicker=${sendTicker}&outboundTicker=${outboundTicker}&outboundQuantity=${outboundQuantity}&receiver=${receiver}`

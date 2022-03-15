@@ -1,4 +1,4 @@
-import { Avatar, Card, CardContent, Chip, Divider, Typography } from '@mui/material';
+import { Avatar, Card, CardContent, Divider, Typography } from '@mui/material';
 import React from 'react';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
