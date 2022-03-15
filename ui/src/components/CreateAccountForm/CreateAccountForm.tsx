@@ -6,17 +6,13 @@ import { Card, FormControl, Typography } from '@mui/material';
 import React from 'react';
 import WarningIcon from '@mui/icons-material/Warning';
 import { LoadingButton } from '@mui/lab';
-import { ContractsContext } from '../../providers/ContractsProvider';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { isMobile } from '../../platform/platform';
 import { useParty } from '@daml/react';
-import { Account } from '@daml.js/wallet-refapp';
-import { useLedger } from '@daml/react';
 import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 interface CreateAccountFormProps {
-  handleClose: () => void;
-  handleSubmit?: () => void;
+  onSubmitSuccess?: () => void;
 }
 
 
@@ -42,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 
-export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleSubmit, handleClose }) => {
+export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSuccess }) => {
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [hasError, setError] = React.useState<boolean>(false);
   const party = useParty();
@@ -53,11 +49,6 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleSubm
   const [isFungible, setFungible] = React.useState<boolean>(true);
   const [isAirdroppable, setIsAirdroppable] = React.useState<boolean>(true);
 
-
-  const toggleSubmitting = () => {
-    setLoading(!isLoading);
-  }
-
   const onTextChange = (event: React.BaseSyntheticEvent) => {
     setTicker(event.target.value)
   }
@@ -67,7 +58,8 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleSubm
       setError(true);
       return;
     }
-    try {
+    setLoading(true);
+    
       const result = await ledgerHooks.createAssetAccount({
         ticker,
         isFungible, 
@@ -75,18 +67,14 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleSubm
         isAirdroppable, 
         isShareable, 
       })
-    } catch (e) {
-      console.log(e)
+      if(result.isOk){
+        console.log(result)
+        onSubmitSuccess && onSubmitSuccess()
+      } else {
       setError(true);
-        alert(e)
-    }
-
-    toggleSubmitting();
-    setTimeout(() => {
-      handleClose()
-      handleSubmit && handleSubmit()
-      toggleSubmitting()
-    }, 1000)
+      setLoading(false);
+      }
+    
   }
   return (
     <div className={classes.formContainer}>

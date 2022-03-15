@@ -11,13 +11,11 @@ import { IssueAirdropPopupContent } from '../IssueAirdropPopupContent/IssueAirdr
 import { IssueLater } from '../IssueLater/IssueLater';
 import { CreateAssetAccountSuccess } from '../CreateAssetAccountSuccess/CreateAssetAccountSuccess';
 import { CreateAssetWorkflowDone } from '../CreateAssetWorkflowDone/CreateAssetWorkflowDone';
-import { useLedger } from '@daml/react';
-import { Account } from '@daml.js/wallet-refapp';
+
 
 const steps = ['Create Asset Account', 'Issue Assets'];
 
 export const CreateAssetAccountSteps: React.FC = () => {
-  const ledger = useLedger();
 
   const isStepFailed = (step: number) => {
     return false;
@@ -47,7 +45,7 @@ export const CreateAssetAccountSteps: React.FC = () => {
   }
 
   //TODO: submitting form calling API
-  const handleSubmit = () => {
+  const onSubmitSuccess = () => {
     
     setTimeout(() => {
       setSubmitSuccessful(true);
@@ -87,7 +85,7 @@ export const CreateAssetAccountSteps: React.FC = () => {
 
         {displayedStep === 0 && !isSubmitSuccessful && (<Card>
           <CardContent>
-            <CreateAccountForm handleClose={() => { }} handleSubmit={handleSubmit} />
+            <CreateAccountForm onSubmitSuccess={onSubmitSuccess} />
           </CardContent>
         </Card>)
         }

@@ -1,19 +1,15 @@
-import { Box, Button, Fab, LinearProgress } from '@mui/material';
+import { Box, LinearProgress } from '@mui/material';
 import React from 'react';
 import { AssetAccountRow } from '../components/AssetAccountRow/AssetAccountRow';
 import { UserPrompt } from '../components/UserPrompt/UserPrompt';
-import AddIcon from '@mui/icons-material/Add';
 import { PopUp } from '../components/PopUp/PopUp';
 import { AssetAction } from '../types/AssetAction';
-import { ContractsContext } from '../providers/ContractsProvider';
 import { AssetAccountRowNarrow } from '../components/AssetAccountRowNarrow/AssetAccountRowNarrow';
 import { isMobile } from '../platform/platform';
 import { useGetMyIssuedAssetAccounts } from '../ledgerHooks/ledgerHooks';
 
-
 export const IssuedByMeTab: React.FC = () => {
   const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)
-  const contractsContext = React.useContext(ContractsContext)
   const myIssuedAssetAccounts = useGetMyIssuedAssetAccounts()
   const isLoading = myIssuedAssetAccounts.loading
   const assetAccountRows = myIssuedAssetAccounts.contracts.map((contract,i) => {

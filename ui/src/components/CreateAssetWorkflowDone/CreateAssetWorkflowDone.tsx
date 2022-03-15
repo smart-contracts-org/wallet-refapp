@@ -16,7 +16,7 @@ export const useMessageCardsStyles = makeStyles((theme: Theme) => ({
     marginRight: theme.spacing(1)
   },
   success: {
-    background: theme.palette.success.main, 
+    background: theme.palette.success.dark, 
     display: 'flex',
     justifyContent: 'center'
   }, 

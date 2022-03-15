@@ -1,40 +1,41 @@
 import React from 'react';
-import { isMobile } from '../../platform/platform';
 import { PendingRow, PendingRowProps } from '../PendingRow/PendingRow';
+import { demoPartyId } from '../TopAppBar/TopAppBar';
 
 // TODO: query templates
-const inboundData: PendingRowProps[] = [
+export const demoPendingData: PendingRowProps[] = [
   {
-    isInbound: true, 
-    sender: 'User-1000101-010100',
-    inboundTicker: 'BTOKEN', 
-    inboundQuantity: 1000,
-    templateName: 'send'
+    sender: demoPartyId,
+    sendTicker: 'BTOKEN', 
+    sendAmount: 500,
+    templateName: 'send',
+    receiver: demoPartyId,
   }, 
   {
-    isInbound: true, 
-    sender: 'User-B-2849283',
+    sender: demoPartyId,
     inboundQuantity: 10, 
     inboundTicker: 'BTOKEN',
     outboundQuantity: 50, 
     outboundTicker: 'CTOKEN',
-    templateName: 'swap'
+    templateName: 'swap',
+    receiver: demoPartyId,
+
   }, 
   {
-    isInbound: true, 
-    sender: 'User-Alex-4345', 
+    sender: demoPartyId, 
     inboundTicker: 'ALEX', 
     inboundQuantity: 0,
-    templateName: 'assetInvite'
+    templateName: 'assetInvite',
+    receiver: demoPartyId,
   }
 ]
 
 export const PendingInboundActivities: React.FC = () => {
   // TODO: fetch pending contracts
-  const isNarrow = isMobile();
-  const pendingRows = inboundData.map((asset, i)=> {
+  // stream of contracts
+  const pendingRows = demoPendingData.map((asset, i)=> {
     return (
-      <PendingRow  {...asset} isInbound={true} isNarrow={isNarrow} key={i}/>
+      <PendingRow  {...asset} isInbound={true} isNarrow={true} key={i}/>
     )
   })
   return (

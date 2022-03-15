@@ -45,9 +45,6 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({ issuer, isIssu
   const assetProfilePath = `/asset/${issuer}/${ticker}`
   const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)
 
-  const selectPopupContent = (contentType: AssetAction) => {
-    setPopupContent(contentType)
-  }
   const handleClose = () => {
     setPopupContent(undefined);
   }
@@ -75,21 +72,18 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({ issuer, isIssu
         <CardActions sx={{ marginLeft: 'auto' }}>
           {!isIssuedByMeTab && issuer === owner && <RowChip requestType={'issuer'} label='Issuer' />}
 
-          {isIssuedByMeTab && <Button variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.IssueAirdrop)}>Issue / Airdrop</Button>
+          {issuer === owner && <Button variant='outlined' size="small" component={Link} to={`/issue/${issuer}/${ticker}`}>Issue / Airdrop</Button>
           }
           {!isIssuedByMeTab && <Button component={Link} to={`/send/${issuer}/${ticker}`} disabled={issuer !== owner && !isShareable} variant='outlined' size="small" 
-          // onClick={() => selectPopupContent(AssetAction.Send)}
           >Send</Button>}
           {!isIssuedByMeTab && <Button component={Link} to={`/swap/${issuer}/${ticker}`} disabled={issuer !== owner && !isShareable} variant='outlined' size="small" 
-          // onClick={() => selectPopupContent(AssetAction.Swap)}
           >Swap</Button>}
           <Button variant='outlined' component={Link} to={`/invite/${issuer}/${ticker} `} disabled={issuer !== owner && !isShareable} size="small" 
-          // onClick={() => selectPopupContent(AssetAction.InviteNewAssetOwner)} 
           >Invite New Asset Owner</Button>
-          {/* <Button variant='outlined' size="small" onClick={() => selectPopupContent(AssetAction.Details)} >Details</Button> */}
         </CardActions>
         </CardActionArea>
       </Card>
+      
       <PopUp
         issuer={issuer}
         owner={owner}

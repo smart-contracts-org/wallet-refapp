@@ -1,13 +1,12 @@
 import React from 'react';
-import { SendPopupContent } from '../components/SendPopupContent/SendPopupContent';
-import { useNavigate, useLocation, useParams } from 'react-router-dom'
-import { Theme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
+import { useNavigate, useParams } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Card, CardContent, IconButton } from '@mui/material';
+import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { SwapForm } from '../components/SwapForm/SwapForm';
-import { isMobile } from '../platform/platform';
 import { usePageStyles } from './AssetProfilePage';
+import { isMobile } from '../platform/platform';
+import { enableFabBack } from './IssueAirdropPage';
+import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 
 
 export const SwapPage: React.FC = () => {
@@ -19,14 +18,18 @@ export const SwapPage: React.FC = () => {
   }
   // TODO: 
   // Fetch token quantity
-  const demoDataQuantity = 100
   return (
     <div className={classes.root}>
-      <div className={classes.buttonContainer}>
-        <IconButton onClick={onBack} color='primary'>
+      <div className={classes.buttonContainer} onClick={onBack}>
+        <IconButton  color='primary'>
           <ArrowBackIosNewIcon />
         </IconButton>
+        {isMobile() && <Typography color='primary'>Back</Typography>}
       </div>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography sx={{ marginBottom: 0.5 }} color='primary' variant='h6'>
+          Swap
+          </Typography>
       <Card variant='outlined' >
         <CardContent className={classes.cardContent}>
           <Avatar className={classes.avatar}>
@@ -35,6 +38,9 @@ export const SwapPage: React.FC = () => {
           <SwapForm  ticker={params.ticker || 'NA'}/>
         </CardContent>
       </Card>
+      </Box>
+      {enableFabBack &&  isMobile() && <FloatingBackButton/>}
+
     </div>
   )
 }

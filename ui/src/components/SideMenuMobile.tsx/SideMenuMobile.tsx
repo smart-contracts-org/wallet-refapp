@@ -9,23 +9,15 @@ import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
 import ListItemText from '@mui/material/ListItemText';
 import { Divider, ListItemButton, Typography } from '@mui/material';
+import { menuItems } from '../../configs/sideMenu.config';
 
 const drawerWidth: number = 200;
-
-interface MenuItem {
-  label: string,
-  path: string
-}
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     color: theme.palette.text.secondary
   }
 }))
-
-const menuItems: MenuItem[] = [
-  { label: 'My Active Accounts', path: '/' },
-  { label: 'Pending Activities', path: '/pending' }]
 
 interface SideMenuMobileProps {
   isOpen: boolean;

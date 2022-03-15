@@ -9,13 +9,11 @@ import { makeStyles } from '@mui/styles';
 
 import ListItemText from '@mui/material/ListItemText';
 import { Divider, ListItemButton, Typography } from '@mui/material';
+import { menuItems } from '../../configs/sideMenu.config';
 
 const drawerWidth: number = 200;
 
-interface MenuItem {
-  label: string,
-  path: string
-}
+
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -23,10 +21,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-const menuItems: MenuItem[] = [
-  { label: 'My Asset Accounts', path: '/' },
-  { label: 'Pending Activities', path: '/pending' }, 
-]
+
 
 export const SideMenu: React.FC<unknown> = () => {
   const [selected, setSelected] = React.useState<number>(0);

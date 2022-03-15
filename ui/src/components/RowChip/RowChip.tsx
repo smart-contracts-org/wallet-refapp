@@ -7,7 +7,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
-const requestColors: any = {
+export const chipColors: any = {
   send: '#4caf50',
   swap:'#ff9800', 
   invite: '#00bcd4', 
@@ -38,7 +38,7 @@ export const RowChip: React.FC<RowChipProps> = ({label, requestType}) =>  {
   const classes = useStyles();
   return (
     <Stack direction="row" spacing={1} className={classes.root}>
-      <Chip size={'small'} icon={iconMap[requestType]} label={label} color={'primary'} sx={{backgroundColor: requestColors[requestType]}} />
+      <Chip size={'small'} icon={iconMap[requestType]} label={label} color={'primary'} sx={{backgroundColor: chipColors[requestType]}} />
     </Stack>
   );
 }

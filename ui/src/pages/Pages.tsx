@@ -4,24 +4,29 @@ import Credentials from '../Credentials';
 import { AssetInvitePage } from './AssetInvitePage';
 import { AssetProfilePage } from './AssetProfilePage';
 import { CreateAssetAccountPage } from './CreateAssetAccountPage';
+import { IssueAirdropPage } from './IssueAirdropPage';
 import { LoginPage } from './LoginPage';
 import { MyActiveAccountsPage } from './MyActiveAccounts';
 import { PendingActivitiesPage } from './PendingActivitiesPage';
-import { SendPageWide } from './SendPageWide';
+import { PendingActivityDetailsPage } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
+import { SendPage} from './SendPage';
 import { SwapPage } from './SwapPage';
 
 interface PagesProps {
   setCredentials: (credentials: Credentials) => void
 }
 export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
-
   return (
     <Routes>
-      <Route path='/pending' element={<PendingActivitiesPage />
+      <Route path='/pending/:direction' element={<PendingActivitiesPage />
       } />
-      <Route path='/send/:issuer/:ticker' element={<SendPageWide />
+      <Route path='/pending-activity' element={<PendingActivityDetailsPage />
+      } />
+      <Route path='/send/:issuer/:ticker' element={<SendPage />
       } />
       <Route path='/swap/:issuer/:ticker' element={<SwapPage />
+      } />
+      <Route path='/issue/:issuer/:ticker' element={<IssueAirdropPage />
       } />
       <Route path='/invite/:issuer/:ticker' element={<AssetInvitePage />
       } />
@@ -29,7 +34,7 @@ export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
       } />
       <Route path='/login' element={<LoginPage onLogin={setCredentials} />
       } />
-      <Route path='/create-asset-account' element={<CreateAssetAccountPage />
+      <Route path='/create' element={<CreateAssetAccountPage />
       } />
       <Route path='/' element={<MyActiveAccountsPage />
       } />
