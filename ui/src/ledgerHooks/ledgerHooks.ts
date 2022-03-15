@@ -7,6 +7,8 @@ export const useGetAllAssetAccounts = () => {
   const assetHoldingAccounts = useStreamQueries(Account.AssetHoldingAccount);
   return assetHoldingAccounts
 }
+
+// used to get all of user's issued assets
 export const useGetMyIssuedAssetAccounts = () => {
   const party = useParty();
   const assetHoldingAccounts = useStreamQueries(Account.AssetHoldingAccount, () => [{assetType: {issuer: party}}]);
