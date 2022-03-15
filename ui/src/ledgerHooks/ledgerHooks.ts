@@ -12,6 +12,19 @@ export const useGetMyIssuedAssetAccounts = () => {
   const assetHoldingAccounts = useStreamQueries(Account.AssetHoldingAccount, () => [{assetType: {issuer: party}}]);
   return assetHoldingAccounts
 }
+interface useGetMyOwnedAssetsByAssetType {
+  issuer: string;
+  owner: string;
+  symbol: string;
+  isFungible: boolean;
+  reference?: string;
+}
+
+// Get all Asset owned templates based on fields
+export const useGetMyOwnedAssetsByAssetType = ({issuer, symbol, isFungible, owner, reference}: useGetMyOwnedAssetsByAssetType) => {
+  const assetHoldingAccounts = useStreamQueries(Asset.Asset, () => [{owner, assetType: {issuer, symbol, fungible: isFungible, reference}}]);
+  return assetHoldingAccounts
+}
 
 export const useLedgerHooks = () => {
   const ledger = useLedger();
