@@ -10,6 +10,7 @@ import { makeStyles } from '@mui/styles';
 import { AssetAccountRowProps } from '../AssetAccountRow/AssetAccountRow';
 import { CardActionArea } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
+import { useGetMyOwnedAssetsByAssetType } from '../../ledgerHooks/ledgerHooks';
 
 //TODO: issuer and owner currently hardcoded as 'me'
 const useStyles = makeStyles((theme: Theme) => ({
@@ -56,6 +57,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, isIssuedByMeTab, ticker, quantity, owner, isShareable, isFungible, isAirdroppable }) => {
   const classes = useStyles()
+  const myOwnedAssetsByAssetType = useGetMyOwnedAssetsByAssetType({issuer, symbol: ticker, isFungible: true, owner});
+  console.log(myOwnedAssetsByAssetType)
   const assetProfilePath = `/asset/${issuer}/${ticker}`
  
   return (
