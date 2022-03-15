@@ -6,35 +6,45 @@ import Asset
 import Account
 
 import DA.Assert
+import DA.List
 import Daml.Script
 import DA.Optional
 
-test = do
+accountAssets : AssetHoldingAccount -> Script [ContractId Asset] 
+accountAssets account = do
+  assets <- queryFilter @Asset account.owner
+    (\asset -> asset.owner==account.owner && asset.assetType==account.assetType)
+  return (unzip assets)._1
+
+accountBalance : AssetHoldingAccount -> Script Decimal 
+accountBalance account = do
+  assets <- queryFilter @Asset account.owner
+    (\asset -> (asset.owner==account.owner) && (asset.assetType==account.assetType))
+  case assets of
+    [] -> return 0.0
+    _ -> return (sum . map (\x -> x.amount) $ (unzip assets)._2)
+
+data TestParties = TestParties with
+  alice: Party
+  bob: Party
+  chris: Party
+  dianne: Party
+
+setupParties: Script TestParties
+setupParties = do
   alice <- allocateParty "Alice"
   bob <- allocateParty "Bob"
   chris <- allocateParty "Chris"
   dianne <- allocateParty "Dianne"
+  return $ TestParties with ..
 
-  let
-    accountAssets : AssetHoldingAccount -> Script [ContractId Asset] 
-    accountAssets account = do
-      assets <- queryFilter @Asset account.owner
-        (\asset -> (asset.owner==account.owner) && (asset.assetType==account.assetType))
-      return (unzip assets)._1
+test = do
 
-  let
-    accountBalance : AssetHoldingAccount -> Script Decimal 
-    accountBalance account = do
-      assets <- queryFilter @Asset account.owner
-        (\asset -> (asset.owner==account.owner) && (asset.assetType==account.assetType))
-      case assets of
-        [] -> return 0.0
-        _ -> return (sum . map (\x -> x.amount) $ (unzip assets)._2)
-
+  tP@TestParties{..} <- setupParties
 
   let 
     alice_tkn = AssetType with
-      issuer = alice
+      issuer = tP.alice
       symbol = "ALC"
       fungible = True
       reference = None
@@ -93,16 +103,49 @@ test = do
       amount = 5.0
 
   -- Alice transfers 5 ALC to Bob
-  aliceAssetsCids <- accountAssets aliceALCAcc
-  bobTransferCid <- submit alice do
-    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Create_Transfer with
-      assetsCids = aliceAssetsCids
-      amount = 5.0
-      recipient = bob
+  aliceAssetCids <- accountAssets aliceALCAcc
+  submit alice do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Create_Transfers with
+      assetCids = aliceAssetCids
+      transfers = [(5.0, bob)]
+
+  bobTransfers <- queryFilter @AssetTransfer bob (\tx -> tx.recipient==bob)
+  let bobTransferCid = (head bobTransfers)._1
+
+  aliceACLbalance <- accountBalance aliceALCAcc
+  aliceACLbalance === 25.0
+
+  -- Asset issuer or owner cannot accept transfer by calling Accept_Transfer choice on Asset contract
+  submitMustFail alice do
+    exerciseCmd bobTransferCid Accept_Transfer
+
+  -- Test mismatch between transfer recipient party and account owner
+  submitMustFail alice do
+    exerciseCmd aliceALCAccCid $ Deposit_Transfer_Into_Account bobTransferCid 
 
   -- Bob accepts transfer of 5 ALC from Alice
   submit bob do
-    exerciseCmd bobTransferCid Accept_Transfer
+    exerciseCmd bobALCAccCid Deposit_Transfer_Into_Account with transferCid = bobTransferCid
+
+  -- Bob cannot accept that same transfer of 5 ALC from Alice twice
+  submitMustFail bob do
+    exerciseCmd bobALCAccCid Deposit_Transfer_Into_Account with transferCid = bobTransferCid
+
+  -- Alice transfers 5 ALC to Chris, who doesn't have corresponding AssetHoldingAccount
+  aliceAssetCids <- accountAssets aliceALCAcc
+  chrisTransferCid <- submit alice do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Create_Transfers with
+      assetCids = aliceAssetCids
+      transfers = [(5.0, chris)]
+  chrisTransfers <- queryFilter @AssetTransfer chris (\tx -> tx.recipient==chris)
+  let chrisTransferCid = (head chrisTransfers)._1
+  -- Chris cannot accept the transfer because Chris doesn't have corresponding AssetHoldingAccount
+  submitMustFail chris do
+    exerciseCmd chrisTransferCid Accept_Transfer
+
+  -- Alice cancels transfer to Chris
+  submit alice do
+    exerciseCmd chrisTransferCid Cancel_Transfer
 
   -- Alice invites Chris to have asset holding account for ALC
   chrisAssetAccountHolderProposalCid <- submit alice do
@@ -116,12 +159,14 @@ test = do
   -- Bob transfers 3 ALC to Chris
   optBobALCAccTuple <- queryContractKey bob (alice_tkn, bob)
   let bobALCAcc = (fromSome optBobALCAccTuple)._2
-  bobAssetsCids <- accountAssets bobALCAcc
+  bobAssetCids <- accountAssets bobALCAcc
   chrisTransferCid <- submit bob do
-    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, bob) Create_Transfer with
-      assetsCids = bobAssetsCids
-      amount = 3.0
-      recipient = chris
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, bob) Create_Transfers with
+      assetCids = bobAssetCids
+      transfers = [(5.0, chris)]
+
+  chrisTransfers <- queryFilter @AssetTransfer chris (\tx -> tx.recipient==chris)
+  let chrisTransferCid = (head chrisTransfers)._1
 
   -- Chris rejects the transfer
   bobTransferCid <- submit chris do
@@ -202,30 +247,49 @@ test = do
   -- Dianne transfers 1 NFT to Alice 
   optDianneNFTAcc <- queryContractId dianne dianneNFTAccCid
   let dianneNFTAcc = fromSome optDianneNFTAcc
-  dianneAssetsCids <- accountAssets dianneNFTAcc
+  dianneAssetCids <- accountAssets dianneNFTAcc
   aliceTransferCid <- submit dianne do
-    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, dianne) Create_Transfer with
-      assetsCids = dianneAssetsCids
-      amount = 1.0
-      recipient = alice
+    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, dianne) Create_Transfers with
+      assetCids = dianneAssetCids
+      transfers = [(1.0, alice)]
+
+  aliceTransfers <- queryFilter @AssetTransfer alice (\tx -> tx.recipient==alice)
+  let aliceTransferCid = (head aliceTransfers)._1
 
   -- Alice accepts transfer of 1 NFT from Dianne
   aliceNFTCid <- submit alice $
-    exerciseCmd aliceTransferCid Accept_Transfer
+    exerciseCmd aliceNFTAccCid Deposit_Transfer_Into_Account with transferCid = aliceTransferCid
 
   -- This tests whether transfer from Alice to Chris is divulged to Dianne
   -- Alice transfers 1 NFT to Chris and Chris accepts the transfer
   optAliceNFTAcc <- queryContractId alice aliceNFTAccCid
   let aliceNFTAcc = fromSome optAliceNFTAcc
-  aliceAssetsCids <- accountAssets aliceNFTAcc
-  chrisTransferCid <- submit alice do
-    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, alice) Create_Transfer with
-      assetsCids = aliceAssetsCids
-      amount = 1.0
-      recipient = chris
+  aliceAssetCids <- accountAssets aliceNFTAcc
+  chrisTransfers <- submit alice do
+    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, alice) Create_Transfers with
+      assetCids = aliceAssetCids
+      transfers = [(1.0, chris)]
+
+  chrisTransfers <- queryFilter @AssetTransfer chris (\tx -> tx.recipient==chris)
+  let chrisTransferCid = (head chrisTransfers)._1
   chrisNFTCid <- submit chris $
-    exerciseCmd chrisTransferCid Accept_Transfer
+    exerciseCmd chrisNFTAccCid Deposit_Transfer_Into_Account with transferCid = chrisTransferCid
   x <- queryContractId dianne chrisNFTCid
   x === None
+
+  -- Bob closes ALC account by creating account close proposal
+  optBobALCAccTuple <- queryContractKey bob (alice_tkn, bob)
+  let bobALCAcc = (fromSome optBobALCAccTuple)._2
+  bobAssetCids <- accountAssets bobALCAcc
+  bobALCAccCloseProposalCid <- submit bob do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, bob) Close_Account
+  -- Alice accepts Bob's account close proposal and burns assets in Bob's account
+  submit alice do
+    exerciseCmd bobALCAccCloseProposalCid AssetHoldingAccountCloseProposal_Accept with
+      assetCids = bobAssetCids
+  bobALCAccBalance <- accountBalance bobALCAcc 
+  bobALCAccBalance === 0.0
+  --optBobALCAccTuple <- queryContractKey bob (alice_tkn, bob)
+  --assert $ isNone optBobALCAccTuple
 
   pure()

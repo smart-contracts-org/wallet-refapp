@@ -10,14 +10,16 @@
 module Account where
 
 import DA.Action
+import DA.List as L
+import DA.Foldable (forA_)
 import Asset
+import DA.Optional (whenSome)
 
 -- AssetHoldingAccount represents an account, where Asset contracts can be held
 -- Assets held in the account are all Asset contracts from Active Contract Set,
 -- where assetType and owner match between Asset and AssetHoldingAccount.
 -- The sum of the amounts of the assets held in the account represents the account balance.
-template AssetHoldingAccount
-  with
+template AssetHoldingAccount with
     -- Combination of issuer, symbol, fungible and reference properties define the asset type that can be held in the account.
     assetType : AssetType
     -- The owner of the account.
@@ -33,7 +35,6 @@ template AssetHoldingAccount
     resharable : Bool 
   where
     signatory assetType.issuer, owner
-
     key (assetType, owner) : (AssetType, Party)
     maintainer key._1.issuer
 
@@ -41,7 +42,7 @@ template AssetHoldingAccount
     nonconsuming choice Invite_New_Asset_Holder : ContractId AssetHoldingAccountProposal
       with
         recipient : Party
-      controller (if resharable then owner else assetType.issuer) 
+      controller if resharable then owner else assetType.issuer
       do
         create AssetHoldingAccountProposal with
           account = this
@@ -67,39 +68,102 @@ template AssetHoldingAccount
     -- contracts held in the account. Client application can query for all active Asset contracts, where assetType and owner 
     -- match between Asset and AssetHoldingAccount, which represent assets held in the account.
     -- Then the list of Asset contract Ids can be passed to this choice allowing the transfer proposal to be created
-    -- as long as the transfer amount is less than the account balance.
-    nonconsuming choice Create_Transfer : ContractId AssetTransfer
+    -- as long as the transfer amount is less than the total amount of the assets passed to the choice.
+    -- This choice is not used. Instead a more universal choice Create_Transfers is utilized.
+{-     nonconsuming choice Create_Transfer : ContractId AssetTransfer
       with
-        assetsCids : [ContractId Asset]
+        assetCids : [ContractId Asset]
         amount : Decimal
         recipient : Party
       controller owner 
       do
+
         assertMsg "Cannot create transfer. The amount of non fungible asset must be 1.0" $
           assetType.fungible || amount==1.0
-        totAssetAmount <- sum . map (\x -> x.amount) <$>  forA assetsCids (\assetCid -> do
+        totAssetAmount <- sum . map (\x -> x.amount) <$> forA assetCids \assetCid -> do
           asset <- fetch assetCid
           assertMsg "Cannot create transfer. Asset type mismatch between asset and account" $
             asset.assetType == assetType
           assertMsg "Cannot create transfer. Owner mismatch between asset and account" $
             asset.owner == owner
           archive assetCid
-          return asset)
-        when (totAssetAmount > amount)(do 
+          return asset
+        when (totAssetAmount > amount) do 
           create Asset with
             assetType
             owner
             amount = totAssetAmount - amount
-          return ())
-        transferAsset <- create Asset with
-          assetType
-          owner
-          amount
-        exercise transferAsset Asset_Transfer with recipient
-        
+          return ()
+        let transferAsset = Asset with ..
+        create AssetTransfer with
+          asset = transferAsset
+          recipient -}
 
-template AssetHoldingAccountProposal
-  with
+    -- The purpose of this choice is to allow client application to create a set of transfer proposals using multiple Asset 
+    -- contracts held in the account. Client application can query for all active Asset contracts, where assetType and owner 
+    -- match between Asset and AssetHoldingAccount, which represent assets held in the account.
+    -- Then the list of Asset contract Ids can be passed to this choice allowing the transfer proposals to be created
+    -- as long as the total amount of all transfers is less than the total amount of assets passed to the choice.
+    nonconsuming choice Create_Transfers : ()
+      with
+        assetCids : [ContractId Asset]
+        transfers : [(Decimal, Party)]
+      controller owner
+      do
+        let (txAmounts, txRecipients) = unzip transfers
+        assertMsg "Non fungible assets must be transferred one at a time and the amount of non fungible asset must be 1.0" $
+          assetType.fungible || (L.length assetCids==1 && L.length transfers==1 && L.head txAmounts==1.0)
+        totAssetAmount <- sum . map (\x -> x.amount) <$> forA assetCids \assetCid -> do
+          asset <- fetch assetCid
+          assertMsg "Asset type mismatch between asset and account" $
+            asset.assetType == assetType
+          assertMsg "Owner mismatch between asset and account" $
+            asset.owner == owner
+          archive assetCid
+          return asset
+        assertMsg "Insufficient funds passed to create transfers" $
+          totAssetAmount >= sum txAmounts
+        forA_ transfers (\tx -> do
+          create AssetTransfer with
+            asset = Asset with
+              assetType
+              owner
+              amount = tx._1
+            recipient = tx._2
+          )
+        when (totAssetAmount > sum txAmounts) do 
+          create Asset with
+            assetType
+            owner
+            amount = (totAssetAmount - sum txAmounts)
+          return ()
+
+    -- The purpose of this choice is to obtain issuer's authority required to accept the transfer.
+    -- This construct ensures that transfers cannot be made to a party without an AssetHoldingAccount corresponding to the asset
+    nonconsuming choice Deposit_Transfer_Into_Account : ContractId Asset
+      with
+        transferCid : ContractId AssetTransfer
+      controller owner 
+      do
+        transfer <- fetch transferCid
+        assertMsg "Asset type mismatch between transfer asset and account" $
+          transfer.asset.assetType == assetType
+        assertMsg "Mismatch between account owner and transfer recipient" $
+          transfer.recipient == owner
+        exercise transferCid Accept_Transfer
+
+    -- Propose/accept pattern for closing the account allows issuer to burn assets held in the account.
+    -- When accepting AssetHoldingAccountCloseProposal, the issuer should archive all Asset contracts
+    -- corresponding to AssetHoldingAccount being closed. This must be imeplemented client side,
+    -- since Daml only allows to query Active Contract Set on the ledger by ContractId or by key,
+    -- thus the list of assets in the account can only be created client side.
+    nonconsuming choice Close_Account : ContractId AssetHoldingAccountCloseProposal
+      controller owner
+      do
+        create AssetHoldingAccountCloseProposal with 
+          account = this
+
+template AssetHoldingAccountProposal with
     account : AssetHoldingAccount
     recipient : Party
   where
@@ -116,4 +180,38 @@ template AssetHoldingAccountProposal
       controller recipient 
       do
         return ()
+
+template AssetHoldingAccountCloseProposal with
+    account : AssetHoldingAccount
+  where
+    signatory account.assetType.issuer, account.owner
+
+    -- The client application should archive all Asset contracts corresponding to AssetHoldingAccount
+    -- when this choice is exercised.
+    choice AssetHoldingAccountCloseProposal_Accept : () 
+      with
+        assetCids : [ContractId Asset]
+      controller account.assetType.issuer
+      do
+        accountCid <- lookupByKey @AssetHoldingAccount (account.assetType, account.owner)
+        whenSome accountCid do
+          \accCid -> do
+            forA_ assetCids \assetCid -> do
+              asset <- fetch assetCid
+              assertMsg "Asset type mismatch between asset and account" $
+                asset.assetType == account.assetType
+              assertMsg "Owner mismatch between asset and account" $
+                asset.owner == account.owner
+              archive assetCid
+            archive accCid
+        return ()
+
+    choice AssetHoldingAccountCloseProposal_Reject : ()
+      controller account.assetType.issuer 
+      do
+        return ()
+
+
+
+
 
