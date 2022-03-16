@@ -1,7 +1,8 @@
-import { useLedger, useParty } from '@daml/react';
+import { useFetch, useLedger, useParty } from '@daml/react';
 import { Account, Asset } from '@daml.js/wallet-refapp';
 import { useStreamQueries } from '@daml/react';
 import { ContractId } from '@daml/types';
+import { AssetTransfer } from '@daml.js/wallet-refapp/lib/Asset';
 
 export const useGetAllAssetAccounts = () => {
   const assetHoldingAccounts = useStreamQueries(Account.AssetHoldingAccount);
@@ -33,9 +34,35 @@ export const useGetAssetHoldingAccount = ({ isAirdroppable, isShareable, issuer,
   const assetHoldingAccount = useStreamQueries(Account.AssetHoldingAccount, () => [{ airdroppable: isAirdroppable, reshareable: isShareable, owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
   return assetHoldingAccount
 }
+
+interface GetSingleAssetSendRequest {
+  recipient: string;
+  symbol: string;
+  isFungible: boolean;
+  reference: string;
+  amount: string;
+  owner: string;
+  issuer:string;
+}
+
+interface useGetAssetTransferByContractId {
+  contractId: ContractId<AssetTransfer>;
+}
+export const useGetAssetTransferByContractId = (arg: useGetAssetTransferByContractId) => {
+  const contract = useFetch(Asset.AssetTransfer, arg.contractId)
+  return contract
+}
+
+export const useGetSingleAssetSendRequest = (args: GetSingleAssetSendRequest) => {
+  console.log(args)
+  const {recipient, symbol, isFungible, reference, amount, owner, issuer} = args;
+  const singleAssetSendRequest = useStreamQueries(Asset.AssetTransfer, () => [{recipient, asset: {amount, owner, assetType: {issuer, fungible: isFungible, symbol, reference} }}]);
+  return singleAssetSendRequest
+}
+// TODO: rename to get all
 export const useGetAssetSendRequests = () => {
-  const assetHoldingAccount = useStreamQueries(Asset.AssetTransfer);
-  return assetHoldingAccount
+  const allAssetSendRequests = useStreamQueries(Asset.AssetTransfer);
+  return allAssetSendRequests
 }
 //TODO;
 export const useGetAssetSwapRequests = () => {
@@ -55,6 +82,14 @@ interface SendAsset {
   recipient: any;
   assetCids: any
 }
+
+interface CancelAssetTransfer {
+  assetTransferCid: ContractId<Asset.Cancel_Transfer>;
+  amount: any;
+  recipient: any;
+  assetCids: any
+}
+
 export const useLedgerHooks = () => {
   const ledger = useLedger();
   const party = useParty();
@@ -67,6 +102,23 @@ export const useLedgerHooks = () => {
       // how to parse error messages? not user friendly
       const result = await ledger.exercise(Account.AssetHoldingAccount.Create_Transfers, assetAccountCid, {
         assetCids, transfers: [{ _1: amount, _2: recipient }]
+      });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
+
+  const cancelAssetTransfer = async ({ assetTransferCid}: CancelAssetTransfer) => {
+    try {
+      // TODO: update documentation
+      // needing to use _1:, _2:, not obvious enough.
+      // how to parse error messages? not user friendly
+      console.log(assetTransferCid)
+      const result = await ledger.exercise(Asset.AssetTransfer.Cancel_Transfer, assetTransferCid, {
       });
 
       return { isOk: true, payload: result }
@@ -104,6 +156,6 @@ export const useLedgerHooks = () => {
     }
   }
 
-  return { sendAsset, createAssetAccount, issueAsset }
+  return { cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
 
 }

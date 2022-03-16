@@ -10,6 +10,8 @@ import { enableFabBack } from '../IssueAirdropPage';
 import { chipColors } from '../../components/RowChip/RowChip';
 import { SwapDetails } from '../../components/SwapDetails/SwapDetails';
 import { demoPartyId } from '../../components/TopAppBar/TopAppBar';
+import { useGetAssetTransferByContractId, useGetSingleAssetSendRequest, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
+import { useParty } from '@daml/react';
 
 export const useQuery = () => {
   const { search } = useLocation();
@@ -87,16 +89,22 @@ export const PendingActivityDetailsPage: React.FC = () => {
   //TODO grab contract details
   const nav = useNavigate();
   const query = useQuery()
+  const party = useParty();
+  const contractId = query.get('contractId')
+  const sendTicker = query.get('sendTicker') || "";
+  const sendAmount = query.get('sendAmount')||"0";
+  const recipient = query.get('receiver') ||""
+  const issuer = query.get('issuer') || ""
   const isInbound = query.get('isInbound')
-
-  //TODO: Delete
-  const inboundTicker = 'REPL';
-  const outboundTicker = 'REPL'
-  const inboundQuantity = 1000;
-  const outboundQuantity = 400;
-  const sendAmount = 500;
-  const sender = demoPartyId;
-  const receiver = demoPartyId
+  //TODO: can we use something else besdies contract
+  const sendContract = useGetAssetTransferByContractId({contractId});
+  console.log('sendcontract', sendContract);
+  
+  const inboundTicker = query.get('inboundTicker');
+  const outboundTicker = query.get('outboundTicker')
+  const inboundQuantity = query.get('inboundQuantity')
+  const outboundQuantity = query.get('outboundQuantity')
+  const sender = query.get('sender');
 
   const replaceProps = {
     inboundQuantity : inboundQuantity, 
@@ -105,7 +113,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
     sendAmount: sendAmount,
     outboundTicker : outboundTicker, 
     sender : sender, 
-    receiver : receiver, 
+    receiver : recipient, 
     isFungible: false,
     isShareable: false, 
     isAirdroppable: false, 
@@ -117,14 +125,26 @@ export const PendingActivityDetailsPage: React.FC = () => {
   const tickerFromQuery = query.get('sendTicker')
   const params = useParams();
   const classes = usePageStyles();
-
+  const ledgerHooks = useLedgerHooks();
+  if(!sendContract){
+    return (
+      <Card>
+        <CardContent>
+          Contract doesn't exist
+        </CardContent>
+      </Card>
+    )
+  }
+  const onCancel = async() => {
+    await ledgerHooks.cancelAssetTransfer({assetTransferCid: sendContract.contract?.contractId})
+  }
 
   const onBack = () => {
     nav(-1)
   }
   // TODO: 
   // Fetch token details useQuery
-  const demoDataQuantity = 100
+
   return (
     <div className={classes.root}>
       { !isMobile() && <div className={classes.buttonContainer} onClick={onBack}>
@@ -146,7 +166,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
                 {isInbound === 'true' ? 'From:' : 'To:'}
               </Typography>
               <Typography variant='caption' color='primary'>
-                {demoPartyId}
+                {recipient}
               </Typography>
             </div>
             {actionLabel !== 'swap' && <Avatar className={classes.avatar}>
@@ -154,13 +174,12 @@ export const PendingActivityDetailsPage: React.FC = () => {
             </Avatar>}
             {actionLabel !== 'swap' && <div className={classes.tickerAmount}>
               {actionLabel !== 'assetInvite' && <Typography sx={{ marginRight: 1 }}>
-                {demoDataQuantity || 0}
+                {sendAmount || 0}
               </Typography>}
               <Typography>
                 { tickerFromQuery || '[TickerName]'}
               </Typography>
             </div>}
-
             {actionLabel === 'swap' && <SwapDetails isInbound={isInbound === 'true' ? true : false} {...replaceProps} />}
             {actionLabel !== 'swap' && <AssetDetails quantity={replaceProps.sendAmount} ticker={tickerFromQuery || '[Ticker]'} {...replaceProps} />}
           </CardContent>
@@ -171,7 +190,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
             {isInbound === 'true' && <Button fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Reject
           </Button>}
-          {isInbound === 'false' && <Button fullWidth sx={{ marginRight: 1 }} variant='outlined'>
+          {isInbound === 'false' && <Button onClick={onCancel} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Cancel
           </Button>}
             <Button fullWidth sx={{ marginRight: 1 }} variant='outlined'>

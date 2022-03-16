@@ -13,6 +13,8 @@ export interface PendingRowProps {
   isNarrow?: boolean;
   templateName?: string;
   receiver: string;
+  issuer: string;
+  contractId?: string;
 }
 
 export const PendingRow: React.FC<PendingRowProps> = (props) => {

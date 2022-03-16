@@ -12,12 +12,14 @@ export const PendingOutboundActivities: React.FC = () => {
     const sender = asset.signatories[0]
     const sendAmount = asset.payload.asset.amount
     const receiver = asset.payload.recipient
+    const contractId = asset.contractId;
     const sendTicker = asset.payload.asset.assetType.symbol
-    
+    const issuer = asset.payload.asset.assetType.issuer
     return (
-      <PendingRow sendTicker={sendTicker} sender={sender}  {...asset} sendAmount={sendAmount} templateName='send' receiver={receiver} isInbound={false} isNarrow={true} key={i}/>
+      <PendingRow contractId={contractId} issuer={issuer} sendTicker={sendTicker} sender={sender} sendAmount={sendAmount} templateName='send' receiver={receiver} isInbound={false} isNarrow={true} key={i}/>
     )
   })
+  
   return (
     <>
       {pendingRows}
