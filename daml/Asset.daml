@@ -37,4 +37,31 @@ template Asset with
     signatory assetType.issuer, owner
     ensure (if assetType.fungible then amount>0.0 else (amount==1.0))
 
+-- The AssetTransfer template represents an asset in transfer.
+-- It provides transfer originator with a choice to cancel the transfer.
+-- It also provides the recipient with a choice to accept or reject the transfer.
+template AssetTransfer
+  with
+    -- The asset to be transferred.
+    asset : Asset
+    -- The recepient of the transfer.
+    recipient : Party
+  where
+    signatory (signatory asset)
+    observer recipient
 
+    choice Cancel_Transfer : ContractId Asset
+      controller asset.owner 
+      do
+        create asset
+
+    choice Reject_Transfer : ContractId Asset
+      controller recipient
+      do
+        create asset
+
+    choice Accept_Transfer : ContractId Asset
+      controller recipient, asset.assetType.issuer
+      do
+        create asset with
+          owner = recipient
