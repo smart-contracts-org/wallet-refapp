@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   row: {
     display: 'flex',
     flexDirection: 'column',
-    marginBottom: theme.spacing(1)
+    marginBottom: theme.spacing(1), 
   },
   rowLabel: {
     marginRight: theme.spacing(1),

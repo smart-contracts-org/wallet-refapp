@@ -6,13 +6,15 @@ export interface PendingRowProps {
   isInbound?: boolean;
   inboundTicker?: string;
   inboundQuantity?: number;
-  sendAmount?: number;
+  sendAmount?: number | string;
   sendTicker?: string;
   outboundTicker?: string;
   outboundQuantity?: number;
   isNarrow?: boolean;
   templateName?: string;
   receiver: string;
+  issuer: string;
+  contractId?: string;
 }
 
 export const PendingRow: React.FC<PendingRowProps> = (props) => {

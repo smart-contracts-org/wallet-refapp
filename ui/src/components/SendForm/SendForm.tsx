@@ -36,9 +36,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   helpMessage: {
     margin: theme.spacing(1, 0, 1, 0),
   },
+  errorCard: {
+    backgroundColor: theme.palette.error.dark
+  }
 }))
-
-
 
 export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isAirdroppable,isFungible,isShareable, quantity, ticker, owner }) => {
   const classes = useStyles();
@@ -56,17 +57,15 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
   const [hasError, setError] = React.useState<boolean>(false);
   
-  // TODO: 
-  // Create Form to send
+
   const onSubmit = async () => {
     setLoading(true);
-    console.log('asset', assetAccountCid)
     const result = await ledgerHooks.sendAsset({assetAccountCid, amount, recipient, assetCids })
     if(result.isOk){
       setLoading(false);
       setSuccessful(true);
+      setError(false);
     } else {
-      console.log(result)
       setSuccessful(false);
       setLoading(false);
       setError(true);
@@ -74,9 +73,10 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
   }
 
   const onReset = () => {
-    setAmount("0");
+    setAmount("");
     setRecipient("");
     setSuccessful(false);
+    setError(false)
   }
   return (
     <>
@@ -96,11 +96,13 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
           </Typography>
         </Box>
         <TextField
+          
           disabled={isLoading || isSuccessful}
           margin="normal"
           id="recipient"
           label="Recipient"
           type="text"
+          value={recipient}
           fullWidth
           variant="outlined"
           size='small'
@@ -110,6 +112,7 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
           disabled={isLoading || isSuccessful}
           margin="none"
           id="amount"
+          value={amount}
           label="Amount"
           type="number"
           fullWidth
@@ -145,10 +148,13 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
           {isSuccessful ? 'Complete, make another transaction' : 'Send'}
         </LoadingButton>
         <Button variant='outlined' onClick={onCancel}>
-          Cancel
+          {isSuccessful ? 'Back' : 'Cancel'}
         </Button>
       </FormControl>
-      {hasError && <Card><CardContent>Error in sending</CardContent></Card>}
+      {hasError && <Card className={classes.errorCard}  sx={{margin: 1, width: '100%'}} ><CardContent><Typography>
+      An error was encountered, please try again. 
+        </Typography>
+        </CardContent></Card>}
     </>
   );
 }
