@@ -1,15 +1,17 @@
 -- Copyright (c) 2021 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
 -- SPDX-License-Identifier: Apache-2.0
 
--- A simple transferrable asset with issuer and owner.
+-- A simple asset with issuer and owner.
+-- This module is intended to be used in conjunction with Account module, which implements the account for holding assets
+-- An Asset contract can be created without corresponding AssetHoldingAccount contract, however all manipulation
+-- of the asset (transfer etc.) can only be done through corresponding account
 
 module Asset where
 
 -- Asset type is identified by a combination of issuer, symbol, fungible and reference properties.
 -- Optional reference field can be used for purposes like
 -- identifying a specific item in a run of non-fungible tokens.
-data AssetType = AssetType 
-  with
+data AssetType = AssetType with
     -- The issuer of the asset.
     issuer: Party
     -- A symbol for the asset. Uniquely identifies the type of asset amongst
@@ -18,66 +20,22 @@ data AssetType = AssetType
     -- Is the asset fungible, i.e. can it be split and merged
     fungible : Bool
     -- A possible reference for NFTs and the like
-    reference : Optional Text
-     
+    reference : Optional Text     
   deriving (Eq, Show)
   
 -- The Asset template represents an asset holding.
 -- An Asset is co-signed by the issuer and the owner.
 -- Thus, an Asset is a contract between issuer and owner and can 
 -- represent assets as well as liabilities.
-template Asset
-  with
+template Asset with
     assetType : AssetType
     -- The asset owner
     owner : Party
     -- The amount of the asset
     amount : Decimal
-
   where
     signatory assetType.issuer, owner
     ensure (if assetType.fungible then amount>0.0 else (amount==1.0))
-
-    choice Asset_Transfer : ContractId AssetTransfer
-      with
-        recipient : Party
-      controller owner 
-      do
-        create AssetTransfer with
-          asset = this
-          recipient
-
-    -- Asset_Split and Asset_Merge choices are not currently used.
-    -- Perhaps they should be removed
-    choice Asset_Split : (ContractId Asset, ContractId Asset)
-      with
-        splitAmount : Decimal
-      controller owner
-      do
-        assertMsg "Non fungible asset cannot be split" assetType.fungible
-        assertMsg "Split amount must be smaller than the original asset amount" $
-          splitAmount <= amount
-        cid1 <- create this with
-          amount = splitAmount
-        cid2 <- create this with
-          amount = amount - splitAmount
-        return (cid1, cid2)
-
-    -- Asset_Split and Asset_Merge choices are not currently used.
-    -- Perhaps they should be removed
-    choice Asset_Merge : ContractId Asset
-      with
-        mergeAssetCid : ContractId Asset
-      controller owner
-      do
-        assertMsg "Non fungible asset cannot be merged" assetType.fungible
-        mergeAsset <- fetch mergeAssetCid
-        assertMsg "Asset types do not match" $
-          assetType == mergeAsset.assetType
-        archive mergeAssetCid
-        create this with
-          amount = amount + mergeAsset.amount
-
 
 -- The AssetTransfer template represents an asset in transfer.
 -- It provides transfer originator with a choice to cancel the transfer.
@@ -103,7 +61,7 @@ template AssetTransfer
         create asset
 
     choice Accept_Transfer : ContractId Asset
-      controller recipient
+      controller recipient, asset.assetType.issuer
       do
         create asset with
           owner = recipient
