@@ -11,6 +11,7 @@ import { AssetAccountRowProps } from '../AssetAccountRow/AssetAccountRow';
 import { CardActionArea } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import { useGetMyOwnedAssetsByAssetType } from '../../ledgerHooks/ledgerHooks';
+import { Asset } from '@daml.js/wallet-refapp/lib/Asset';
 
 //TODO: issuer and owner currently hardcoded as 'me'
 const useStyles = makeStyles((theme: Theme) => ({
@@ -55,12 +56,21 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
+export const getAssetSum = (assetContracts: any)=> {
+  let sum = 0; 
+  for(let contract of assetContracts){
+    console.log('contract', contract)
+    //TODO: fix type
+    sum += parseFloat(contract?.payload?.amount)
+  }
+  return sum;
+}
+
 export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, isIssuedByMeTab, ticker, quantity, owner, isShareable, isFungible, isAirdroppable }) => {
   const classes = useStyles()
-  const myOwnedAssetsByAssetType = useGetMyOwnedAssetsByAssetType({issuer, symbol: ticker, isFungible: true, owner});
-  console.log(myOwnedAssetsByAssetType)
+  const {loading, contracts} = useGetMyOwnedAssetsByAssetType({issuer, symbol: ticker, isFungible: true, owner});
   const assetProfilePath = `/asset/${issuer}/${ticker}`
- 
+  const assetSum = getAssetSum(contracts);
   return (
     <>
       <Card className={classes.root}  >
@@ -76,12 +86,11 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
               <Typography sx={{ fontSize: 14, marginRight: 1 }} color="text.primary" >
                 {ticker}
               </Typography>
-              <Typography className={classes.quantity} sx={{ fontSize: 14 }} color="text.secondary" >
-                {quantity}
-              </Typography>
+              {!loading && <Typography className={classes.quantity} sx={{ fontSize: 14 }} color="text.secondary" >
+                {assetSum}
+              </Typography>}
             </div>
             {!isIssuedByMeTab && issuer === owner && <div className={classes.expandButton}><RowChip requestType={'issuer'} label='Issuer' /></div>}
-
           </CardContent>
         </CardActionArea>
       </Card>
