@@ -90,12 +90,14 @@ export const PendingActivityDetailsPage: React.FC = () => {
   const nav = useNavigate();
   const query = useQuery()
   const myPartyId = useParty();
+  const [isCancelled, setIsCancelled] = React.useState(false);
   const contractId = query.get('contractId')
   const sendTicker = query.get('sendTicker') || "";
   const sendAmount = query.get('sendAmount')||"0";
   const recipient = query.get('receiver') ||""
   const issuer = query.get('issuer') || ""
   const isInbound = query.get('isInbound')
+  
   //TODO: can we use something else besdies contract
   const sendContract = useGetAssetTransferByContractId({contractId});
   console.log('sendcontract', sendContract);
@@ -136,7 +138,10 @@ export const PendingActivityDetailsPage: React.FC = () => {
     )
   }
   const onCancel = async() => {
-    await ledgerHooks.cancelAssetTransfer({assetTransferCid: sendContract.contract?.contractId})
+    const result = await ledgerHooks.cancelAssetTransfer({assetTransferCid: sendContract.contract?.contractId})
+    if(result.isOk){
+      setIsCancelled(true);
+    }
   }
   const onAccept = async() => {
     await ledgerHooks.acceptAssetTransfer({assetTransferCid: sendContract.contract?.contractId})
@@ -184,6 +189,9 @@ export const PendingActivityDetailsPage: React.FC = () => {
             {actionLabel === 'swap' && <SwapDetails isInbound={isInbound === 'true' ? true : false} {...replaceProps} />}
             {actionLabel !== 'swap' && <AssetDetails quantity={replaceProps.sendAmount} ticker={tickerFromQuery || '[Ticker]'} {...replaceProps} />}
           </CardContent>
+          {
+            isCancelled && <Card sx={{margin: 1}}><CardContent>Cancelled</CardContent></Card>
+          }
           <div className={classes.actions}>
             {isInbound === 'true' && <Button onClick={onAccept} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
               Accept
@@ -191,13 +199,14 @@ export const PendingActivityDetailsPage: React.FC = () => {
             {isInbound === 'true' && <Button fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Reject
           </Button>}
-          {isInbound === 'false' && <Button onClick={onCancel} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
+          {isInbound === 'false' && !isCancelled && <Button disabled={isCancelled} onClick={onCancel} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Cancel
           </Button>}
             <Button fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Back
           </Button>
           </div>
+          
         </Card>
       </Box>
 
