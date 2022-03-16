@@ -22,7 +22,7 @@ export const SendPage: React.FC = () => {
   const contractId = query.get('contractId') as ContractId<AssetHoldingAccount>
   const isFungible = query.get('isFungible') === 'true'
   const isShareable = query.get('isShareable') === 'true'
-  const isAirdroppable=query.get('isAirdroppable') === 'true'
+  const isAirdroppable = query.get('isAirdroppable') === 'true'
   const onBack = () => {
     nav(-1)
   }
