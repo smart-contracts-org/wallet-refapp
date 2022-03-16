@@ -55,7 +55,7 @@ export const IssueAirdropPage: React.FC = () => {
               <Button sx={{ marginRight: 0.5 }} onClick={() => { onButtonClick(1) }} fullWidth variant={index === 1 ? 'contained' : 'outlined'} >Issue to Self</Button>
               <Button sx={{ marginLeft: 0.5 }} onClick={() => { onButtonClick(2) }} fullWidth variant={index === 2 ? 'contained' : 'outlined'}>Airdrop</Button>
             </Box>
-            {index === 1 && <IssueToSelfForm  ticker={params.ticker} />}
+            {index === 1 && <IssueToSelfForm handleClose={() => {}}  ticker={params.ticker} />}
             {index === 2 && <AirdropForm />}
           </CardContent>
         </Card>
