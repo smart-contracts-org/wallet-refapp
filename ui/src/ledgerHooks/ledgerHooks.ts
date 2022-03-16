@@ -65,6 +65,13 @@ export const useGetAssetSendRequests = (isInbound?: boolean) => {
   const allAssetSendRequests = useStreamQueries(Asset.AssetTransfer, () => [{recipient: isInbound? myPartyId : undefined}]);
   return allAssetSendRequests
 }
+
+export const useGetAssetInviteRequests = (isInbound?: boolean) => {
+  const myPartyId = useParty();
+  const allAssetSendRequests = useStreamQueries(Account.AssetHoldingAccountProposal, () => [{recipient: isInbound? myPartyId : undefined}]);
+  return allAssetSendRequests
+}
+
 export const useGetMyInboundAssetSendRequests = () => {
   const party = useParty();
   const allAssetSendRequests = useStreamQueries(Asset.AssetTransfer, () => [{recipient: party}]);
@@ -109,6 +116,23 @@ export const useLedgerHooks = () => {
       // how to parse error messages? not user friendly
       const result = await ledger.exercise(Account.AssetHoldingAccount.Create_Transfers, assetAccountCid, {
         assetCids, transfers: [{ _1: amount, _2: recipient }]
+      });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
+
+  const inviteNewAssetHolder = async (recipient: string, assetAccountCid: string) => {
+    try {
+      // TODO: update documentation
+      // needing to use _1:, _2:, not obvious enough.
+      // how to parse error messages? not user friendly
+      const result = await ledger.exercise(Account.AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
+      recipient
       });
 
       return { isOk: true, payload: result }
@@ -181,6 +205,6 @@ export const useLedgerHooks = () => {
     }
   }
 
-  return {acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
+  return {inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
 
 }

@@ -10,7 +10,7 @@ import { enableFabBack } from '../IssueAirdropPage';
 import { chipColors } from '../../components/RowChip/RowChip';
 import { SwapDetails } from '../../components/SwapDetails/SwapDetails';
 import { demoPartyId } from '../../components/TopAppBar/TopAppBar';
-import { useGetAssetTransferByContractId, useGetSingleAssetSendRequest, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
+import { useGetAssetInviteRequests, useGetAssetTransferByContractId, useGetSingleAssetSendRequest, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { useParty } from '@daml/react';
 
 export const useQuery = () => {
@@ -100,6 +100,8 @@ export const PendingActivityDetailsPage: React.FC = () => {
   
   //TODO: can we use something else besdies contract
   const sendContract = useGetAssetTransferByContractId({contractId});
+  const inviteContract = useGetAssetInviteRequests();
+  console.log(inviteContract)
   console.log('sendcontract', sendContract);
   
   const inboundTicker = query.get('inboundTicker');
