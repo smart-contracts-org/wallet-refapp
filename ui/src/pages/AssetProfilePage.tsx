@@ -5,7 +5,7 @@ import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
+import { Avatar, Card, CardContent, Fab, IconButton, LinearProgress, Typography } from '@mui/material';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
 import SendIcon from '@mui/icons-material/Send';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -14,6 +14,10 @@ import { isMobile } from '../platform/platform';
 import { enableFabBack } from './IssueAirdropPage';
 import { chipColors } from '../components/RowChip/RowChip';
 import { useParty } from '@daml/react';
+import { numberWithCommas } from '../utils/numberWithCommas';
+import { useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
+import { getAssetSum } from '../utils/getAssetSum';
+import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 
 export const usePageStyles = makeStyles((theme: Theme) => ({
   
@@ -76,8 +80,15 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
 
 export const AssetProfilePage: React.FC = () => {
   const nav = useNavigate();
+  const query = useQuery();
+  const issuer = query.get('issuer')
+  const symbol = query.get('ticker');
+  const isFungible = query.get('isFungible')
   const party = useParty();
   const params = useParams();
+  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer || "", symbol: symbol || "", isFungible: !!isFungible , owner: party });
+  const amount = getAssetSum(contracts);
+  const formattedSum = numberWithCommas(amount)
   const classes = usePageStyles();
   const sendPath = `/send/${params?.issuer}/${params?.ticker}`
   const swapPath = `/swap/${params?.issuer}/${params?.ticker}`
@@ -86,28 +97,32 @@ export const AssetProfilePage: React.FC = () => {
   const onBack = () => {
     nav(-1)
   }
+  if(loading){
+    return (
+      <LinearProgress/>
+    )
+  }
   // TODO: 
   // Fetch token details
-  const demoDataQuantity = 100
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer} onClick={onBack}>
         <IconButton  color='primary'>
           <ArrowBackIosNewIcon />
         </IconButton>
-{isMobile() &&         <Typography color='primary'>Accounts / {params?.ticker}</Typography>
+{isMobile() &&         <Typography color='primary'>Accounts / {symbol}</Typography>
 }      </div>
       <Card variant='outlined' className={classes.card} >
         <CardContent className={classes.cardContent}>
           <Avatar className={classes.avatar}>
-            {params?.ticker?.[0] || 'undefined'}
+            {symbol?.[0] || 'undefined'}
           </Avatar>
           <div className={classes.tickerAmount}>
             <Typography sx={{ marginRight: 1 }} variant='h6'>
-              {demoDataQuantity || 0}
+              {formattedSum || 0}
             </Typography>
             <Typography variant='h6'>
-              {params?.ticker || 'undefined'}
+              {symbol || 'undefined'}
             </Typography>
           </div>
           <div className={classes.actions}>
@@ -148,7 +163,7 @@ export const AssetProfilePage: React.FC = () => {
               </Typography>
             </div>
           </div>
-          <AssetDetails quantity={demoDataQuantity} ticker={params.ticker || 'NA'} />
+          <AssetDetails isFungible={!!isFungible} quantity={amount} ticker={symbol || 'Ticker'} />
         </CardContent>
       </Card>
       

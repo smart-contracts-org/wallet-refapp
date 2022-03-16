@@ -18,6 +18,8 @@ interface PagesProps {
 export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
   return (
     <Routes>
+      <Route path='/asset' element={<AssetProfilePage />
+      } />
       <Route path='/pending/:direction' element={<PendingActivitiesPage />
       } />
       <Route path='/pending-activity' element={<PendingActivityDetailsPage />
@@ -30,8 +32,7 @@ export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
       } />
       <Route path='/invite/:issuer/:ticker' element={<AssetInvitePage />
       } />
-      <Route path='/asset/:issuer/:ticker' element={<AssetProfilePage />
-      } />
+      
       <Route path='/login' element={<LoginPage onLogin={setCredentials} />
       } />
       <Route path='/create' element={<CreateAssetAccountPage />

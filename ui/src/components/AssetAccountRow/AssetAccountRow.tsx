@@ -38,10 +38,11 @@ export interface AssetAccountRowProps {
   isAirdroppable?: boolean;
 }
 
-export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({ issuer, ticker, owner, isShareable }) => {
+export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({isFungible, issuer, ticker, owner, isShareable }) => {
   const classes = useStyles()
-  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: true, owner });
-  const assetProfilePath = `/asset/${issuer}/${ticker}`
+  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner });
+  
+  const assetProfilePath = `/asset?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}`
   const assetSum = getAssetSum(contracts);
   const formattedSum = numberWithCommas(assetSum)
   return (
