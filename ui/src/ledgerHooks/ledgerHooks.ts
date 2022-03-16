@@ -26,6 +26,10 @@ export const useGetMyOwnedAssetsByAssetType = ({issuer, symbol, isFungible, owne
   const assetHoldingAccounts = useStreamQueries(Asset.Asset, () => [{owner, assetType: {issuer, symbol, fungible: isFungible, reference}}]);
   return assetHoldingAccounts
 }
+export const useGetAssetAccountByAssetType = ({issuer, symbol, isFungible, owner, reference}: UseGetMyOwnedAssetsByAssetType) => {
+  const assetHoldingAccounts = useStreamQueries(Account.AssetHoldingAccount, () => [{owner, assetType: {issuer, symbol, fungible: isFungible, reference}}]);
+  return assetHoldingAccounts
+}
 
 export const useLedgerHooks = () => {
   const ledger = useLedger();

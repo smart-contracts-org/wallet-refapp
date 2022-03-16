@@ -15,7 +15,7 @@ import { enableFabBack } from './IssueAirdropPage';
 import { chipColors } from '../components/RowChip/RowChip';
 import { useParty } from '@daml/react';
 import { numberWithCommas } from '../utils/numberWithCommas';
-import { useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
+import { useGetAssetAccountByAssetType, useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
 import { getAssetSum } from '../utils/getAssetSum';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
@@ -84,9 +84,12 @@ export const AssetProfilePage: React.FC = () => {
   const query = useQuery();
   const issuer = query.get('issuer')
   const symbol = query.get('ticker');
-  const isFungible = query.get('isFungible')
+  const isFungible = query.get('isFungible') === 'true'
+  const isShareable = query.get('isShareable') === 'true'
+  const isAirdroppable=query.get('isAirdroppable') === 'true'
   const party = useParty();
   const params = useParams();
+  
   const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer || "", symbol: symbol || "", isFungible: !!isFungible, owner: party });
   const amount = getAssetSum(contracts);
   const formattedSum = numberWithCommas(amount)
@@ -164,7 +167,12 @@ export const AssetProfilePage: React.FC = () => {
               </Typography>
             </div>
           </div>
-          <AssetDetails isFungible={!!isFungible} quantity={amount} ticker={symbol || 'Ticker'} />
+          <AssetDetails 
+          isShareable={!!isShareable} 
+          isAirdroppable={!!isAirdroppable} 
+          owner={party}  
+          issuer={issuer || "issuer"}  
+          isFungible={isFungible} quantity={amount} ticker={symbol || 'Ticker'} />
         </CardContent>
       </Card>
 
