@@ -7,9 +7,10 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
+import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 
 interface InviteNewAssetOwnerFormProps {
-
+  contractId: string;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -32,23 +33,33 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 
-export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = () => {
+export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = ({contractId}) => {
   const classes = useStyles();
+  const [recipient, setRecipient] = React.useState("");
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
   const nav = useNavigate();
+  const ledgerHooks = useLedgerHooks();
+
   const onCancel = () => {
     nav(-1)
   }
-  const onSubmit = () => {
+  const onSubmit = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false)
+    const result = await ledgerHooks.inviteNewAssetHolder(recipient, contractId)
+    console.log(result)
+    if(result.isOk){
+      setLoading(false);
       setSuccessful(true);
-    }, 1000)
+    } else {
+      setLoading(false)
+      setSuccessful(false);
+    }
+    
   }
   const onReset = () => {
     setSuccessful(false);
+    setLoading(false);
   }
   return (
     <>
@@ -61,6 +72,8 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
           fullWidth
           variant="outlined"
           size='small'
+          onChange={(e) => setRecipient(e.currentTarget.value)}
+
         />
         <Card className={classes.helpMessage} elevation={0} variant='outlined'>
         <Typography color='text.primary' variant='body2' p={1}>

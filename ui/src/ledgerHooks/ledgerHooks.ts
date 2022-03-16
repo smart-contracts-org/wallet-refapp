@@ -3,6 +3,7 @@ import { Account, Asset } from '@daml.js/wallet-refapp';
 import { useStreamQueries } from '@daml/react';
 import { ContractId } from '@daml/types';
 import { AssetTransfer } from '@daml.js/wallet-refapp/lib/Asset';
+import { AssetHoldingAccount, AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
 
 export const useGetAllAssetAccounts = () => {
   const assetHoldingAccounts = useStreamQueries(Account.AssetHoldingAccount);
@@ -53,6 +54,11 @@ export const useGetAssetTransferByContractId = (arg: useGetAssetTransferByContra
   return contract
 }
 
+export const useGetAssetHoldingInviteByContractId = (arg: ContractId<AssetHoldingAccountProposal>) => {
+  const contract = useFetch(Account.AssetHoldingAccountProposal, arg)
+  return contract
+}
+
 export const useGetSingleAssetSendRequest = (args: GetSingleAssetSendRequest) => {
   console.log(args)
   const {recipient, symbol, isFungible, reference, amount, owner, issuer} = args;
@@ -65,6 +71,13 @@ export const useGetAssetSendRequests = (isInbound?: boolean) => {
   const allAssetSendRequests = useStreamQueries(Asset.AssetTransfer, () => [{recipient: isInbound? myPartyId : undefined}]);
   return allAssetSendRequests
 }
+
+export const useGetAssetInviteRequests = (isInbound?: boolean) => {
+  const myPartyId = useParty();
+  const allAssetSendRequests = useStreamQueries(Account.AssetHoldingAccountProposal, () => [{recipient: isInbound? myPartyId : undefined}]);
+  return allAssetSendRequests
+}
+
 export const useGetMyInboundAssetSendRequests = () => {
   const party = useParty();
   const allAssetSendRequests = useStreamQueries(Asset.AssetTransfer, () => [{recipient: party}]);
@@ -118,8 +131,25 @@ export const useLedgerHooks = () => {
 
     }
   }
+
+  const inviteNewAssetHolder = async (recipient: string, assetAccountCid: ContractId<AssetHoldingAccount>) => {
+    try {
+      // TODO: update documentation
+      // needing to use _1:, _2:, not obvious enough.
+      // how to parse error messages? not user friendly
+      const result = await ledger.exercise(Account.AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
+      recipient
+      });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
   
-  const acceptAssetTransfer = async ({ assetTransferCid}: CancelAssetTransfer) => {
+  const acceptAssetTransfer = async (assetTransferCid: ContractId<Asset.Accept_Transfer>) => {
     try {
       // TODO: update documentation
       // needing to use _1:, _2:, not obvious enough.
@@ -136,8 +166,32 @@ export const useLedgerHooks = () => {
     }
   }
 
+  const exerciseAssetHolderInvite = async (assetHoldingAccountProposalCid: ContractId<Asset.Accept_Transfer | Asset.Cancel_Transfer | Asset.Reject_Transfer>, action: string) => {
+    
+    const map = {
+      accept: Account.AssetHoldingAccountProposal.AssetHoldingAccountProposal_Accept,
+      reject: Account.AssetHoldingAccountProposal.AssetHoldingAccountProposal_Reject,
+      cancel: Account.AssetHoldingAccountProposal.Archive
+    }
+    
+    try {
+      // TODO: update documentation
+      // needing to use _1:, _2:, not obvious enough.
+      // how to parse error messages? not user friendly
+      // TODO: Fix this type error
+      const result = await ledger.exercise(map[action], assetHoldingAccountProposalCid, {
+      });
 
-  const cancelAssetTransfer = async ({ assetTransferCid}: CancelAssetTransfer) => {
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
+
+
+  const cancelAssetTransfer = async (assetTransferCid: ContractId<Asset.Cancel_Transfer>) => {
     try {
       // TODO: update documentation
       // needing to use _1:, _2:, not obvious enough.
@@ -181,6 +235,6 @@ export const useLedgerHooks = () => {
     }
   }
 
-  return {acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
+  return {exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
 
 }

@@ -99,7 +99,7 @@ export const PendingRowContents: React.FC<PendingRowProps> = ({contractId, recei
 
 
   const path = `/pending-activity?isInbound=${isInbound ? 'true': 'false'}&templateName=${templateName}&sender=${sender}&inboundTicker=${inboundTicker}&sendAmount=${sendAmount}&sendTicker=${sendTicker}&outboundTicker=${outboundTicker}&outboundQuantity=${outboundQuantity}&receiver=${receiver}&issuer=${issuer}&contractId=${contractId}`
-
+console.log(templateName)
   return (
     <>
       <Card className={classes.card}>
@@ -108,17 +108,17 @@ export const PendingRowContents: React.FC<PendingRowProps> = ({contractId, recei
             <Avatar className={classes.avatar}>
               {templateName === 'send' && <SendIcon />}
               {templateName === 'swap' && <SwapHorizIcon />}
-              {templateName !== 'swap' && templateName!== 'send' && <AccountBalanceWalletIcon />}
+              {templateName === 'assetInvite' &&  <AccountBalanceWalletIcon />}
             </Avatar>
             {
-              templateName==='send' &&  <SendRowContents isInbound={isInbound} receiver={receiver} sendAmount={sendAmount} isNarrow={isNarrow} sender={sender} sendTicker={sendTicker} outboundTicker={outboundTicker} />
+              templateName==='send' &&  <SendRowContents issuer={issuer} isInbound={isInbound} receiver={receiver} sendAmount={sendAmount} isNarrow={isNarrow} sender={sender} sendTicker={sendTicker} outboundTicker={outboundTicker} />
             }
             {
               templateName==='swap' &&  <PendingSwapRowContents 
-                receiver={receiver} outboundQuantity={outboundQuantity} outboundTicker={outboundTicker} isInbound={isInbound} sender={sender} inboundQuantity={inboundQuantity} inboundTicker={inboundTicker} />
+                receiver={receiver} outboundQuantity={outboundQuantity} outboundTicker={outboundTicker} isInbound={isInbound} sender={sender} inboundQuantity={inboundQuantity} inboundTicker={ inboundTicker} />
             }
             {
-              templateName === 'assetInvite' && <PendingAssetInviteRowContent receiver={receiver} isInbound={isInbound} sender={sender} inboundTicker={inboundTicker}/>
+              templateName === 'assetInvite' && <PendingAssetInviteRowContent issuer={issuer} receiver={receiver} isInbound={isInbound} sender={sender} inboundTicker={sendTicker || inboundTicker}/>
             }
             {!isMobile() && <div className={classes.actions}>
               {isInbound && <Button className={classes.button} variant='outlined' size="small" onClick={onAccept}>Accept</Button>}
