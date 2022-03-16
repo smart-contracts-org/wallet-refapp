@@ -39,6 +39,7 @@ export const App: React.FC = () => {
 
   const onLogout = () => {
     deleteCookie('DAMLHUB_LEDGER_ACCESS_TOKEN')
+    setCredentials(undefined)
     // used because deleting the cookie will not trigger rerender
     setRerender(!rerender);
   }

@@ -70,10 +70,7 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
       setSuccessful(true);
     }, 1000)
   }
-  const onReset = () => {
-    setSuccessful(false);
-  }
-
+  
   const classes = useStyles();
   return (
     <Box display='flex' flexDirection='column'>

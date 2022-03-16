@@ -18,7 +18,6 @@ export const SwapPage: React.FC = () => {
   }
   // TODO: 
   // Fetch token quantity
-  const demoDataQuantity = 100
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer} onClick={onBack}>

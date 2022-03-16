@@ -9,9 +9,8 @@ import { RowChip } from '../RowChip/RowChip';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { AssetAction } from '../../types/AssetAction';
-import { Avatar, CardActionArea, Drawer } from '@mui/material';
+import { Avatar, CardActionArea } from '@mui/material';
 import { Link } from "react-router-dom";
-import { AssetProfilePage } from '../../pages/AssetProfilePage';
 
 //TODO: issuer and owner currently hardcoded as 'me'
 

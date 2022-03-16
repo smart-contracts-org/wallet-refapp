@@ -1,22 +1,25 @@
 -- Copyright (c) 2021 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
 -- SPDX-License-Identifier: Apache-2.0
 
--- This module implements an account for holding and transferring an asset.
+-- This module implements an account for holding assets.
+-- An AssetHoldingAccount can hold only one type of asset. A separate AssetHoldingAccount needs to be created for each type of asset.
 -- Account creation follows propose/accept pattern implemented through AssetHoldingAccount template with
 -- Invite_New_Asset_Holder choice, that creates AssetHoldingAccountProposal contract. 
 -- AssetHoldingAccountProposal_Accept choice creates new AssetHoldingAccount template with the
 -- proposal recipient party as the account owner.
 module Account where
 
-import Daml.Script
-import DA.Optional
+import DA.Action
 import Asset
 
--- AssetHoldingAccount represents an account, where an Asset contract can be held.
+-- AssetHoldingAccount represents an account, where Asset contracts can be held
+-- Assets held in the account are all Asset contracts from Active Contract Set,
+-- where assetType and owner match between Asset and AssetHoldingAccount.
+-- The sum of the amounts of the assets held in the account represents the account balance.
 template AssetHoldingAccount
   with
     -- Combination of issuer, symbol, fungible and reference properties define the asset type that can be held in the account.
-    asset_type : AssetType
+    assetType : AssetType
     -- The owner of the account.
     owner : Party
     -- Specifies whether the issuer can create the Asset in owner's account.
@@ -29,27 +32,17 @@ template AssetHoldingAccount
     -- or both issuer and owner have this privilege.
     resharable : Bool 
   where
-    signatory asset_type.issuer, owner
+    signatory assetType.issuer, owner
 
-    -- The key allows to retrieve active AsssetHoldingAccount contract from the ledger using
-    -- asset type and owner as input (or key). This means that  on the ledger there can be   
-    -- no more than one active AsssetHoldingAccount contract for any given asset type and owner.
-    -- The same key is used in Asset template in the Asset module.
-    -- The use of the same key between Asset and AsssetHoldingAccount templates is a method to
-    -- establish a relationship between asset and account. Using the key defined in AsssetHoldingAccount template
-    -- we can retrieve corresponding Asset contract and vice versa. This can be interpreted as fetching the asset
-    -- held in the account or conversely fecthing the account where the asset is held.
-    key (asset_type, owner) : (AssetType, Party)
+    key (assetType, owner) : (AssetType, Party)
     maintainer key._1.issuer
 
     -- Send an invite for a party to create AssetHoldingAccount for this asset type.
     nonconsuming choice Invite_New_Asset_Holder : ContractId AssetHoldingAccountProposal
       with
         recipient : Party
-      controller (if resharable then owner else asset_type.issuer) 
+      controller (if resharable then owner else assetType.issuer) 
       do
-        --recipientAccCid <- lookupByKey @AssetHoldingAccount (asset_type, recipient)
-        --assertMsg "Cannot invite new asset holder. The recipient already has AssetHoldingAccount for this asset type" (isNone recipientAccCid)
         create AssetHoldingAccountProposal with
           account = this
           recipient
@@ -59,50 +52,58 @@ template AssetHoldingAccount
     nonconsuming choice Airdrop : ContractId Asset
       with
         amount : Decimal
-      controller asset_type.issuer 
+      controller assetType.issuer 
       do
-        assertMsg "Cannot create airdrop. The target account does not accept airdrops" (airdroppable || asset_type.issuer==owner)
-        assertMsg "Cannot create airdrop. The amount of non fungible asset must be 1.0" (asset_type.fungible || amount==1.0)
-        assetCid <- lookupByKey @Asset (asset_type, owner)
-        assertMsg "Cannot create airdrop. An asset already exists in the account. A non fungible asset can be aidropped only into an empty account" 
-          (asset_type.fungible || isNone assetCid)
-        previous_asset_amount <- case assetCid of
-          Some cid -> do
-            asset <- fetch cid
-            archive cid
-            return asset.amount
-          None -> do
-            return 0.0
+        assertMsg "Cannot create airdrop. The target account does not accept airdrops" $
+          airdroppable || assetType.issuer==owner
+        assertMsg "Cannot create airdrop. The amount of non fungible asset must be 1.0" $ 
+          assetType.fungible || amount==1.0
         create Asset with
-          asset_type
+          assetType
           owner
-          amount = amount + previous_asset_amount
+          amount
 
-    -- A choice to propose transfer of all or a portion of the account balance to another party
+    -- The purpose of this choice is to allow client application to create a transfer proposal using multiple Asset 
+    -- contracts held in the account. Client application can query for all active Asset contracts, where assetType and owner 
+    -- match between Asset and AssetHoldingAccount, which represent assets held in the account.
+    -- Then the list of Asset contract Ids can be passed to this choice allowing the transfer proposal to be created
+    -- as long as the transfer amount is less than the account balance.
     nonconsuming choice Create_Transfer : ContractId AssetTransfer
       with
+        assetsCids : [ContractId Asset]
         amount : Decimal
         recipient : Party
       controller owner 
       do
-        assetCid <- lookupByKey @Asset (asset_type, owner)
-        assertMsg "Cannot create AssetTransfer. Not enough funds in the account" (isSome assetCid)
-        asset <- fetch (fromSome assetCid)
-        assertMsg "Cannot create AssetTransfer. Not enough funds in the account" (amount<=asset.amount) 
-        archive (fromSome assetCid)
-        create asset with amount = asset.amount - amount
-        create AssetTransfer with
-          asset
-          recipient
+        assertMsg "Cannot create transfer. The amount of non fungible asset must be 1.0" $
+          assetType.fungible || amount==1.0
+        totAssetAmount <- sum . map (\x -> x.amount) <$>  forA assetsCids (\assetCid -> do
+          asset <- fetch assetCid
+          assertMsg "Cannot create transfer. Asset type mismatch between asset and account" $
+            asset.assetType == assetType
+          assertMsg "Cannot create transfer. Owner mismatch between asset and account" $
+            asset.owner == owner
+          archive assetCid
+          return asset)
+        when (totAssetAmount > amount)(do 
+          create Asset with
+            assetType
+            owner
+            amount = totAssetAmount - amount
+          return ())
+        transferAsset <- create Asset with
+          assetType
+          owner
           amount
-
+        exercise transferAsset Asset_Transfer with recipient
+        
 
 template AssetHoldingAccountProposal
   with
     account : AssetHoldingAccount
     recipient : Party
   where
-    signatory account.asset_type.issuer
+    signatory account.assetType.issuer
     observer recipient
 
     choice AssetHoldingAccountProposal_Accept : ContractId AssetHoldingAccount
@@ -115,176 +116,3 @@ template AssetHoldingAccountProposal
       controller recipient 
       do
         return ()
-
-
-test = do
-  alice <- allocateParty "Alice"
-  bob <- allocateParty "Bob"
-  chris <- allocateParty "Chris"
-  dianne <- allocateParty "Dianne"
-
-  let 
-    alice_tkn = AssetType with
-      issuer = alice
-      symbol = "ALC"
-      fungible = True
-      reference = None
-
-  -- Alice creates own account as issuer
-  aliceALCAccCid <- submit alice do
-    createCmd AssetHoldingAccount with 
-      asset_type = alice_tkn
-      owner = alice
-      airdroppable = False
-      resharable = True
-
-  -- Owner cannot have more than one account for the same asset type
-  submitMustFail alice do
-    createCmd AssetHoldingAccount with 
-      asset_type = alice_tkn
-      owner = alice
-      airdroppable = True
-      resharable = True 
-
-  -- Alice mints 10 ALC into own account
-  aliceALCCid <- submit alice do
-    createCmd Asset with
-      asset_type = alice_tkn
-      owner = alice
-      amount = 10.0
-
-  -- Alice mints 1another 5 ALC into own account
-  aliceALCCid <- submit alice do
-    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Airdrop with
-      amount = 5.0
-
-  -- Alice invites Bob to have asset holding account for ALC
-  bobAssetAccountHolderProposalCid <- submit alice do
-    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Invite_New_Asset_Holder with
-      recipient = bob
-
-  -- Bob accepts Alice's invite to have asset holding account for ALC
-  bobALCAccCid <- submit bob do
-    exerciseCmd bobAssetAccountHolderProposalCid AssetHoldingAccountProposal_Accept
-
-  -- Alice cannot airdrop into Bob's account because the account is not airdroppable
-  submitMustFail alice do
-    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, bob) Airdrop with
-      amount = 5.0
-
-  -- Alice transfers 5 ALC to Bob
-  bobTransferCid <- submit alice do
-    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Create_Transfer with
-      amount = 5.0
-      recipient = bob
-
-  -- Bob accepts transfer of 5 ALC from Alice
-  submit bob do
-    exerciseCmd bobTransferCid Accept_Transfer
-
-  -- Alice invites Chris to have asset holding account for ALC
-  chrisAssetAccountHolderProposalCid <- submit alice do
-    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Invite_New_Asset_Holder with
-      recipient = chris
-
-  -- Chris accepts Alice's invite to have asset holding account for ALC
-  chrisALCAccCid <- submit chris do
-    exerciseCmd chrisAssetAccountHolderProposalCid AssetHoldingAccountProposal_Accept
-
-  -- Bob transfers 3 ALC to Chris
-  chrisTransferCid <- submit bob do
-    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, bob) Create_Transfer with
-      amount = 3.0
-      recipient = chris
-
-  -- Chris rejects the transfer
-  bobTransferCid <- submit chris do
-    exerciseCmd chrisTransferCid Reject_Transfer
-
-  -- Bob accepts the reverse transfer resulting from Chris's rejection of Bob's transfer of 3 ALC to Chris
-  submit bob do
-    exerciseCmd bobTransferCid Accept_Transfer
-
-  let 
-    bob_tkn = AssetType with
-      issuer = bob
-      symbol = "BOB"
-      fungible = True
-      reference = None
-
-  -- Bob creates own account as issuer
-  bobBOBAccCid <- submit bob do
-    createCmd AssetHoldingAccount with 
-      asset_type = bob_tkn
-      owner = bob
-      airdroppable = True
-      resharable = True
-
-  -- Bob invites Dianne to have asset holding account for BOB
-  dianneAssetAccountHolderProposalCid <- submit bob do
-    exerciseByKeyCmd @AssetHoldingAccount (bob_tkn, bob) Invite_New_Asset_Holder with
-      recipient = dianne
-
-  -- Dianne accepts Bob's invite to have asset holding account for BOB
-  dianneBOBAccCid <- submit dianne do
-    exerciseCmd dianneAssetAccountHolderProposalCid AssetHoldingAccountProposal_Accept
-
-  -- Bob airdrops 20 BOB into Dianne's account
-  dianneBOBCid <- submit bob do
-    exerciseByKeyCmd @AssetHoldingAccount (bob_tkn, dianne) Airdrop with
-      amount = 20.0
-
-  let 
-    chris_nft = AssetType with
-      issuer = chris
-      symbol = "NFT"
-      fungible = False
-      reference = Some "http://google.com"
-
-  -- Chris creates own NFT account as issuer
-  chrisNFTAccCid <- submit chris do
-    createCmd AssetHoldingAccount with 
-      asset_type = chris_nft
-      owner = chris
-      airdroppable = True
-      resharable = True
-
-  -- Chris invites Dianne to have asset holding account for NFT
-  dianneAssetAccountHolderProposalCid <- submit chris do
-    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, chris) Invite_New_Asset_Holder with
-      recipient = dianne
-
-  -- Dianne accepts Chris's invite to have asset holding account for NFT
-  dianneNFTAccCid <- submit dianne do
-    exerciseCmd dianneAssetAccountHolderProposalCid AssetHoldingAccountProposal_Accept
-
-  -- Chris cannot airdrop 20 NFT into Dianne's account because NFT is non fungible
-  submitMustFail chris do
-    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, dianne) Airdrop with
-      amount = 20.0
-
-  -- Chris airdrops 1 NFT into Dianne's account
-  dianneNFTCid <- submit chris do
-    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, dianne) Airdrop with
-      amount = 1.0
-
-    -- Dianne invites Alice to have asset holding account for NFT
-  aliceAssetAccountHolderProposalCid <- submit dianne do
-    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, dianne) Invite_New_Asset_Holder with
-      recipient = alice
-
-  -- Alice accepts Dianne's invite to have asset holding account for NFT
-  aliceNFTAccCid <- submit alice do
-    exerciseCmd aliceAssetAccountHolderProposalCid AssetHoldingAccountProposal_Accept
-
-  -- Dianne transfers 1 NFT to Alice
-  aliceTransferCid <- submit dianne do
-    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, dianne) Create_Transfer with
-      amount = 1.0
-      recipient = alice
-
-  -- Alice accepts transfer of 1 NFT from Dianne
-  aliceNFTCid <- submit alice do
-    exerciseCmd aliceTransferCid Accept_Transfer
-
-  pure()

@@ -5,7 +5,7 @@ import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Button, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
+import { Avatar, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
 import SendIcon from '@mui/icons-material/Send';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -14,9 +14,6 @@ import { isMobile } from '../platform/platform';
 import { enableFabBack } from './IssueAirdropPage';
 import { chipColors } from '../components/RowChip/RowChip';
 import { useParty } from '@daml/react';
-import Drawer from '@mui/material/Drawer';
-import { SendPage } from './SendPage';
-import { SwapPage } from './SwapPage';
 
 export const usePageStyles = makeStyles((theme: Theme) => ({
   

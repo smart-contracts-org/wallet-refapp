@@ -3,28 +3,21 @@ import Card from '@mui/material/Card';
 import { Link } from "react-router-dom";
 
 import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { RowChip } from '../RowChip/RowChip';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { AssetAction } from '../../types/AssetAction';
 import { AssetAccountRowProps } from '../AssetAccountRow/AssetAccountRow';
-import Collapse from '@mui/material/Collapse';
-import { Box, CardActionArea, SwipeableDrawer } from '@mui/material';
+import { CardActionArea } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
-import { AssetDetailsPopupContent } from '../AssetDetailsPopupContent/AssetDetailsPopupContent';
-
-import { PopupContent } from '../PopupContent/PopupContent';
-import { AssetProfilePage } from '../../pages/AssetProfilePage';
+import { useGetMyOwnedAssetsByAssetType } from '../../ledgerHooks/ledgerHooks';
+import { Asset } from '@daml.js/wallet-refapp/lib/Asset';
 
 //TODO: issuer and owner currently hardcoded as 'me'
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    // alignItems: 'start',
-    // width: '100%',
     marginBottom: theme.spacing(1),
   },
   quantity: {
@@ -58,55 +51,26 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginBottom: theme.spacing(0.5)
   },
   drawer: {
-    // height: '80%', 
     padding: 0, 
     margin: 0, 
   }
 }))
 
+export const getAssetSum = (assetContracts: any)=> {
+  let sum = 0; 
+  for(let contract of assetContracts){
+    console.log('contract', contract)
+    //TODO: fix type
+    sum += parseFloat(contract?.payload?.amount)
+  }
+  return sum;
+}
+
 export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, isIssuedByMeTab, ticker, quantity, owner, isShareable, isFungible, isAirdroppable }) => {
   const classes = useStyles()
-  const buttonVariant = 'contained';
+  const {loading, contracts} = useGetMyOwnedAssetsByAssetType({issuer, symbol: ticker, isFungible: true, owner});
   const assetProfilePath = `/asset/${issuer}/${ticker}`
-  const [isExpanded, setExpand] = React.useState<boolean>(false);
-  const [popupContent, setPopupContent] = React.useState<AssetAction | undefined>(undefined)
-  const toggleExpand = () => {
-    setExpand(!isExpanded);
-  }
-
-  const [open, setOpen] = React.useState(false);
-  const selectPopupContent = (contentType: AssetAction) => {
-    setPopupContent(contentType)
-    setOpen(!open)
-  }
-
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
-  };
-
-  const expandContent = (
-    <CardContent>
-      <div className={classes.buttonsContainer}>
-        {isIssuedByMeTab && <Button className={classes.button} variant={buttonVariant} size="medium" onClick={() => selectPopupContent(AssetAction.IssueAirdrop)}>Issue / Airdrop</Button>
-        }
-        {!isIssuedByMeTab && <Button className={classes.button} disabled={issuer !== owner && !isShareable} variant={buttonVariant} size="medium" component={Link} to="/send" onClick={() => selectPopupContent(AssetAction.Send)}>Send</Button>}
-        {!isIssuedByMeTab && <Button className={classes.button} disabled={issuer !== owner && !isShareable} variant={buttonVariant} size="medium" onClick={() => selectPopupContent(AssetAction.Swap)}>Swap</Button>}
-        <Button variant={buttonVariant} disabled={issuer !== owner && !isShareable} size="medium" onClick={() => selectPopupContent(AssetAction.InviteNewAssetOwner)} >Invite New Asset Owner</Button>
-      </div>
-      <AssetDetailsPopupContent
-        ticker={ticker}
-        issuer={issuer}
-        owner={owner}
-        quantity={quantity || 0}
-        isShareable={!!isShareable}
-        isAirdroppable={!!isAirdroppable}
-        isFungible={!!isFungible}
-        handleClose={toggleExpand}
-        isNarrow
-      />
-    </CardContent>
-  )
-
+  const assetSum = getAssetSum(contracts);
   return (
     <>
       <Card className={classes.root}  >
@@ -122,34 +86,14 @@ export const AssetAccountRowNarrow: React.FC<AssetAccountRowProps> = ({ issuer, 
               <Typography sx={{ fontSize: 14, marginRight: 1 }} color="text.primary" >
                 {ticker}
               </Typography>
-              <Typography className={classes.quantity} sx={{ fontSize: 14 }} color="text.secondary" >
-                {quantity}
-              </Typography>
+              {!loading && <Typography className={classes.quantity} sx={{ fontSize: 14 }} color="text.secondary" >
+                {assetSum}
+              </Typography>}
             </div>
             {!isIssuedByMeTab && issuer === owner && <div className={classes.expandButton}><RowChip requestType={'issuer'} label='Issuer' /></div>}
-
-           
           </CardContent>
-
-          <Collapse timeout="auto" in={isExpanded} className={classes.expandContainer}>
-            {expandContent}
-          </Collapse>
         </CardActionArea>
       </Card>
-
-      <SwipeableDrawer
-        anchor="right"
-        open={open}
-        onClose={toggleDrawer(false)}
-        onOpen={toggleDrawer(true)}
-        disableSwipeToOpen={false}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        className={classes.drawer}
-      >
-       <AssetProfilePage/>
-      </SwipeableDrawer>
     </>
   );
 }

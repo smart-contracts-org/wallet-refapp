@@ -12,9 +12,11 @@ import { IssueLater } from '../IssueLater/IssueLater';
 import { CreateAssetAccountSuccess } from '../CreateAssetAccountSuccess/CreateAssetAccountSuccess';
 import { CreateAssetWorkflowDone } from '../CreateAssetWorkflowDone/CreateAssetWorkflowDone';
 
+
 const steps = ['Create Asset Account', 'Issue Assets'];
 
 export const CreateAssetAccountSteps: React.FC = () => {
+
   const isStepFailed = (step: number) => {
     return false;
   };
@@ -43,7 +45,8 @@ export const CreateAssetAccountSteps: React.FC = () => {
   }
 
   //TODO: submitting form calling API
-  const handleSubmit = () => {
+  const onSubmitSuccess = () => {
+    
     setTimeout(() => {
       setSubmitSuccessful(true);
       setDisplayStep(displayedStep+1)
@@ -82,7 +85,7 @@ export const CreateAssetAccountSteps: React.FC = () => {
 
         {displayedStep === 0 && !isSubmitSuccessful && (<Card>
           <CardContent>
-            <CreateAccountForm handleClose={() => { }} handleSubmit={handleSubmit} />
+            <CreateAccountForm onSubmitSuccess={onSubmitSuccess} />
           </CardContent>
         </Card>)
         }
