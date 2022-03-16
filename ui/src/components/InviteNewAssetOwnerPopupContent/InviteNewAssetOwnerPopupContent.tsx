@@ -6,6 +6,7 @@ import { AppBar, Button } from '@mui/material';
 import { InviteNewAssetOwnerForm } from '../InviteNewAssetOwnerForm/InviteNewAssetOwnerForm';
 import { InviteNewAssetOwnerRecipients } from '../InviteNewAssetOwnerRecipients/InviteNewAssetOwnerRecipients';
 import { TabPanel, a11yProps } from '../TabPanel/TabPanel';
+import { isMobile } from '../../platform/platform';
 
 
 export interface InviteNewAssetOwnerPopupContentProps {
@@ -20,7 +21,7 @@ export const InviteNewAssetOwnerPopupContent: React.FC<InviteNewAssetOwnerPopupC
   };
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: isMobile() ? '100%': '500px'}}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <AppBar position="static">
           <Tabs value={value}
@@ -40,7 +41,6 @@ export const InviteNewAssetOwnerPopupContent: React.FC<InviteNewAssetOwnerPopupC
         <Button
         variant='outlined'
         fullWidth
-        size='small'
         onClick={handleClose}
         >
           Cancel

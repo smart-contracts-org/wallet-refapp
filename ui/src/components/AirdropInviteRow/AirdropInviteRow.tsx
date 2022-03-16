@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.warning.light
   },
   accepted: {
-    color: theme.palette.success.light
+    color: theme.palette.success.dark
   }
 }))
 
@@ -55,12 +55,12 @@ export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = ({isAccepted}) 
       </Typography>
             
       <Typography className={clx (classes.status, isAccepted ? classes.accepted : classes.pending)} variant='caption'>
-        pending
+        {isAccepted? 'Accepted' : 'Pending'}
       </Typography>
       <TextField
         margin="none"
         id="quantity"
-        label="Quantity"
+        label="Amount"
         type="number"
         variant="outlined"
         size='small'

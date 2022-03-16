@@ -34,10 +34,11 @@ interface PopupContentProps {
   isShareable: boolean;
   isFungible: boolean;
   isAirdroppable: boolean;
-  owner: string
+  owner: string; 
+  cancelText?: string;
 }
 
-export const PopupContent: React.FC<PopupContentProps> = ({ quantity, issuer, owner, ticker, contentType, handleClose, isAirdroppable, isFungible, isShareable }) => {
+export const PopupContent: React.FC<PopupContentProps> = ({cancelText, quantity, issuer, owner, ticker, contentType, handleClose, isAirdroppable, isFungible, isShareable }) => {
   if (contentType === undefined) {
     return (
       <>
@@ -54,5 +55,6 @@ export const PopupContent: React.FC<PopupContentProps> = ({ quantity, issuer, ow
     isShareable={isShareable}
     isFungible={isFungible}
     handleClose={handleClose} 
+    cancelText={cancelText}
     />
 }

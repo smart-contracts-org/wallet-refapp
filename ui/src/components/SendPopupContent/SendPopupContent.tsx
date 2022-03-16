@@ -6,12 +6,14 @@ import { AppBar, Button } from '@mui/material';
 import { SendForm } from '../SendForm/SendForm';
 import { PendingFeatureSend } from '../PendingFeatureSend/PendingFeatureSend';
 import { TabPanel, a11yProps } from '../TabPanel/TabPanel';
+import { isMobile } from '../../platform/platform';
 
 export interface SendPopupContentProps {
   handleClose: () => void;
   ticker: string;
+  quantity: number;
 }
-export const SendPopupContent: React.FC<SendPopupContentProps> = ({ticker, handleClose}) => {
+export const SendPopupContent: React.FC<SendPopupContentProps> = ({quantity, ticker, handleClose}) => {
 const [value, setValue] = React.useState(0);
 
 const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -19,9 +21,11 @@ const handleChange = (event: React.SyntheticEvent, newValue: number) => {
 };
 
 return (
-  <Box sx={{ width: '100%' }}>
+  <Box sx={{ width: isMobile() ? '100%': '500px',
+  height: '450px',
+  }}>
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-      <AppBar position="static">
+      <AppBar color='primary' position="sticky">
         <Tabs value={value}
           onChange={handleChange}
           aria-label="basic tabs example"
@@ -35,8 +39,8 @@ return (
       </AppBar>
     </Box>
       <TabPanel value={value} index={0}>
-        <SendForm ticker={ticker}/>
-        <Button fullWidth size='small' variant='outlined' onClick={handleClose}>
+        <SendForm ticker={ticker} quantity={quantity}/>
+        <Button fullWidth  variant='outlined' onClick={handleClose}>
           Cancel
         </Button>
       </TabPanel>

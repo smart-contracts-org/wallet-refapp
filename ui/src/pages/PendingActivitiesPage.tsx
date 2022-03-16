@@ -1,16 +1,13 @@
-import {  Toolbar } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { IssuedByMeTab } from '../tabContents/IssuedByMeTab';
-import { OwnedByMeTab } from '../tabContents/OwnedByMeTab';
-import { CreateAssetAccountPage } from './CreateAssetAccountPage';
 import { isMobile } from '../platform/platform';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { PendingInboundActivities } from '../components/PendingInboundActivities/PendingInboundActivities';
-import { PendingOutboundActivities } from '../components/PendingOutboundActivities/PendingOutbouneActivities';
+import { PendingOutboundActivities } from '../components/PendingOutboundActivities/PendingOutboundActivities';
+import { Link, useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -50,28 +47,34 @@ function a11yProps(index: number) {
 }
 
 export const BasicTabs: React.FC<unknown> =() => {
-  const [value, setValue] = React.useState(0);
-
+  const {direction} = useParams();
+  const [value, setValue] = React.useState(direction === 'inbound'? 0 : 1);
+ 
+  React.useEffect(() => {
+    if(direction === 'inbound'){
+      setValue(0)
+    } else {
+      setValue(1)
+    }
+  },[direction])
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-    const classes = useStyles();
-
 
   return (
     <>
       <Box sx={{ marginBottom:1, borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Inbound" {...a11yProps(1)} />
-          <Tab label="Outbound" {...a11yProps(0)} />
+        <Tabs variant={isMobile() ? 'fullWidth': undefined} value={value} onChange={handleChange} aria-label="basic tabs example">
+          <Tab label="Inbound" {...a11yProps(0)} component={Link} to={'/pending/inbound'} />
+          <Tab component={Link} to={'/pending/outbound'} label="Outbound" {...a11yProps(1)} />
 
         </Tabs>
       </Box>
-      <Box sx={{marginLeft: isMobile() ? 2 : 0, marginRight: isMobile()? 2 : 0}}>
-      <TabPanel value={value} index={1}>
+      <Box sx={{marginLeft: isMobile() ? 1 : 0, marginRight: isMobile()? 1 : 0}}>
+      <TabPanel value={value} index={0}>
         <PendingInboundActivities/>
       </TabPanel>
-      <TabPanel value={value} index={0}>
+      <TabPanel value={value} index={1}>
         <PendingOutboundActivities/>
       </TabPanel>
    
@@ -85,7 +88,6 @@ export const PendingActivitiesPage: React.FC = () => {
 
   return (
       <Box component="main" sx={{ flexGrow: 1, }} className={classes.root}>
-        <Toolbar />
         <BasicTabs/>
       </Box>
   )

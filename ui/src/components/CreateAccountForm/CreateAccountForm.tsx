@@ -6,14 +6,13 @@ import { Card, FormControl, Typography } from '@mui/material';
 import React from 'react';
 import WarningIcon from '@mui/icons-material/Warning';
 import { LoadingButton } from '@mui/lab';
-import { ContractsContext } from '../../providers/ContractsProvider';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { isMobile } from '../../platform/platform';
-
+import { useParty } from '@daml/react';
+import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 interface CreateAccountFormProps {
-  handleClose: () => void;
-  handleSubmit?: () => void;
+  onSubmitSuccess?: () => void;
 }
 
 
@@ -39,42 +38,43 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 
-export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleSubmit, handleClose }) => {
+export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSuccess }) => {
   const [isLoading, setLoading] = React.useState<boolean>(false);
+  const [hasError, setError] = React.useState<boolean>(false);
+  const party = useParty();
+  const ledgerHooks = useLedgerHooks();
   const classes = useStyles();
-  const [ticker, setTicker] = React.useState<string>('')
+  const [ticker, setTicker] = React.useState<string | undefined>(undefined)
   const [isShareable, setShareable] = React.useState<boolean>(true);
   const [isFungible, setFungible] = React.useState<boolean>(true);
   const [isAirdroppable, setIsAirdroppable] = React.useState<boolean>(true);
-
-  const contractsContext = React.useContext(ContractsContext)
-
-  const toggleSubmitting = () => {
-    setLoading(!isLoading);
-  }
 
   const onTextChange = (event: React.BaseSyntheticEvent) => {
     setTicker(event.target.value)
   }
 
-  const submit = () => {
-    contractsContext.addNewAccounts({
-      quantity: 0,
-      ticker,
-      issuer: 'me',
-      owner: 'me',
-      isShareable,
-      isFungible,
-      isAirdroppable
-    })
-    console.log('form')
-
-    toggleSubmitting();
-    setTimeout(() => {
-      handleClose()
-      handleSubmit && handleSubmit()
-      toggleSubmitting()
-    }, 1000)
+  const submit = async () => {
+    if(!ticker){
+      setError(true);
+      return;
+    }
+    setLoading(true);
+    
+      const result = await ledgerHooks.createAssetAccount({
+        ticker,
+        isFungible, 
+        reference: '',
+        isAirdroppable, 
+        isShareable, 
+      })
+      if(result.isOk){
+        console.log(result)
+        onSubmitSuccess && onSubmitSuccess()
+      } else {
+      setError(true);
+      setLoading(false);
+      }
+    
   }
   return (
     <div className={classes.formContainer}>
@@ -89,7 +89,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleSubm
             Issuer:
           </Typography>
           <Typography variant='caption' color='primary'>
-            you-user-id
+            {party || 'Demo Party ID'}
          </Typography>
         </div>
       </div>
@@ -102,6 +102,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ handleSubm
           fullWidth
           variant="outlined"
           size='small'
+          error={hasError}
           onChange={(e) => onTextChange(e)}
         />
         <Typography variant='caption' color='text.secondary' mb={1}>
