@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
@@ -15,7 +15,7 @@ import { enableFabBack } from './IssueAirdropPage';
 import { chipColors } from '../components/RowChip/RowChip';
 import { useParty } from '@daml/react';
 import { numberWithCommas } from '../utils/numberWithCommas';
-import { useGetAssetAccountByAssetType, useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
+import { useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
 import { getAssetSum } from '../utils/getAssetSum';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
@@ -82,6 +82,8 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
 export const AssetProfilePage: React.FC = () => {
   const nav = useNavigate();
   const query = useQuery();
+  const location = useLocation();
+  console.log(location)
   const issuer = query.get('issuer')
   const symbol = query.get('ticker');
   const isFungible = query.get('isFungible') === 'true'
@@ -94,10 +96,11 @@ export const AssetProfilePage: React.FC = () => {
   const amount = getAssetSum(contracts);
   const formattedSum = numberWithCommas(amount)
   const classes = usePageStyles();
-  const sendPath = `/send/${params?.issuer}/${params?.ticker}`
-  const swapPath = `/swap/${params?.issuer}/${params?.ticker}`
-  const assetInvitePath = `/invite/${params?.issuer}/${params?.ticker}`
-  const issueAirdropPath = `/issue/${params?.issuer}/${params?.ticker}`
+  const attributesPath = `?issuer=${issuer}&ticker=${symbol}&isFungible=${isFungible}&isShareable=${isShareable }&isAirdroppable=${isAirdroppable}&owner=${party}`
+  const sendPath = `/send${attributesPath}`
+  const swapPath = `/swap${attributesPath}`
+  const assetInvitePath = `/invite${attributesPath}`
+  const issueAirdropPath = `/issue${attributesPath}`
   const onBack = () => {
     nav(-1)
   }
@@ -106,8 +109,7 @@ export const AssetProfilePage: React.FC = () => {
       <LinearProgress />
     )
   }
-  // TODO: 
-  // Fetch token details
+  
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer} onClick={onBack}>

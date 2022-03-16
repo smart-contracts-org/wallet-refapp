@@ -7,11 +7,18 @@ import { isMobile } from '../platform/platform';
 import { usePageStyles } from './AssetProfilePage';
 import { enableFabBack } from './IssueAirdropPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
+import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 
 export const SendPage: React.FC = () => {
   const nav = useNavigate();
+  const query = useQuery();
   const params = useParams();
   const classes = usePageStyles();
+  const issuer = query.get('issuer')
+  const symbol = query.get('ticker');
+  const isFungible = query.get('isFungible') === 'true'
+  const isShareable = query.get('isShareable') === 'true'
+  const isAirdroppable=query.get('isAirdroppable') === 'true'
   const onBack = () => {
     nav(-1)
   }
@@ -32,9 +39,9 @@ export const SendPage: React.FC = () => {
         <Card variant='outlined' >
           <CardContent className={classes.cardContent}>
             <Avatar className={classes.avatar}>
-              {params?.ticker?.[0] || 'undefined'}
+              {symbol?.[0] || 'undefined'}
             </Avatar>
-            <SendForm quantity={demoDataQuantity} ticker={params.ticker || 'NA'} />
+            <SendForm quantity={demoDataQuantity} ticker={symbol || 'NA'} />
           </CardContent>
         </Card>
       </Box>

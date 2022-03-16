@@ -24,13 +24,13 @@ export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
       } />
       <Route path='/pending-activity' element={<PendingActivityDetailsPage />
       } />
-      <Route path='/send/:issuer/:ticker' element={<SendPage />
+      <Route path='/send' element={<SendPage />
       } />
-      <Route path='/swap/:issuer/:ticker' element={<SwapPage />
+      <Route path='/swap' element={<SwapPage />
       } />
-      <Route path='/issue/:issuer/:ticker' element={<IssueAirdropPage />
+      <Route path='/issue' element={<IssueAirdropPage />
       } />
-      <Route path='/invite/:issuer/:ticker' element={<AssetInvitePage />
+      <Route path='/invite' element={<AssetInvitePage />
       } />
       
       <Route path='/login' element={<LoginPage onLogin={setCredentials} />
