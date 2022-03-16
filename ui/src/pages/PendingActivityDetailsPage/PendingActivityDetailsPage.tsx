@@ -138,13 +138,14 @@ export const PendingActivityDetailsPage: React.FC = () => {
   const onCancel = async() => {
     await ledgerHooks.cancelAssetTransfer({assetTransferCid: sendContract.contract?.contractId})
   }
+  const onAccept = async() => {
+    await ledgerHooks.acceptAssetTransfer({assetTransferCid: sendContract.contract?.contractId})
+  }
 
   const onBack = () => {
     nav(-1)
   }
-  // TODO: 
-  // Fetch token details useQuery
-
+  
   return (
     <div className={classes.root}>
       { !isMobile() && <div className={classes.buttonContainer} onClick={onBack}>
@@ -184,7 +185,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
             {actionLabel !== 'swap' && <AssetDetails quantity={replaceProps.sendAmount} ticker={tickerFromQuery || '[Ticker]'} {...replaceProps} />}
           </CardContent>
           <div className={classes.actions}>
-            {isInbound === 'true' && <Button fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
+            {isInbound === 'true' && <Button onClick={onAccept} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
               Accept
             </Button>}
             {isInbound === 'true' && <Button fullWidth sx={{ marginRight: 1 }} variant='outlined'>

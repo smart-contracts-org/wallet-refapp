@@ -35,7 +35,7 @@ export const PendingInboundActivities: React.FC = () => {
   // TODO: fetch pending contracts
   // stream of contracts
   const sendRequests = useGetAssetSendRequests();
-  console.log(sendRequests)
+  console.log('inbound', sendRequests)
   const pendingRows = demoPendingData.map((asset, i)=> {
     return (
       <PendingRow  {...asset} isInbound={true} isNarrow={true} key={i}/>

@@ -111,6 +111,24 @@ export const useLedgerHooks = () => {
 
     }
   }
+  
+  const acceptAssetTransfer = async ({ assetTransferCid}: CancelAssetTransfer) => {
+    try {
+      // TODO: update documentation
+      // needing to use _1:, _2:, not obvious enough.
+      // how to parse error messages? not user friendly
+      console.log(assetTransferCid)
+      const result = await ledger.exercise(Asset.AssetTransfer.Accept_Transfer, assetTransferCid, {
+      });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
+
 
   const cancelAssetTransfer = async ({ assetTransferCid}: CancelAssetTransfer) => {
     try {
@@ -156,6 +174,6 @@ export const useLedgerHooks = () => {
     }
   }
 
-  return { cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
+  return {acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
 
 }

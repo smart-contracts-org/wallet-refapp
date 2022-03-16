@@ -72,10 +72,10 @@ export const BasicTabs: React.FC<unknown> =() => {
       </Box>
       <Box sx={{marginLeft: isMobile() ? 1 : 0, marginRight: isMobile()? 1 : 0}}>
       <TabPanel value={value} index={0}>
-        <PendingInboundActivities/>
+        <PendingOutboundActivities isInbound={true}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <PendingOutboundActivities/>
+        <PendingOutboundActivities isInbound={false}/>
       </TabPanel>
    
       </Box>

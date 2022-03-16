@@ -2,7 +2,11 @@ import React from 'react';
 import { useGetAssetSendRequests } from '../../ledgerHooks/ledgerHooks';
 import { PendingRow } from '../PendingRow/PendingRow';
 
-export const PendingOutboundActivities: React.FC = () => {
+interface PendingActivitiesPageProps {
+  isInbound: boolean;
+}
+
+export const PendingOutboundActivities: React.FC<PendingActivitiesPageProps> = ({isInbound}) => {
   // TODO: fetch pending contracts for swap and assetInvite
   const sendRequests = useGetAssetSendRequests();
   console.log(sendRequests)
@@ -16,7 +20,7 @@ export const PendingOutboundActivities: React.FC = () => {
     const sendTicker = asset.payload.asset.assetType.symbol
     const issuer = asset.payload.asset.assetType.issuer
     return (
-      <PendingRow contractId={contractId} issuer={issuer} sendTicker={sendTicker} sender={sender} sendAmount={sendAmount} templateName='send' receiver={receiver} isInbound={false} isNarrow={true} key={i}/>
+      <PendingRow contractId={contractId} issuer={issuer} sendTicker={sendTicker} sender={sender} sendAmount={sendAmount} templateName='send' receiver={receiver} isInbound={isInbound} isNarrow={true} key={i}/>
     )
   })
   
