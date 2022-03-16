@@ -5,8 +5,7 @@ import Tab from '@mui/material/Tab';
 import { isMobile } from '../platform/platform';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { PendingInboundActivities } from '../components/PendingInboundActivities/PendingInboundActivities';
-import { PendingOutboundActivities } from '../components/PendingOutboundActivities/PendingOutboundActivities';
+import { PendingActivities } from '../components/PendingActivities/PendingActivities';
 import { Link, useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -72,10 +71,10 @@ export const BasicTabs: React.FC<unknown> =() => {
       </Box>
       <Box sx={{marginLeft: isMobile() ? 1 : 0, marginRight: isMobile()? 1 : 0}}>
       <TabPanel value={value} index={0}>
-        <PendingOutboundActivities isInbound={true}/>
+        <PendingActivities isInbound={true}/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <PendingOutboundActivities isInbound={false}/>
+        <PendingActivities isInbound={false}/>
       </TabPanel>
    
       </Box>

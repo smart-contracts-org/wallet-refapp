@@ -89,7 +89,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
   //TODO grab contract details
   const nav = useNavigate();
   const query = useQuery()
-  const party = useParty();
+  const myPartyId = useParty();
   const contractId = query.get('contractId')
   const sendTicker = query.get('sendTicker') || "";
   const sendAmount = query.get('sendAmount')||"0";
@@ -117,7 +117,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
     isFungible: false,
     isShareable: false, 
     isAirdroppable: false, 
-    issuer: demoPartyId, 
+    issuer: issuer, 
     owner: demoPartyId
   }
 

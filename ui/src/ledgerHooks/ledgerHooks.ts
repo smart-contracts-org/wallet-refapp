@@ -60,10 +60,17 @@ export const useGetSingleAssetSendRequest = (args: GetSingleAssetSendRequest) =>
   return singleAssetSendRequest
 }
 // TODO: rename to get all
-export const useGetAssetSendRequests = () => {
-  const allAssetSendRequests = useStreamQueries(Asset.AssetTransfer);
+export const useGetAssetSendRequests = (isInbound?: boolean) => {
+  const myPartyId = useParty();
+  const allAssetSendRequests = useStreamQueries(Asset.AssetTransfer, () => [{recipient: isInbound? myPartyId : undefined}]);
   return allAssetSendRequests
 }
+export const useGetMyInboundAssetSendRequests = () => {
+  const party = useParty();
+  const allAssetSendRequests = useStreamQueries(Asset.AssetTransfer, () => [{recipient: party}]);
+  return allAssetSendRequests
+}
+
 //TODO;
 export const useGetAssetSwapRequests = () => {
   const assetHoldingAccount = useStreamQueries(Asset.AssetTransfer);
