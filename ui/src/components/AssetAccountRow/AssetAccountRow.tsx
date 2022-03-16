@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import { RowChip } from '../RowChip/RowChip';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { Avatar, CardActionArea } from '@mui/material';
+import { Avatar, Box, CardActionArea } from '@mui/material';
 import { Link } from "react-router-dom";
 import { isMobile } from '../../platform/platform';
 import { useGetMyOwnedAssetsByAssetType } from '../../ledgerHooks/ledgerHooks';
@@ -20,10 +20,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'row',
-    marginBottom: theme.spacing(1),
+    alignItems: 'center', 
+    width: '100%'
   },
   quantity: {
     marginRight: theme.spacing(1)
+  }, 
+  button: {
+    marginLeft: theme.spacing(1)
   }
 }))
 
@@ -41,17 +45,15 @@ export interface AssetAccountRowProps {
 export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({isFungible, issuer, ticker, owner, isShareable }) => {
   const classes = useStyles()
   const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner });
-  
   const assetProfilePath = `/asset?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}`
   const assetSum = getAssetSum(contracts);
   const formattedSum = numberWithCommas(assetSum)
   return (
     <>
-      <Card className={classes.root}>
+      <Card sx={{marginBottom: 1}} >
         <CardActionArea component={Link} to={assetProfilePath}
-        sx={{display: isMobile() ? undefined : 'flex'}}
         >
-          <CardContent sx={{ display: 'flex', justifyContent: 'start', alignItems: 'center' }}>
+          <CardContent className={classes.root}  >
             <Avatar sx={{ marginRight: 1 }}>
               {ticker[0]}
             </Avatar>
@@ -63,19 +65,18 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({isFungible, iss
                 {formattedSum}
               </Typography>}
             </div>
-          </CardContent>
-          {!isMobile() && <CardActions sx={{ marginLeft: 'auto' }}>
+            <Box marginLeft={'auto'} display='flex' alignItems='center'>
             {issuer === owner && <RowChip requestType={'issuer'} label='Issuer' />}
-
-            {issuer === owner && <Button variant='outlined' size="small" component={Link} to={`/issue/${issuer}/${ticker}`}>Issue / Airdrop</Button>
+            {!isMobile() && issuer === owner && <Button sx={{marginRight:1}} variant='outlined' size="small" component={Link} to={`/issue/${issuer}/${ticker}`}>Issue / Airdrop</Button>
             }
-            {<Button component={Link} to={`/send/${issuer}/${ticker}`} disabled={issuer !== owner && !isShareable} variant='outlined' size="small"
+            {!isMobile() &&<Button sx={{marginRight:1}} component={Link} to={`/send/${issuer}/${ticker}`} disabled={issuer !== owner && !isShareable} variant='outlined' size="small"
             >Send</Button>}
-            {<Button component={Link} to={`/swap/${issuer}/${ticker}`} disabled={issuer !== owner && !isShareable} variant='outlined' size="small"
+            {!isMobile() &&<Button sx={{marginRight:1}} component={Link} to={`/swap/${issuer}/${ticker}`} disabled={issuer !== owner && !isShareable} variant='outlined' size="small"
             >Swap</Button>}
-            <Button variant='outlined' component={Link} to={`/invite/${issuer}/${ticker} `} disabled={issuer !== owner && !isShareable} size="small"
-            >Invite New Asset Owner</Button>
-          </CardActions>}
+            {!isMobile() &&<Button sx={{marginRight:1}} variant='outlined' component={Link} to={`/invite/${issuer}/${ticker} `} disabled={issuer !== owner && !isShareable} size="small"
+            >Invite New Asset Owner</Button>}
+          </Box>
+          </CardContent>
         </CardActionArea>
       </Card>
     </>

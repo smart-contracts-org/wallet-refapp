@@ -9,10 +9,8 @@ export const FloatingBackButton: React.FC = () => {
     nav(-1)
   }
   return (
-    <Fab sx={{ position: 'fixed', bottom: 20, right: 30 }}>
-        <IconButton color='primary' onClick={onBack}>
+    <Fab onClick={onBack} sx={{ position: 'fixed', bottom: 20, right: 30 }}>
           <ArrowBackIosNewIcon color='info' />
-        </IconButton>
       </Fab>
   )
 }

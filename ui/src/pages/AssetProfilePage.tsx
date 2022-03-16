@@ -18,10 +18,11 @@ import { numberWithCommas } from '../utils/numberWithCommas';
 import { useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
 import { getAssetSum } from '../utils/getAssetSum';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
+import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 
 export const usePageStyles = makeStyles((theme: Theme) => ({
-  
-  
+
+
   root: {
     display: 'flex',
     justifyContent: 'center',
@@ -38,8 +39,8 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'column',
   },
   header: {
-    display: 'flex', 
-    flexDirection: 'row', 
+    display: 'flex',
+    flexDirection: 'row',
     alignItems: 'center'
   },
   headerText: {
@@ -69,10 +70,10 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     flexDirection: 'row'
   },
   buttonContainer: {
-    marginBottom: theme.spacing(0.5), 
-    display: 'flex', 
+    marginBottom: theme.spacing(0.5),
+    display: 'flex',
     alignItems: 'center'
-  }, 
+  },
   issueButton: {
     color: chipColors.issuer
   }
@@ -86,7 +87,7 @@ export const AssetProfilePage: React.FC = () => {
   const isFungible = query.get('isFungible')
   const party = useParty();
   const params = useParams();
-  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer || "", symbol: symbol || "", isFungible: !!isFungible , owner: party });
+  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer || "", symbol: symbol || "", isFungible: !!isFungible, owner: party });
   const amount = getAssetSum(contracts);
   const formattedSum = numberWithCommas(amount)
   const classes = usePageStyles();
@@ -97,9 +98,9 @@ export const AssetProfilePage: React.FC = () => {
   const onBack = () => {
     nav(-1)
   }
-  if(loading){
+  if (loading) {
     return (
-      <LinearProgress/>
+      <LinearProgress />
     )
   }
   // TODO: 
@@ -107,11 +108,11 @@ export const AssetProfilePage: React.FC = () => {
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer} onClick={onBack}>
-        <IconButton  color='primary'>
+        <IconButton color='primary'>
           <ArrowBackIosNewIcon />
         </IconButton>
-{isMobile() &&         <Typography color='primary'>Accounts / {symbol}</Typography>
-}      </div>
+        {isMobile() && <Typography color='primary'>Accounts / {symbol}</Typography>
+        }      </div>
       <Card variant='outlined' className={classes.card} >
         <CardContent className={classes.cardContent}>
           <Avatar className={classes.avatar}>
@@ -129,10 +130,10 @@ export const AssetProfilePage: React.FC = () => {
             {params.issuer === party && <div className={classes.actionContainer}>
 
 
-              <IconButton className={classes.issueButton}  component={Link} to={issueAirdropPath}>
+              <IconButton className={classes.issueButton} component={Link} to={issueAirdropPath}>
                 <AddBoxIcon />
               </IconButton>
-              <Typography  variant='caption'>
+              <Typography variant='caption'>
                 issue / airdrop
                 </Typography>
             </div>}
@@ -166,13 +167,10 @@ export const AssetProfilePage: React.FC = () => {
           <AssetDetails isFungible={!!isFungible} quantity={amount} ticker={symbol || 'Ticker'} />
         </CardContent>
       </Card>
-      
-    
-      {enableFabBack &&  isMobile() && <Fab sx={{ position: 'fixed', bottom: 20, right: 30 }}>
-        <IconButton color='primary' onClick={onBack}>
-          <ArrowBackIosNewIcon color='info' />
-        </IconButton>
-      </Fab>}
+
+
+      {enableFabBack && isMobile() &&
+        <FloatingBackButton />}
     </div>
   )
 }

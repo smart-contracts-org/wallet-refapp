@@ -15,11 +15,10 @@ export const OwnedByMeTab: React.FC = () => {
           Assets that you own are shown here. If there is an asset that you would like to own, contact an existing owner and request an invite to the asset account with you.
         </Typography>
       </Prompt>
-      <AssetAccountRow isFungible isAirdroppable isShareable owner={'me'} issuer={'Digital Asset'} ticker={'DAMLCOIN'} quantity={800} isIssuer /> 
 
       {
         loading ? <LinearProgress /> : assetRows
-        }
+      }
       
 
      <AssetAccountRow isFungible isAirdroppable isShareable owner={'me'} issuer={'Digital Asset'} ticker={'DAMLCOIN'} quantity={800} isIssuer /> 
