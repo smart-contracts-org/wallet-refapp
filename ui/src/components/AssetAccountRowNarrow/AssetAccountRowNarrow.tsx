@@ -11,7 +11,6 @@ import { AssetAccountRowProps } from '../AssetAccountRow/AssetAccountRow';
 import { CardActionArea } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import { useGetMyOwnedAssetsByAssetType } from '../../ledgerHooks/ledgerHooks';
-import { Asset } from '@daml.js/wallet-refapp/lib/Asset';
 
 //TODO: issuer and owner currently hardcoded as 'me'
 const useStyles = makeStyles((theme: Theme) => ({

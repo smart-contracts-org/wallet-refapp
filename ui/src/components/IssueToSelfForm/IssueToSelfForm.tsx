@@ -4,7 +4,6 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import React from 'react';
 import { LoadingButton } from '@mui/lab';
-import { ContractsContext } from '../../providers/ContractsProvider';
 import { IssueSuccess } from '../IssueSuccess/IssueSuccess';
 import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 
