@@ -1,6 +1,7 @@
 import { useLedger, useParty } from '@daml/react';
 import { Account, Asset } from '@daml.js/wallet-refapp';
 import { useStreamQueries } from '@daml/react';
+import { ContractId } from '@daml/types';
 
 export const useGetAllAssetAccounts = () => {
   const assetHoldingAccounts = useStreamQueries(Account.AssetHoldingAccount);
@@ -17,8 +18,10 @@ interface UseGetMyOwnedAssetsByAssetType {
   issuer: string;
   owner: string;
   symbol: string;
-  isFungible: boolean;
   reference?: string;
+  isFungible: boolean;
+  isShareable?: boolean;
+  isAirdroppable?: boolean;
 }
 
 // Get all Asset owned templates based on fields
@@ -26,14 +29,37 @@ export const useGetMyOwnedAssetsByAssetType = ({issuer, symbol, isFungible, owne
   const assetHoldingAccounts = useStreamQueries(Asset.Asset, () => [{owner, assetType: {issuer, symbol, fungible: isFungible, reference}}]);
   return assetHoldingAccounts
 }
-export const useGetAssetAccountByAssetType = ({issuer, symbol, isFungible, owner, reference}: UseGetMyOwnedAssetsByAssetType) => {
-  const assetHoldingAccounts = useStreamQueries(Account.AssetHoldingAccount, () => [{owner, assetType: {issuer, symbol, fungible: isFungible, reference}}]);
-  return assetHoldingAccounts
+export const useGetAssetHoldingAccount = ({isAirdroppable, isShareable, issuer, symbol, isFungible, owner, reference}: UseGetMyOwnedAssetsByAssetType) => {
+  const assetHoldingAccount = useStreamQueries(Account.AssetHoldingAccount, () => [{airdroppable: isAirdroppable, reshareable: isShareable, owner, assetType: {issuer, symbol, fungible: isFungible, reference}}]);
+  return assetHoldingAccount
 }
 
+interface SendAsset {
+  assetAccountCid: ContractId<Account.AssetHoldingAccount>;
+  amount: any;
+  recipient: any;
+  assetCids: any
+}
 export const useLedgerHooks = () => {
   const ledger = useLedger();
   const party = useParty();
+
+  const sendAsset = async ({assetAccountCid, amount, recipient, assetCids}: SendAsset) => {
+    console.log(assetAccountCid, amount, recipient, assetCids)
+    try {
+      // TODO: update documentation
+      // needing to use _1:, _2:, not obvious enough.
+      // how to parse error messages? not user friendly
+      const result = await ledger.exercise(Account.AssetHoldingAccount.Create_Transfers, assetAccountCid, { assetCids ,transfers: [{_1: amount, _2:recipient}]
+      });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
 
   const issueAsset = async ({amount, ticker, isFungible }: { amount: string, ticker: string, isFungible: boolean}) => {
     try {
@@ -62,6 +88,6 @@ export const useLedgerHooks = () => {
     }
   }
 
-  return { createAssetAccount, issueAsset }
+  return {sendAsset, createAssetAccount, issueAsset }
 
 }

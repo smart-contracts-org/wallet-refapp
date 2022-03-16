@@ -1,11 +1,11 @@
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import {  useNavigate } from 'react-router-dom'
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Card, CardContent, Fab, IconButton, LinearProgress, Typography } from '@mui/material';
+import { Avatar, Card, CardContent, IconButton, LinearProgress, Typography } from '@mui/material';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
 import SendIcon from '@mui/icons-material/Send';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -82,21 +82,19 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
 export const AssetProfilePage: React.FC = () => {
   const nav = useNavigate();
   const query = useQuery();
-  const location = useLocation();
-  console.log(location)
   const issuer = query.get('issuer')
   const symbol = query.get('ticker');
+  const contractId = query.get('contractId');
   const isFungible = query.get('isFungible') === 'true'
   const isShareable = query.get('isShareable') === 'true'
   const isAirdroppable=query.get('isAirdroppable') === 'true'
   const party = useParty();
-  const params = useParams();
   
   const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer || "", symbol: symbol || "", isFungible: !!isFungible, owner: party });
   const amount = getAssetSum(contracts);
   const formattedSum = numberWithCommas(amount)
   const classes = usePageStyles();
-  const attributesPath = `?issuer=${issuer}&ticker=${symbol}&isFungible=${isFungible}&isShareable=${isShareable }&isAirdroppable=${isAirdroppable}&owner=${party}`
+  const attributesPath = `?issuer=${issuer}&ticker=${symbol}&isFungible=${isFungible}&isShareable=${isShareable }&isAirdroppable=${isAirdroppable}&owner=${party}&contractId=${contractId}`
   const sendPath = `/send${attributesPath}`
   const swapPath = `/swap${attributesPath}`
   const assetInvitePath = `/invite${attributesPath}`
@@ -132,7 +130,7 @@ export const AssetProfilePage: React.FC = () => {
             </Typography>
           </div>
           <div className={classes.actions}>
-            {params.issuer === party && <div className={classes.actionContainer}>
+            {issuer === party && <div className={classes.actionContainer}>
 
 
               <IconButton className={classes.issueButton} component={Link} to={issueAirdropPath}>

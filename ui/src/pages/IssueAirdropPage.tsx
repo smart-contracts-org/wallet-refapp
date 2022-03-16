@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Box, Button, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { usePageStyles } from './AssetProfilePage';
@@ -7,12 +7,19 @@ import { IssueToSelfForm } from '../components/IssueToSelfForm/IssueToSelfForm';
 import { AirdropForm } from '../components/AirdropForm/AirdropForm';
 import Fab from '@mui/material/Fab';
 import { isMobile } from '../platform/platform';
+import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 
 export const enableFabBack = true
 
 export const IssueAirdropPage: React.FC = () => {
   const nav = useNavigate();
-  const params = useParams();
+  const query = useQuery();
+  const issuer = query.get('issuer')
+  const symbol = query.get('ticker');
+  const owner = query.get('owner');
+  const isFungible = query.get('isFungible') === 'true'
+  const isShareable = query.get('isShareable') === 'true'
+  const isAirdroppable=query.get('isAirdroppable') === 'true'
   const classes = usePageStyles();
   const [index, setIndex] = React.useState(1)
   const onBack = () => {
@@ -21,7 +28,7 @@ export const IssueAirdropPage: React.FC = () => {
   const onButtonClick = (val: number) => {
     setIndex(val)
   }
-  if (!params?.ticker) {
+  if (!symbol) {
     return (
       <Card>
         <CardContent>
@@ -49,13 +56,13 @@ export const IssueAirdropPage: React.FC = () => {
           <CardContent className={classes.cardContent}>
 
             <Avatar className={classes.avatar}>
-              {params.ticker?.[0] || 'undefined'}
+              {symbol[0] || 'undefined'}
             </Avatar>
             <Box sx={{ marginBottom: 1, display: 'flex', flexDirection: 'row', width: '100%' }}>
               <Button sx={{ marginRight: 0.5 }} onClick={() => { onButtonClick(1) }} fullWidth variant={index === 1 ? 'contained' : 'outlined'} >Issue to Self</Button>
               <Button sx={{ marginLeft: 0.5 }} onClick={() => { onButtonClick(2) }} fullWidth variant={index === 2 ? 'contained' : 'outlined'}>Airdrop</Button>
             </Box>
-            {index === 1 && <IssueToSelfForm handleClose={() => {}}  ticker={params.ticker} />}
+            {index === 1 && <IssueToSelfForm handleClose={() => {}}  ticker={symbol} />}
             {index === 2 && <AirdropForm />}
           </CardContent>
         </Card>

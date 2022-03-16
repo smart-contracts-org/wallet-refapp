@@ -1,16 +1,26 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import { Box, Button, Card, FormControl, Link, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, FormControl, Link, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
+import { useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
+import { ContractId } from '@daml/types';
+import { AssetHoldingAccount } from '@daml.js/wallet-refapp/lib/Account';
 
 interface SendFormProps {
   ticker: string;
   quantity: number;
+  isAirdroppable: boolean;
+  isShareable: boolean;
+  isFungible: boolean;
+  owner: string;
+  reference: string;
+  issuer: string;
+  assetAccountCid: ContractId<AssetHoldingAccount>;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -30,9 +40,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 
-export const SendForm: React.FC<SendFormProps> = ({ quantity, ticker }) => {
+export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isAirdroppable,isFungible,isShareable, quantity, ticker, owner }) => {
   const classes = useStyles();
   const nav = useNavigate();
+  const ledgerHooks = useLedgerHooks();
+  const { contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner});
+  const assetCids = contracts.map((contract) => contract.contractId)
+  console.log(assetCids)
   const onCancel = () => {
     nav(-1)
   }
@@ -40,16 +54,23 @@ export const SendForm: React.FC<SendFormProps> = ({ quantity, ticker }) => {
   const [amount, setAmount] = React.useState("");
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
-
+  const [hasError, setError] = React.useState<boolean>(false);
+  
   // TODO: 
   // Create Form to send
-  const onSubmit = () => {
-    console.log(amount)
+  const onSubmit = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false)
+    console.log('asset', assetAccountCid)
+    const result = await ledgerHooks.sendAsset({assetAccountCid, amount, recipient, assetCids })
+    if(result.isOk){
+      setLoading(false);
       setSuccessful(true);
-    }, 1000)
+    } else {
+      console.log(result)
+      setSuccessful(false);
+      setLoading(false);
+      setError(true);
+    }
   }
 
   const onReset = () => {
@@ -127,6 +148,7 @@ export const SendForm: React.FC<SendFormProps> = ({ quantity, ticker }) => {
           Cancel
         </Button>
       </FormControl>
+      {hasError && <Card><CardContent>Error in sending</CardContent></Card>}
     </>
   );
 }
