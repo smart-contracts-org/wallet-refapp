@@ -1,4 +1,5 @@
 import React from 'react';
+import { useGetAssetSendRequests } from '../../ledgerHooks/ledgerHooks';
 import { PendingRow, PendingRowProps } from '../PendingRow/PendingRow';
 import { demoPartyId } from '../TopAppBar/TopAppBar';
 
@@ -33,6 +34,8 @@ export const demoPendingData: PendingRowProps[] = [
 export const PendingInboundActivities: React.FC = () => {
   // TODO: fetch pending contracts
   // stream of contracts
+  const sendRequests = useGetAssetSendRequests();
+  console.log(sendRequests)
   const pendingRows = demoPendingData.map((asset, i)=> {
     return (
       <PendingRow  {...asset} isInbound={true} isNarrow={true} key={i}/>
