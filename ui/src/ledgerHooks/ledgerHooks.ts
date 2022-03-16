@@ -3,6 +3,7 @@ import { Account, Asset } from '@daml.js/wallet-refapp';
 import { useStreamQueries } from '@daml/react';
 import { ContractId } from '@daml/types';
 import { AssetTransfer } from '@daml.js/wallet-refapp/lib/Asset';
+import { AssetHoldingAccount, AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
 
 export const useGetAllAssetAccounts = () => {
   const assetHoldingAccounts = useStreamQueries(Account.AssetHoldingAccount);
@@ -50,6 +51,11 @@ interface useGetAssetTransferByContractId {
 }
 export const useGetAssetTransferByContractId = (arg: useGetAssetTransferByContractId) => {
   const contract = useFetch(Asset.AssetTransfer, arg.contractId)
+  return contract
+}
+
+export const useGetAssetHoldingInviteByContractId = (arg: ContractId<AssetHoldingAccountProposal>) => {
+  const contract = useFetch(Account.AssetHoldingAccountProposal, arg)
   return contract
 }
 
@@ -126,7 +132,7 @@ export const useLedgerHooks = () => {
     }
   }
 
-  const inviteNewAssetHolder = async (recipient: string, assetAccountCid: string) => {
+  const inviteNewAssetHolder = async (recipient: string, assetAccountCid: ContractId<AssetHoldingAccount>) => {
     try {
       // TODO: update documentation
       // needing to use _1:, _2:, not obvious enough.
@@ -143,7 +149,7 @@ export const useLedgerHooks = () => {
     }
   }
   
-  const acceptAssetTransfer = async ({ assetTransferCid}: CancelAssetTransfer) => {
+  const acceptAssetTransfer = async (assetTransferCid: ContractId<Asset.Accept_Transfer>) => {
     try {
       // TODO: update documentation
       // needing to use _1:, _2:, not obvious enough.
@@ -160,8 +166,32 @@ export const useLedgerHooks = () => {
     }
   }
 
+  const exerciseAssetHolderInvite = async (assetHoldingAccountProposalCid: ContractId<Asset.Accept_Transfer | Asset.Cancel_Transfer | Asset.Reject_Transfer>, action: string) => {
+    
+    const map = {
+      accept: Account.AssetHoldingAccountProposal.AssetHoldingAccountProposal_Accept,
+      reject: Account.AssetHoldingAccountProposal.AssetHoldingAccountProposal_Reject,
+      cancel: Account.AssetHoldingAccountProposal.Archive
+    }
+    
+    try {
+      // TODO: update documentation
+      // needing to use _1:, _2:, not obvious enough.
+      // how to parse error messages? not user friendly
+      // TODO: Fix this type error
+      const result = await ledger.exercise(map[action], assetHoldingAccountProposalCid, {
+      });
 
-  const cancelAssetTransfer = async ({ assetTransferCid}: CancelAssetTransfer) => {
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
+
+
+  const cancelAssetTransfer = async (assetTransferCid: ContractId<Asset.Cancel_Transfer>) => {
     try {
       // TODO: update documentation
       // needing to use _1:, _2:, not obvious enough.
@@ -205,6 +235,6 @@ export const useLedgerHooks = () => {
     }
   }
 
-  return {inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
+  return {exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
 
 }

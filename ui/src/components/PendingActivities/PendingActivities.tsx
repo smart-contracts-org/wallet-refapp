@@ -12,7 +12,6 @@ export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbou
   const sendRequests = useGetAssetSendRequests(isInbound);
   const inviteRequests = useGetAssetInviteRequests(isInbound);
   
-  console.log(inviteRequests)
   const allRequests = sendRequests.contracts
   const allInviteRequests = inviteRequests.contracts
   const all = [...allRequests, ...allInviteRequests]

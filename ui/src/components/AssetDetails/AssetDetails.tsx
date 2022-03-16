@@ -25,7 +25,7 @@ export interface AssetDetailsProps {
   ticker: string;
   issuer: string;
   owner: string;
-  quantity: number;
+  quantity: string;
   isShareable: boolean;
   isFungible: boolean;
   isAirdroppable: boolean;
