@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { SendForm } from '../components/SendForm/SendForm';
@@ -7,11 +7,22 @@ import { isMobile } from '../platform/platform';
 import { usePageStyles } from './AssetProfilePage';
 import { enableFabBack } from './IssueAirdropPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
+import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
+import { useParty } from '@daml/react';
+import { AssetHoldingAccount } from '@daml.js/wallet-refapp/lib/Account';
+import { ContractId } from '@daml/types';
 
 export const SendPage: React.FC = () => {
   const nav = useNavigate();
-  const params = useParams();
   const classes = usePageStyles();
+  const query = useQuery();
+  const issuer = query.get('issuer')
+  const symbol = query.get('ticker');
+  const owner = query.get('owner');
+  const contractId = query.get('contractId') as ContractId<AssetHoldingAccount>
+  const isFungible = query.get('isFungible') === 'true'
+  const isShareable = query.get('isShareable') === 'true'
+  const isAirdroppable=query.get('isAirdroppable') === 'true'
   const onBack = () => {
     nav(-1)
   }
@@ -32,9 +43,17 @@ export const SendPage: React.FC = () => {
         <Card variant='outlined' >
           <CardContent className={classes.cardContent}>
             <Avatar className={classes.avatar}>
-              {params?.ticker?.[0] || 'undefined'}
+              {symbol?.[0] || 'undefined'}
             </Avatar>
-            <SendForm quantity={demoDataQuantity} ticker={params.ticker || 'NA'} />
+            <SendForm
+            assetAccountCid={contractId}
+            issuer={issuer || ""}
+            isAirdroppable={isAirdroppable}
+            isFungible={isFungible}
+            isShareable={isShareable}
+            owner={owner || ""}
+            reference={""}
+            quantity={demoDataQuantity} ticker={symbol || 'NA'} />
           </CardContent>
         </Card>
       </Box>

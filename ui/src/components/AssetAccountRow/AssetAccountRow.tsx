@@ -1,6 +1,5 @@
 import React from 'react';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -40,14 +39,16 @@ export interface AssetAccountRowProps {
   isShareable?: boolean;
   isFungible?: boolean;
   isAirdroppable?: boolean;
+  contractId: string;
 }
 
-export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({isFungible, issuer, ticker, owner, isShareable }) => {
+export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({contractId,isFungible, issuer, ticker, owner, isShareable, isAirdroppable }) => {
   const classes = useStyles()
-  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner });
-  const assetProfilePath = `/asset?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}`
+  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner});
+  const assetProfilePath = `/asset?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable ? 'true' : 'false'}&isAirdroppable=${isAirdroppable ? 'true': 'false'}&contractId=${contractId}`
   const assetSum = getAssetSum(contracts);
   const formattedSum = numberWithCommas(assetSum)
+  console.log(issuer, owner)
   return (
     <>
       <Card sx={{marginBottom: 1}} >

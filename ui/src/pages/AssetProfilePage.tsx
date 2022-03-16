@@ -1,11 +1,11 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom'
+import {  useNavigate } from 'react-router-dom'
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Card, CardContent, Fab, IconButton, LinearProgress, Typography } from '@mui/material';
+import { Avatar, Card, CardContent, IconButton, LinearProgress, Typography } from '@mui/material';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
 import SendIcon from '@mui/icons-material/Send';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -84,17 +84,21 @@ export const AssetProfilePage: React.FC = () => {
   const query = useQuery();
   const issuer = query.get('issuer')
   const symbol = query.get('ticker');
-  const isFungible = query.get('isFungible')
+  const contractId = query.get('contractId');
+  const isFungible = query.get('isFungible') === 'true'
+  const isShareable = query.get('isShareable') === 'true'
+  const isAirdroppable=query.get('isAirdroppable') === 'true'
   const party = useParty();
-  const params = useParams();
+  
   const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer || "", symbol: symbol || "", isFungible: !!isFungible, owner: party });
   const amount = getAssetSum(contracts);
   const formattedSum = numberWithCommas(amount)
   const classes = usePageStyles();
-  const sendPath = `/send/${params?.issuer}/${params?.ticker}`
-  const swapPath = `/swap/${params?.issuer}/${params?.ticker}`
-  const assetInvitePath = `/invite/${params?.issuer}/${params?.ticker}`
-  const issueAirdropPath = `/issue/${params?.issuer}/${params?.ticker}`
+  const attributesPath = `?issuer=${issuer}&ticker=${symbol}&isFungible=${isFungible}&isShareable=${isShareable }&isAirdroppable=${isAirdroppable}&owner=${party}&contractId=${contractId}`
+  const sendPath = `/send${attributesPath}`
+  const swapPath = `/swap${attributesPath}`
+  const assetInvitePath = `/invite${attributesPath}`
+  const issueAirdropPath = `/issue${attributesPath}`
   const onBack = () => {
     nav(-1)
   }
@@ -103,8 +107,7 @@ export const AssetProfilePage: React.FC = () => {
       <LinearProgress />
     )
   }
-  // TODO: 
-  // Fetch token details
+  
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer} onClick={onBack}>
@@ -127,7 +130,7 @@ export const AssetProfilePage: React.FC = () => {
             </Typography>
           </div>
           <div className={classes.actions}>
-            {params.issuer === party && <div className={classes.actionContainer}>
+            {issuer === party && <div className={classes.actionContainer}>
 
 
               <IconButton className={classes.issueButton} component={Link} to={issueAirdropPath}>
@@ -164,7 +167,12 @@ export const AssetProfilePage: React.FC = () => {
               </Typography>
             </div>
           </div>
-          <AssetDetails isFungible={!!isFungible} quantity={amount} ticker={symbol || 'Ticker'} />
+          <AssetDetails 
+          isShareable={!!isShareable} 
+          isAirdroppable={!!isAirdroppable} 
+          owner={party}  
+          issuer={issuer || "issuer"}  
+          isFungible={isFungible} quantity={amount} ticker={symbol || 'Ticker'} />
         </CardContent>
       </Card>
 
