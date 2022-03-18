@@ -10,6 +10,8 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { isMobile } from '../../platform/platform';
 import { useParty } from '@daml/react';
+import {useNavigate} from 'react-router-dom'
+
 import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 interface CreateAccountFormProps {
   onSubmitSuccess?: () => void;
@@ -42,6 +44,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [hasError, setError] = React.useState<boolean>(false);
   const party = useParty();
+  const nav = useNavigate();
   const ledgerHooks = useLedgerHooks();
   const classes = useStyles();
   const [ticker, setTicker] = React.useState<string | undefined>(undefined)
@@ -59,7 +62,6 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
       return;
     }
     setLoading(true);
-    
       const result = await ledgerHooks.createAssetAccount({
         ticker,
         isFungible, 
@@ -70,6 +72,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
       if(result.isOk){
         console.log(result)
         onSubmitSuccess && onSubmitSuccess()
+        nav(`/asset?issuer=${party}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable ? 'true' : 'false'}&isAirdroppable=${isAirdroppable ? 'true': 'false'}&contractId=${undefined}`)
       } else {
       setError(true);
       setLoading(false);

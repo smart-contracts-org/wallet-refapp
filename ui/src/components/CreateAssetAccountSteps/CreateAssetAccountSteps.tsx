@@ -92,6 +92,7 @@ export const CreateAssetAccountSteps: React.FC = () => {
         {
           isSubmitSuccessful && 
           displayedStep === 1 && 
+          
           <CreateAssetAccountSuccess 
           onNextClick={() => {setDisplayandActiveSteps(displayedStep+1, activeStep)}} 
           onDoneClick={() => setDisplayandActiveSteps(4,0)} />
