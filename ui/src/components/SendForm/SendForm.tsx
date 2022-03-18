@@ -97,7 +97,7 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
   return (
     <>
       <FormControl className={classes.root}>
-        <Box display='flex' alignItems='center' justifyContent='center'>
+        <Box display='flex'  justifyContent='center'>
           <Typography color='text.secondary' variant='body2' gutterBottom>
             Sending
         </Typography>
