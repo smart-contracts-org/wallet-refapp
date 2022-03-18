@@ -2,7 +2,6 @@ import React from 'react';
 import TextField from '@mui/material/TextField';
 import { Box, FormControl, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import SendIcon from '@mui/icons-material/Send';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { AirdropInvites } from '../AirdropInvites/AirdropInvites';
@@ -28,7 +27,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
   const {issuer, owner, symbol, isFungible, reference} = props;
-  const [amount, setAmount] = React.useState("");
   const [hasError, setError] = React.useState(false);
   const [recipient, setRecipient] = React.useState("");
   const [isLoading, setLoading] = React.useState<boolean>(false);

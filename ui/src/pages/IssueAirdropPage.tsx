@@ -14,12 +14,13 @@ export const enableFabBack = true
 export const IssueAirdropPage: React.FC = () => {
   const nav = useNavigate();
   const query = useQuery();
+  // These params are passed into the ur
+  // because we cannot pass props to the page components
   const issuer = query.get('issuer') || ""
   const symbol = query.get('ticker') || ""
   const owner = query.get('owner') || ""
   const isFungible = query.get('isFungible') === 'true'
-  const isShareable = query.get('isShareable') === 'true'
-  const isAirdroppable=query.get('isAirdroppable') === 'true'
+  
   const classes = usePageStyles();
   const [index, setIndex] = React.useState(1)
   const onBack = () => {
@@ -62,7 +63,7 @@ export const IssueAirdropPage: React.FC = () => {
               <Button sx={{ marginLeft: 0.5 }} onClick={() => { onButtonClick(2) }} fullWidth variant={index === 2 ? 'contained' : 'outlined'}>Airdrop</Button>
             </Box>
             {index === 1 && <IssueToSelfForm handleClose={() => {}}  ticker={symbol} />}
-            {/* TODO, reference */}
+            {/* TODO, add reference to URL, so we can pass it down */}
             {index === 2 && <AirdropForm issuer={issuer} owner={owner} symbol={symbol} isFungible={isFungible} reference={""} />}
           </CardContent>
         </Card>
