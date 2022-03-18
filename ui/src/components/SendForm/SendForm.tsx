@@ -129,6 +129,7 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
           margin="none"
           id="amount"
           value={amount}
+          error={parseFloat(amount) < 0}
           label="Amount"
           type="number"
           fullWidth
