@@ -14,9 +14,9 @@ export const enableFabBack = true
 export const IssueAirdropPage: React.FC = () => {
   const nav = useNavigate();
   const query = useQuery();
-  const issuer = query.get('issuer')
-  const symbol = query.get('ticker');
-  const owner = query.get('owner');
+  const issuer = query.get('issuer') || ""
+  const symbol = query.get('ticker') || ""
+  const owner = query.get('owner') || ""
   const isFungible = query.get('isFungible') === 'true'
   const isShareable = query.get('isShareable') === 'true'
   const isAirdroppable=query.get('isAirdroppable') === 'true'
@@ -54,7 +54,6 @@ export const IssueAirdropPage: React.FC = () => {
           </Typography>
         <Card variant='outlined' className={classes.card} >
           <CardContent className={classes.cardContent}>
-
             <Avatar className={classes.avatar}>
               {symbol[0] || 'undefined'}
             </Avatar>
@@ -63,7 +62,8 @@ export const IssueAirdropPage: React.FC = () => {
               <Button sx={{ marginLeft: 0.5 }} onClick={() => { onButtonClick(2) }} fullWidth variant={index === 2 ? 'contained' : 'outlined'}>Airdrop</Button>
             </Box>
             {index === 1 && <IssueToSelfForm handleClose={() => {}}  ticker={symbol} />}
-            {index === 2 && <AirdropForm />}
+            {/* TODO, reference */}
+            {index === 2 && <AirdropForm issuer={issuer} owner={owner} symbol={symbol} isFungible={isFungible} reference={""} />}
           </CardContent>
         </Card>
       </Box>

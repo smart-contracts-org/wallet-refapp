@@ -57,6 +57,7 @@ export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbou
     const sender = contract?.signatories?.[0] || ""
     const sendAmount = contract?.amount
     const receiver = contract?.recipient ||""
+    console.log(receiver)
     const contractId = contract?.contractId;
     const assetAccountTicker = contract?.symbol
     const sendTicker = contract?.symbol

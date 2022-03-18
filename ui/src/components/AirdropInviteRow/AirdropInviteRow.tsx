@@ -4,12 +4,14 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { LoadingButton } from '@mui/lab';
 import clx from 'clsx'
+import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     marginBottom: theme.spacing(1),
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    width:'100%',
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1),
     paddingTop: theme.spacing(1),
@@ -43,15 +45,41 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface AirdropInviteRowProps {
   isAccepted?: boolean
+  issuer: string;
+  owner: string;
+  reference: string;
+  fungible: boolean;
+  symbol: string;
 }
 
-export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = ({isAccepted}) => {
+export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = (props) => {
+  console.log('r', props)
+  const {isAccepted, symbol, issuer, owner, reference, fungible} = props;
   const classes = useStyles();
+  const [amount, setAmount] = React.useState("");
+  const [isLoading, setLoading] = React.useState<boolean>(false);
+  const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
+  const [hasError, setError] = React.useState<boolean>(false);
+  const ledgerHooks = useLedgerHooks();
+
+  const onSubmit = async () => {
+    setLoading(true);
+    const result = await ledgerHooks.exerciseAirdrop({ assetType: {issuer, symbol, reference, fungible}, amount, owner })
+    if(result.isOk){
+      setLoading(false);
+      setSuccessful(true);
+      setError(false);
+    } else {
+      setSuccessful(false);
+      setLoading(false);
+      setError(true);
+    }
+  }
 
   return (
     <Paper className={classes.root}>
       <Typography className={classes.userID} variant='caption'>
-        Alex-user-name-00100
+        {owner}
       </Typography>
             
       <Typography className={clx (classes.status, isAccepted ? classes.accepted : classes.pending)} variant='caption'>
@@ -66,13 +94,20 @@ export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = ({isAccepted}) 
         size='small'
         disabled={!isAccepted}
         className={classes.quantity}
+        onChange={(e) => setAmount(e.currentTarget.value)}
+          inputProps={{
+            inputMode: 'decimal',
+            type: 'number',
+            pattern: "[0-9]*"
+          }}
       />
       <LoadingButton
-        loading={false}
+        loading={isLoading}
         variant="outlined"
         size='medium'
         disabled={!isAccepted}
         className={classes.button}
+        onClick={onSubmit}
       >
         Send
       </LoadingButton>

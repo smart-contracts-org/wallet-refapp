@@ -6,7 +6,7 @@ import clx from 'clsx'
 import { useNarrowPendingStyles } from '../PendingRowContents/PendingRowContents';
 import { PendingRowProps } from '../PendingRow/PendingRow';
 
-export const PendingAssetInviteRowContent: React.FC<PendingRowProps> = ({ isInbound, sender, inboundTicker }) => {
+export const PendingAssetInviteRowContent: React.FC<PendingRowProps> = ({ isInbound, sender, inboundTicker, receiver }) => {
   const classes = useNarrowPendingStyles();
 
   const inboundMessage = (
@@ -32,7 +32,7 @@ export const PendingAssetInviteRowContent: React.FC<PendingRowProps> = ({ isInbo
     <>
       <div className={classes.divider} />
       <Typography variant='body2' color='text.secondary' className={classes.text} >
-        You are inviting {sender}
+        You are inviting {receiver}
     </Typography>
       <Divider className={classes.divider} />
       <Typography className={classes.text} variant='body2' color='text.secondary'>
