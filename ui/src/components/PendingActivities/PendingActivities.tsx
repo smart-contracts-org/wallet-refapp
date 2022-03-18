@@ -7,37 +7,62 @@ interface PendingActivitiesPageProps {
   isInbound: boolean;
 }
 
+export const flattenObject = (obj: any) => {
+  const flattened = {}
+
+  Object.keys(obj).forEach((key) => {
+    const value = obj[key]
+
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      Object.assign(flattened, flattenObject(value))
+    } else {
+      flattened[key] = value
+    }
+  })
+
+  return flattened
+}
+
+interface TemplateNameMap {
+  AssetHoldingAccountProposal: string,
+  AssetTransfer: string;
+}
+const templateNameMap: TemplateNameMap = {
+  AssetHoldingAccountProposal: 'assetInvite', 
+  AssetTransfer: 'send'
+}
+interface Contract {
+  signatories?: string[];
+  amount?: string;
+  recipient?: string;
+  contractId?: string;
+  symbol?: string;
+  issuer?: string;
+  fungible?: boolean;
+  templateId?: string;
+}
+
 export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbound}) => {
-  // TODO: fetch pending contracts for swap and assetInvite
-  const sendRequests = useGetAssetSendRequests(isInbound);
-  
-  console.log(sendRequests)
-  const inviteRequests = useGetAssetInviteRequests(isInbound);
-  console.log(inviteRequests)
-  const allRequests = sendRequests.contracts
-  const allInviteRequests = inviteRequests.contracts
-  const all = [...allRequests, ...allInviteRequests]
+  // TODO: get swap requests
+  const assetTransferContracts = useGetAssetSendRequests(isInbound).contracts;
+  const assetInviteContracts = useGetAssetInviteRequests(isInbound).contracts;
+  const allContracts = [...assetTransferContracts, ...assetInviteContracts]
+  const flattenedAllContracts = allContracts.map((contract) => flattenObject(contract)) as Contract[]
   const myPartyId = useParty();
 
-  const templateNameMap = {
-    AssetHoldingAccountProposal: 'assetInvite', 
-    AssetTransfer: 'send'
 
-  }
-
-  
-  const pendingRows = all.map((asset, i)=> {
+ 
+  const pendingRows = flattenedAllContracts.map((contract, i)=> {
     
-    const sender = asset.signatories[0]
-    const sendAmount = asset.payload?.asset?.amount
-    const receiver = asset.payload.recipient;
-    const contractId = asset.contractId;
-    const assetAccountTicker = asset.payload.account?.assetType?.symbol
-    const sendTicker = asset.payload?.asset?.assetType.symbol
-    const issuer = asset.payload?.asset?.assetType.issuer
-    const isFungible = asset.payload?.asset?.assetType.fungible;
-    const templateId = asset.templateId.split(':')[2]
-    console.log('tempid', templateId)
+    const sender = contract?.signatories?.[0] || ""
+    const sendAmount = contract?.amount
+    const receiver = contract?.recipient ||""
+    const contractId = contract?.contractId;
+    const assetAccountTicker = contract?.symbol
+    const sendTicker = contract?.symbol
+    const issuer = contract?.issuer || ""
+    const isFungible = contract?.fungible;
+    const templateId = contract.templateId?.split(':')[2] || ""
     
     // Todo: make query for sender instead of doing this filter
     if(!isInbound && receiver === myPartyId){
