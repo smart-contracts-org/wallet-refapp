@@ -42,7 +42,7 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
   const nav = useNavigate();
   const ledgerHooks = useLedgerHooks();
 
-  const onCancel = () => {
+  const onBack = () => {
     nav(-1)
   }
   const onSubmit = async () => {
@@ -94,8 +94,8 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
       >
         {isSuccessful ? 'Sent, send another' : 'Invite'}
       </LoadingButton>
-      <Button fullWidth variant='outlined' onClick={onCancel}>
-        cancel
+      <Button fullWidth variant='outlined' onClick={onBack}>
+        Back
       </Button>
       </FormControl>
       {

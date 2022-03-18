@@ -65,6 +65,7 @@ export interface AssetType {
   reference: string;
 }
 export const useGetAssetAccountByKey = (assetType: AssetType) => {
+  console.log('getasset')
   const myPartyId = useParty();
   const contract = useFetchByKey(Account.AssetHoldingAccount, () => ({_1: assetType, _2: myPartyId}), []);
   return contract

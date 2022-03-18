@@ -165,7 +165,7 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
           {isSuccessful ? 'Complete, make another transaction' : 'Send'}
         </LoadingButton>
         <Button variant='outlined' onClick={onCancel}>
-          {isSuccessful ? 'Back' : 'Cancel'}
+          {isSuccessful ? 'Back' : 'Back'}
         </Button>
       </FormControl>
       {hasError && <Card className={classes.errorCard}  sx={{margin: 1, width: '100%'}} ><CardContent><Typography>
