@@ -8,7 +8,6 @@ import { usePageStyles } from './AssetProfilePage';
 import { enableFabBack } from './IssueAirdropPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
-import { useParty } from '@daml/react';
 import { AssetHoldingAccount } from '@daml.js/wallet-refapp/lib/Account';
 import { ContractId } from '@daml/types';
 

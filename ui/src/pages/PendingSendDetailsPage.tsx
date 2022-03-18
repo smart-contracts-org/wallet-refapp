@@ -1,19 +1,16 @@
 import React from 'react';
 import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Button, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
-import { useGetAssetAccountByKey, useGetAssetInviteRequests, useGetAssetTransferByContractId, useGetSingleAssetSendRequest, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
-import { useParty } from '@daml/react';
-import { usePageStyles, useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
+import { Avatar, Box, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
+import { useGetAssetAccountByKey, useGetAssetTransferByContractId, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
+import { usePageStyles } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
-import { SwapDetails } from '../components/SwapDetails/SwapDetails';
 import { isMobile } from '../platform/platform';
 import { enableFabBack } from './IssueAirdropPage';
-import { AssetTransfer, Cancel_Transfer } from '@daml.js/wallet-refapp/lib/Asset';
+import { AssetTransfer } from '@daml.js/wallet-refapp/lib/Asset';
 import { ContractId } from '@daml/types';
-import { Asset } from '@daml.js/wallet-refapp';
-import { ActionType } from './PendingAssetInviteDetailsPage';
 import { LoadingButton } from '@mui/lab';
+import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 
 interface Errors {
   accept: string;
@@ -183,14 +180,7 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
           </div>}
         </Card>
       </Box>
-
-
-
-      {enableFabBack && isMobile() && <Fab sx={{ position: 'fixed', bottom: 20, right: 30 }}>
-        <IconButton color='primary' onClick={onBack}>
-          <ArrowBackIosNewIcon color='info' />
-        </IconButton>
-      </Fab>}
+      {enableFabBack && isMobile() && <FloatingBackButton/>}
     </div>
   )
 }
