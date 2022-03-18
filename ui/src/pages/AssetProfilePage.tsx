@@ -19,6 +19,7 @@ import { useGetAssetAccountByKey, useGetMyOwnedAssetsByAssetType } from '../ledg
 import { getAssetSum } from '../utils/getAssetSum';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
+import WarningIcon from '@mui/icons-material/Warning';
 
 export const usePageStyles = makeStyles((theme: Theme) => ({
 
@@ -76,6 +77,9 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
   },
   issueButton: {
     color: chipColors.issuer
+  }, 
+  issuerWarning: {
+    // backgroundColor: chipColors.issuer, 
   }
 }))
 
@@ -89,7 +93,6 @@ export const AssetProfilePage: React.FC = () => {
   const contractId = query.get('contractId');
   const isShareable = assetAccountContract?.payload.resharable
   const isAirdroppable= assetAccountContract?.payload.airdroppable
-  
   const party = useParty();
   const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
   const amount = getAssetSum(contracts);
@@ -168,6 +171,14 @@ export const AssetProfilePage: React.FC = () => {
               </Typography>
             </div>
           </div>
+          {amount === 0 && issuer === party && <Card className={classes.issuerWarning} sx={{width:'100%', marginBottom: 1}} >
+            <CardContent sx={{display: 'flex', alignItems: 'center'}}>
+            <WarningIcon sx={{marginRight: 1}}/>
+            <Typography variant='body2'sx={{opacity: '100%'}}>
+            You have {amount} amount. Click "issue / airdrop" to issue assets.
+              </Typography>
+            </CardContent>
+          </Card>}
           <AssetDetails 
           isShareable={!!isShareable} 
           isAirdroppable={!!isAirdroppable} 
