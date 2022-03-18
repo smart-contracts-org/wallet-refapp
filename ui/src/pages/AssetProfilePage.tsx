@@ -84,6 +84,7 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
 }))
 
 export const AssetProfilePage: React.FC = () => {
+  console.log('ass')
   const nav = useNavigate();
   const query = useQuery();
   const issuer = query.get('issuer') || ""
