@@ -82,7 +82,7 @@ export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-export const PendingRowContents: React.FC<PendingRowProps> = ({contractId, receiver, outboundQuantity, sendAmount, sendTicker, outboundTicker, templateName, isNarrow, isInbound, sender, inboundTicker, inboundQuantity, issuer}) => {
+export const PendingRowContents: React.FC<PendingRowProps> = ({isFungible, contractId, receiver, outboundQuantity, sendAmount, sendTicker, outboundTicker, templateName, isNarrow, isInbound, sender, inboundTicker, inboundQuantity, issuer}) => {
   const classes = useNarrowPendingStyles();
   
   const onAccept = (event: React.SyntheticEvent) => {
@@ -98,7 +98,7 @@ export const PendingRowContents: React.FC<PendingRowProps> = ({contractId, recei
 
 
 
-  const path = `/pending-activity?isInbound=${isInbound ? 'true': 'false'}&templateName=${templateName}&sender=${sender}&inboundTicker=${inboundTicker}&sendAmount=${sendAmount}&sendTicker=${sendTicker}&outboundTicker=${outboundTicker}&outboundQuantity=${outboundQuantity}&receiver=${receiver}&issuer=${issuer}&contractId=${contractId}`
+  const path = `/pending-activity?isInbound=${isInbound ? 'true': 'false'}&templateName=${templateName}&sender=${sender}&inboundTicker=${inboundTicker}&sendAmount=${sendAmount}&sendTicker=${sendTicker}&outboundTicker=${outboundTicker}&outboundQuantity=${outboundQuantity}&receiver=${receiver}&issuer=${issuer}&contractId=${contractId}&isFungible=${isFungible}`
 console.log(templateName)
   return (
     <>

@@ -8,7 +8,6 @@ import { usePageStyles } from './AssetProfilePage';
 import { enableFabBack } from './IssueAirdropPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
-import { useParty } from '@daml/react';
 import { AssetHoldingAccount } from '@daml.js/wallet-refapp/lib/Account';
 import { ContractId } from '@daml/types';
 
@@ -19,7 +18,7 @@ export const SendPage: React.FC = () => {
   const issuer = query.get('issuer')
   const symbol = query.get('ticker');
   const owner = query.get('owner');
-  const contractId = query.get('contractId') as ContractId<AssetHoldingAccount>
+  const assetAccountCid = query.get('contractId') as ContractId<AssetHoldingAccount>
   const isFungible = query.get('isFungible') === 'true'
   const isShareable = query.get('isShareable') === 'true'
   const isAirdroppable = query.get('isAirdroppable') === 'true'
@@ -46,7 +45,7 @@ export const SendPage: React.FC = () => {
               {symbol?.[0] || 'undefined'}
             </Avatar>
             <SendForm
-            assetAccountCid={contractId}
+            assetAccountCid={assetAccountCid}
             issuer={issuer || ""}
             isAirdroppable={isAirdroppable}
             isFungible={isFungible}

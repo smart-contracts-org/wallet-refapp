@@ -26,6 +26,7 @@ interface PendingSendDetailsPageProps {
   isAirdroppable: boolean;
   isFungible: boolean;
 }
+export type ActionType = 'accept' | 'reject' | 'cancel';
 
 export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps> = (props) => {
   const {
@@ -43,58 +44,64 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
 
   //TODO grab contract details
   const nav = useNavigate();
-  const [isRejected, setRejected] = React.useState(false);
-  const [isCancelled, setIsCancelled] = React.useState(false);
-  const [hasAcceptError, setAcceptError] = React.useState(false);
-  
-  
+  const [isLoading, setLoading] = React.useState(false);
+  const [success, setSuccess] = React.useState<'accept'|'reject'|'cancel'|undefined>();
+  const [error, setError] = React.useState<'accept'|'reject'|'cancel'|undefined>();
+
   //TODO: can we use something else besdies contract
   const contract = useGetAssetHoldingInviteByContractId(contractId);
   console.log('sendcontract', contract);
- 
+
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();
   
   if(!contract?.contract){
     return (
-      <Card>
+      <Card sx={{width: '100%'}}>
         <CardContent>
           Contract doesn't exist
         </CardContent>
       </Card>
     )
   }
-  const onCancel = async() => {
-    if(!contract?.contract?.contractId){
-      return;
-    }
-    const result = await ledgerHooks.cancelAssetTransfer(contract.contract.contractId as ContractId<Cancel_Transfer>)
-    if(result.isOk){
-      setIsCancelled(true);
-    }
+
+  interface Errors {
+    accept: string;
+    reject: string;
+    cancel: string;
+  }
+  const errors: Errors = {
+    accept: 'Error, unable to accept',
+    reject: 'Error, unable to reject',
+    cancel: 'Error, unable to cancel'
   }
 
-  const onAccept = async() => {
-    if(!contract?.contract?.contractId){
-      return;
-    }
-    const result = await ledgerHooks.exerciseAssetHolderInvite(contract.contract.contractId as ContractId<Asset.Accept_Transfer>, 'accept');
-    if(result.isOk){
-
-    } else {
-      setAcceptError(true)
-    }
+  interface Success  {
+    accept: string,
+    reject: string,
+    cancel: string 
   }
-  const onReject = async() => {
+  
+  const successMessage: Success = {
+    accept: 'accepted',
+    reject: 'rejected',
+    cancel: 'canceled'
+  }
+  
+  const onClick = async(action: ActionType) => {
     if(!contract?.contract?.contractId){
       return;
     }
-    const result = await ledgerHooks.exerciseAssetHolderInvite(contract.contract.contractId as ContractId<Asset.Accept_Transfer>, 'reject');
+    setLoading(true);
+    const result = await ledgerHooks.exerciseAssetHolderInvite(contract.contract.contractId as ContractId<Asset.Accept_Transfer>, action);
     if(result.isOk){
-      setRejected(true)
+      setSuccess(action);
+      setError(undefined);
+      setLoading(false);
     } else {
-      setRejected(false);
-      setAcceptError(true)
+      setError(action)
+      setSuccess(undefined);
+      setLoading(false);
     }
   }
 
@@ -135,25 +142,24 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
              <AssetDetails issuer={issuer} owner={owner} isAirdroppable={isAirdroppable} isFungible={isFungible} isShareable={isShareable} quantity={sendAmount} ticker={sendTicker || '[Ticker]'} />
           </CardContent>
           {
-            isCancelled && <Card sx={{margin: 1}}><CardContent>Cancelled</CardContent></Card>
+            success && !!successMessage[success] && <Card sx={{margin: 1}}><CardContent>{successMessage[success]}</CardContent></Card>
           }
           {
-            hasAcceptError && <Card sx={{margin: 1}}><CardContent>Error: Unable to accept</CardContent></Card>
+            error && !!errors[error] && <Card sx={{margin: 1}}><CardContent>{errors[error]}</CardContent></Card>
           }
-          {
-            isRejected && <Card sx={{margin: 1}}><CardContent>Request Rejected</CardContent></Card>
-          }
-          <div className={classes.actions}>
-            {isInbound === 'true' && <Button onClick={onAccept} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
+          
+  
+          {(success === undefined )&& <div className={classes.actions}>
+            {isInbound === 'true' && <Button onClick={() =>onClick('accept')} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
               Accept
             </Button>}
-            {isInbound === 'true' && <Button onClick={onReject} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
+            {isInbound === 'true' && <Button onClick={() =>onClick('reject')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Reject
           </Button>}
-          {isInbound === 'false' && !isCancelled && <Button disabled={isCancelled} onClick={onCancel} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
+          {isInbound === 'false' && success !== 'cancel' && <Button disabled={success==='cancel'} onClick={() =>onClick('cancel')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Cancel
           </Button>}
-          </div>
+          </div>}
         </Card>
       </Box>
 

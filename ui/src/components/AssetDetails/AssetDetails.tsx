@@ -3,6 +3,7 @@ import React from 'react';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { demoPartyId } from '../TopAppBar/TopAppBar';
+import { useGetAssetAccountByKey } from '../../ledgerHooks/ledgerHooks';
 
 const useStyles = makeStyles((theme: Theme) => ({
   row: {
@@ -12,6 +13,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   rowLabel: {
     marginRight: theme.spacing(1),
+  },
+  data: {
     fontWeight: 'bold'
   },
   table: {
@@ -35,13 +38,14 @@ const dataColor = 'primary'
 
 export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quantity, isShareable, isFungible, isAirdroppable, ticker }) => {
   const classes = useStyles();
+
   return (
     <div className={classes.table}>
       <div className={classes.row}>
         <Typography className={classes.rowLabel} variant='caption'>
           Ticker
         </Typography>
-        <Typography color={dataColor} variant='caption'>
+        <Typography className={classes.data} color={dataColor} variant='caption'>
           {ticker}
         </Typography>
         <Divider />
@@ -50,7 +54,7 @@ export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quant
         <Typography className={classes.rowLabel} variant='caption'>
           Issuer
         </Typography>
-        <Typography color={dataColor} variant='caption'>
+        <Typography className={classes.data} color={dataColor} variant='caption'>
           {issuer || demoPartyId}
         </Typography>
         <Divider />
@@ -59,7 +63,7 @@ export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quant
         <Typography className={classes.rowLabel} variant='caption'>
           Owner
         </Typography>
-        <Typography color={dataColor} variant='caption'>
+        <Typography className={classes.data} color={dataColor} variant='caption'>
           {owner || demoPartyId}
         </Typography>
         <Divider />
@@ -68,7 +72,7 @@ export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quant
         <Typography className={classes.rowLabel} variant='caption'>
           Quantity
         </Typography>
-        <Typography color={dataColor} variant='caption'>
+        <Typography className={classes.data} color={dataColor} variant='caption'>
           {quantity}
         </Typography>
         <Divider />
@@ -77,7 +81,7 @@ export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quant
         <Typography className={classes.rowLabel} variant='caption'>
           Fungible
         </Typography>
-        <Typography color={dataColor} variant='caption'>
+        <Typography className={classes.data} color={dataColor} variant='caption'>
           {isFungible ? 'yes' : 'no'}
         </Typography>
         <Divider />
@@ -87,7 +91,7 @@ export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quant
         <Typography className={classes.rowLabel} variant='caption'>
           Airdroppable
         </Typography>
-        <Typography color={dataColor} variant='caption'>
+        <Typography className={classes.data} color={dataColor} variant='caption'>
           {isAirdroppable ? 'yes' : 'no'}
         </Typography>
         <Divider />
@@ -96,7 +100,7 @@ export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quant
         <Typography className={classes.rowLabel} variant='caption'>
           Resharable
         </Typography>
-        <Typography color={dataColor} variant='caption'>
+        <Typography className={classes.data} color={dataColor} variant='caption'>
           {isShareable ? 'yes' : 'no'}
         </Typography>
       </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import { Button, Card, FormControl, Typography } from '@mui/material';
+import { Button, Card, CardContent, FormControl, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { Theme } from '@mui/material/styles';
@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = ({contractId}) => {
   const classes = useStyles();
+  const [hasError, setError] = React.useState(false);
   const [recipient, setRecipient] = React.useState("");
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
@@ -47,12 +48,13 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
   const onSubmit = async () => {
     setLoading(true);
     const result = await ledgerHooks.inviteNewAssetHolder(recipient, contractId)
-    console.log(result)
     if(result.isOk){
       setLoading(false);
       setSuccessful(true);
+      setError(false);
     } else {
       setLoading(false)
+      setError(true)
       setSuccessful(false);
     }
     
@@ -96,6 +98,13 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
         cancel
       </Button>
       </FormControl>
+      {
+        hasError && <Card sx={{width: '100%', margin: 1}}>
+          <CardContent>
+            Error Occured. Asset Account Cannot be shared.
+          </CardContent>
+        </Card>
+      }
       </>
   );
 }

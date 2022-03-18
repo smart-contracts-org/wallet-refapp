@@ -47,6 +47,7 @@ template AssetTransfer
     -- The recepient of the transfer.
     recipient : Party
   where
+  
     signatory (signatory asset)
     observer recipient
 

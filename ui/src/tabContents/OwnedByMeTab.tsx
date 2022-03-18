@@ -6,6 +6,7 @@ import { useGetAllAssetAccounts } from '../ledgerHooks/ledgerHooks';
 
 export const OwnedByMeTab: React.FC = () => {
   const {loading, contracts} = useGetAllAssetAccounts();
+  console.log(contracts)
   const assetRows = contracts.map((contract)  => <AssetAccountRow key={contract.contractId} contractId={contract.contractId} isFungible={contract.payload.assetType.fungible} owner={contract.payload.owner} issuer={contract.payload.assetType.issuer} ticker={contract.payload.assetType.symbol}/>)
   console.log(contracts)
   return (

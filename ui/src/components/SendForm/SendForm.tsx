@@ -1,6 +1,6 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import { Box, Button, Card, CardContent, FormControl, Link, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, FormControl, LinearProgress, Link, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { Theme } from '@mui/material/styles';
@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import { useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { ContractId } from '@daml/types';
 import { AssetHoldingAccount } from '@daml.js/wallet-refapp/lib/Account';
+import { getAssetSum } from '../../utils/getAssetSum';
+import { numberWithCommas } from '../../utils/numberWithCommas';
 
 interface SendFormProps {
   ticker: string;
@@ -45,9 +47,11 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
   const classes = useStyles();
   const nav = useNavigate();
   const ledgerHooks = useLedgerHooks();
-  const { contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner});
+  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner});
   const assetCids = contracts.map((contract) => contract.contractId)
-  console.log(assetCids)
+  const assetSum = getAssetSum(contracts);
+  const formattedSum = numberWithCommas(assetSum)
+
   const onCancel = () => {
     nav(-1)
   }
@@ -78,10 +82,22 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
     setSuccessful(false);
     setError(false)
   }
+  if(loading){
+    return (
+      <LinearProgress/>
+    )
+  }
+  if(contracts.length === 0){
+    return (
+      <Card>
+        No contracts
+      </Card>
+    )
+  }
   return (
     <>
       <FormControl className={classes.root}>
-        <Box display='flex' alignItems='center' justifyContent='center'>
+        <Box display='flex'  justifyContent='center'>
           <Typography color='text.secondary' variant='body2' gutterBottom>
             Sending
         </Typography>
@@ -92,7 +108,7 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
             Balance: 
           </Typography>
           <Typography marginLeft={1} color='primary' variant='body2'>
-            {quantity || 'undefined'}
+            {formattedSum || 'undefined'}
           </Typography>
         </Box>
         <TextField

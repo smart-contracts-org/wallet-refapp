@@ -76,7 +76,6 @@ export const BasicTabs: React.FC<unknown> =() => {
       <TabPanel value={value} index={1}>
         <PendingActivities isInbound={false}/>
       </TabPanel>
-   
       </Box>
       </>
   );

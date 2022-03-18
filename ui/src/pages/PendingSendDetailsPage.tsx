@@ -1,18 +1,39 @@
 import React from 'react';
 import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Button, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
-import { useGetAssetInviteRequests, useGetAssetTransferByContractId, useGetSingleAssetSendRequest, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
-import { useParty } from '@daml/react';
-import { usePageStyles, useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
+import { Avatar, Box, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
+import { useGetAssetAccountByKey, useGetAssetTransferByContractId, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
+import { usePageStyles } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
-import { SwapDetails } from '../components/SwapDetails/SwapDetails';
 import { isMobile } from '../platform/platform';
 import { enableFabBack } from './IssueAirdropPage';
-import { AssetTransfer, Cancel_Transfer } from '@daml.js/wallet-refapp/lib/Asset';
+import { AssetTransfer } from '@daml.js/wallet-refapp/lib/Asset';
 import { ContractId } from '@daml/types';
-import { Asset } from '@daml.js/wallet-refapp';
+import { LoadingButton } from '@mui/lab';
+import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 
+interface Errors {
+  accept: string;
+  reject: string;
+  cancel: string;
+}
+const errors: Errors = {
+  accept: 'Error, unable to accept',
+  reject: 'Error, unable to reject',
+  cancel: 'Error, unable to cancel'
+}
+
+interface Success  {
+  accept: string,
+  reject: string,
+  cancel: string 
+}
+
+const successMessage: Success = {
+  accept: 'accepted',
+  reject: 'rejected',
+  cancel: 'canceled'
+}
 interface PendingSendDetailsPageProps {
   contractId: any;
   isInbound: string;
@@ -37,24 +58,24 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
     isFungible,
     isShareable,
     issuer,
-    owner
+    owner, 
   } = props;
-  console.log('isin', isInbound)
 
   //TODO grab contract details
   const nav = useNavigate();
-  const [isCancelled, setIsCancelled] = React.useState(false);
-  const [hasAcceptError, setAcceptError] = React.useState(false);
-  
+  const [isLoading, setLoading] = React.useState<string | undefined>(undefined);
+  const [success, setSuccess] = React.useState<'accept'|'reject'|'cancel'|undefined>();
+  const [error, setError] = React.useState<'accept'|'reject'|'cancel'|undefined>();
   
   //TODO: can we use something else besdies contract
-  const sendContract = useGetAssetTransferByContractId({contractId: contractId as ContractId<AssetTransfer>});
-  console.log('sendcontract', sendContract);
- 
+  const assetTransferResponse = useGetAssetTransferByContractId({contractId: contractId as ContractId<AssetTransfer>});
+  const assetTransferCid = assetTransferResponse.contract?.contractId
+  const assetAccountResponse = useGetAssetAccountByKey({issuer, symbol: sendTicker, fungible: isFungible, reference: ''})
+  const assetAccountCid = assetAccountResponse.contract?.contractId
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();
   
-  if(!sendContract?.contract){
+  if(!assetTransferCid){
     return (
       <Card>
         <CardContent>
@@ -63,24 +84,39 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
       </Card>
     )
   }
-  const onCancel = async() => {
-    if(!sendContract?.contract?.contractId){
+
+  const onClick = async(action: 'cancel' | 'reject') => {
+    if(!assetAccountCid || !assetTransferCid){
       return;
     }
-    const result = await ledgerHooks.cancelAssetTransfer(sendContract.contract.contractId as ContractId<Cancel_Transfer>)
+    setLoading(action);
+    const result = await ledgerHooks.exerciseAssetTransferChoice(assetTransferCid, action);
     if(result.isOk){
-      setIsCancelled(true);
+      setSuccess(action);
+      setError(undefined);
+      setLoading(undefined);
+    } else {
+      setError(action)
+      setSuccess(undefined);
+      setLoading(undefined);
     }
   }
-  const onAccept = async() => {
-    if(!sendContract?.contract?.contractId){
+  
+  const onAccept = async () => {
+    if(!assetAccountCid || !assetTransferCid){
+      console.log(assetAccountCid, assetTransferCid)
       return;
     }
-    const result = await ledgerHooks.acceptAssetTransfer(sendContract.contract.contractId as ContractId<Asset.Accept_Transfer>);
+    const result = await ledgerHooks.acceptAssetTransfer(assetAccountCid, assetTransferCid);
+    setLoading('accept');
     if(result.isOk){
-
+      setLoading(undefined);
+      setError(undefined);
+      setSuccess('accept');
     } else {
-      setAcceptError(true)
+      setError('accept')
+      setSuccess(undefined)
+      setLoading(undefined)
     }
   }
 
@@ -126,32 +162,25 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
              <AssetDetails issuer={issuer} owner={owner} isAirdroppable={isAirdroppable} isFungible={isFungible} isShareable={isShareable} quantity={sendAmount} ticker={sendTicker || '[Ticker]'} />
           </CardContent>
           {
-            isCancelled && <Card sx={{margin: 1}}><CardContent>Cancelled</CardContent></Card>
+            success && !!successMessage[success] && <Card sx={{margin: 1}}><CardContent>{successMessage[success]}</CardContent></Card>
           }
           {
-            hasAcceptError && <Card sx={{margin: 1}}><CardContent>Error: Unable to accept</CardContent></Card>
+            error && !!errors[error] && <Card sx={{margin: 1}}><CardContent>{errors[error]}</CardContent></Card>
           }
-          <div className={classes.actions}>
-            {isInbound === 'true' && <Button onClick={onAccept} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
+          {success === undefined && <div className={classes.actions}>
+            {isInbound === 'true' && <LoadingButton loadingPosition='end' loading={isLoading === 'accept'} onClick={onAccept} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
               Accept
-            </Button>}
-            {isInbound === 'true' && <Button fullWidth sx={{ marginRight: 1 }} variant='outlined'>
+            </LoadingButton>}
+            {isInbound === 'true' && <LoadingButton loadingPosition='end' loading={isLoading === 'reject'} fullWidth onClick={() => onClick('reject')} sx={{ marginRight: 1 }} variant='outlined'>
               Reject
-          </Button>}
-          {isInbound === 'false' && !isCancelled && <Button disabled={isCancelled} onClick={onCancel} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
+          </LoadingButton>}
+          {isInbound === 'false' && success !== 'cancel' && <LoadingButton loadingPosition='end' loading={isLoading === 'cancel'} onClick={() => {onClick('cancel')}} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Cancel
-          </Button>}
-          </div>
+          </LoadingButton>}
+          </div>}
         </Card>
       </Box>
-
-
-
-      {enableFabBack && isMobile() && <Fab sx={{ position: 'fixed', bottom: 20, right: 30 }}>
-        <IconButton color='primary' onClick={onBack}>
-          <ArrowBackIosNewIcon color='info' />
-        </IconButton>
-      </Fab>}
+      {enableFabBack && isMobile() && <FloatingBackButton/>}
     </div>
   )
 }
