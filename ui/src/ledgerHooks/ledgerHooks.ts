@@ -14,10 +14,16 @@ export const useGetAllAssetAccounts = () => {
 }
 
 // used to get all of user's issued assets
-export const useGetMyIssuedAssetAccounts = () => {
+interface UseGetMyIssuedAssetAccounts {
+  symbol: string;
+  reference: string;
+  fungible: boolean;
+}
+export const useGetMyIssuedAssetAccounts = (args: UseGetMyIssuedAssetAccounts) => {
   const party = useParty();
-  const assetHoldingAccounts = useStreamQueries(Account.AssetHoldingAccount, () => [{ assetType: { issuer: party } }]);
-  return assetHoldingAccounts
+  const { fungible, reference, symbol} = args;
+  return useStreamQueries(Account.AssetHoldingAccount, () => [{ assetType: { issuer: party, fungible,reference,symbol } }]);
+
 }
 interface UseGetMyOwnedAssetsByAssetType {
   issuer: string;
@@ -96,6 +102,16 @@ export const useGetAssetInviteRequests = (isInbound?: boolean) => {
   const allAssetSendRequests = useStreamQueries(Account.AssetHoldingAccountProposal, () => [{ recipient: isInbound ? myPartyId : undefined }]);
   return allAssetSendRequests
 }
+// Used to get all propsals for an assetType
+
+
+export const useGetAccountInvitesByAssetType = (args: Omit<AssetType, "issuer">) => {
+  const myPartyId = useParty();
+
+  const {reference,  symbol, fungible} = args;
+  const AccountInvites = useStreamQueries(Account.AssetHoldingAccountProposal, () => [{ account: {assetType: {issuer:myPartyId , symbol, reference, fungible}} }]);
+  return AccountInvites
+}
 
 export const useGetMyInboundAssetSendRequests = () => {
   const party = useParty();
@@ -161,6 +177,35 @@ export const useLedgerHooks = () => {
     owner: string, 
     recipient: string
   }
+  interface ExerciseAirdrop {
+    assetType: {
+      issuer: string,
+      symbol: string,
+      reference: string,
+      fungible: boolean
+    }, 
+    amount: string, 
+    owner: string, 
+  }
+  const exerciseAirdrop = async (args: ExerciseAirdrop) => {
+    const {assetType, amount, owner} = args;
+     const {issuer, symbol, reference, fungible} = assetType;
+     try {
+       // TODO: update documentation
+       // needing to use _1:, _2:, not obvious enough.
+       // how to parse error messages? not user friendly
+       const result = await ledger.exerciseByKey(Account.AssetHoldingAccount.Airdrop, {_1: {issuer, symbol, reference, fungible }, _2: owner},{amount})
+       // const result = await ledger.exercise(Account.AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
+       //   recipient
+       // });
+ 
+       return { isOk: true, payload: result }
+ 
+     } catch (e) {
+       return { isOk: false, payload: e }
+ 
+     }
+   }
   const inviteNewAssetHolder = async (args: InviteNewAssetHolder) => {
    const {assetType, owner, recipient} = args;
     const {issuer, symbol, reference, fungible} = assetType;
@@ -289,6 +334,6 @@ export const useLedgerHooks = () => {
     }
   }
 
-  return {  exerciseAssetTransferChoice, exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
+  return { exerciseAirdrop, exerciseAssetTransferChoice, exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
 
 }
