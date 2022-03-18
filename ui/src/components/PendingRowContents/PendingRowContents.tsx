@@ -7,9 +7,9 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import SendIcon from '@mui/icons-material/Send';
 import { Link } from "react-router-dom";
-
+import CancelIcon from '@mui/icons-material/Cancel';
 import { SendRowContents } from '../SendRowContents/SendRowContents';
-import { Avatar, CardActionArea } from '@mui/material';
+import { Avatar, Box, CardActionArea, IconButton, Typography } from '@mui/material';
 import { PendingRowProps } from '../PendingRow/PendingRow';
 import { PendingSwapRowContents } from '../PendingSwapRowContents/PendingSwapRowContents';
 import { PendingAssetInviteRowContent } from '../PendingAssetInviteRowContent/PendingAssetInviteRowContent';
@@ -122,7 +122,7 @@ console.log(templateName)
             }
             {!isMobile() && <div className={classes.actions}>
               {isInbound && <Button className={classes.button} variant='outlined' size="small" onClick={onAccept}>Accept</Button>}
-              <Button onClick={isInbound? onReject : onCancel} className={classes.button} variant='outlined' size="small">{isInbound ? 'Reject' : 'Cancel'}</Button>
+              <Button onClick={isInbound? onReject : onCancel} className={classes.button} variant='outlined' size="small">{isInbound ? 'Reject Request' : 'Cancel Request'}</Button>
               <Button className={classes.button} variant='outlined' size="small"
               >Details</Button>
             </div>}

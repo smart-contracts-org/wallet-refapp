@@ -1,7 +1,7 @@
 import React from 'react';
 import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, CardActions, CardContent, Fab, IconButton, Typography } from '@mui/material';
 import { useGetAssetAccountByKey, useGetAssetTransferByContractId, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
 import { usePageStyles } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
@@ -74,13 +74,17 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
   const assetAccountCid = assetAccountResponse.contract?.contractId
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();
-  
+  const onBack = () => {
+    nav(-1)
+  }
   if(!assetTransferCid){
     return (
-      <Card>
+      <Card sx={{width: '100%', margin: 1}}>
         <CardContent>
-          Contract doesn't exist
+          Contract doesn't exist anymore
+          <Button onClick={onBack} size={'small'} sx={{marginLeft: 1}} variant='outlined'>Go Back</Button>
         </CardContent>
+        
       </Card>
     )
   }
@@ -120,9 +124,7 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
     }
   }
 
-  const onBack = () => {
-    nav(-1)
-  }
+  
   
   return (
     <div className={classes.root}>
@@ -169,13 +171,13 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
           }
           {success === undefined && <div className={classes.actions}>
             {isInbound === 'true' && <LoadingButton loadingPosition='end' loading={isLoading === 'accept'} onClick={onAccept} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
-              Accept
+              Accept Request
             </LoadingButton>}
             {isInbound === 'true' && <LoadingButton loadingPosition='end' loading={isLoading === 'reject'} fullWidth onClick={() => onClick('reject')} sx={{ marginRight: 1 }} variant='outlined'>
-              Reject
+              Reject Request
           </LoadingButton>}
-          {isInbound === 'false' && success !== 'cancel' && <LoadingButton loadingPosition='end' loading={isLoading === 'cancel'} onClick={() => {onClick('cancel')}} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
-              Cancel
+          {isInbound === 'false' && success !== 'cancel' && <LoadingButton  loadingPosition='end' loading={isLoading === 'cancel'} onClick={() => {onClick('cancel')}} fullWidth sx={{ margin: 1 }} variant='outlined'>
+              Cancel Request
           </LoadingButton>}
           </div>}
         </Card>

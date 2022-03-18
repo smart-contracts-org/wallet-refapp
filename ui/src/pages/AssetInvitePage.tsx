@@ -16,9 +16,9 @@ export const AssetInvitePage: React.FC = () => {
   const nav = useNavigate();
   const classes = usePageStyles();
   const query = useQuery();
-  const issuer = query.get('issuer')
-  const symbol = query.get('ticker');
-  const owner = query.get('owner');
+  const issuer = query.get('issuer') || ""
+  const symbol = query.get('ticker') || ""
+  const owner = query.get('owner') || ""
   const contractId = query.get('contractId') as ContractId<AssetHoldingAccount>
   const isFungible = query.get('isFungible') === 'true'
   const isShareable = query.get('isShareable') === 'true'
@@ -48,7 +48,7 @@ export const AssetInvitePage: React.FC = () => {
             <Typography>
               {symbol}
             </Typography>
-            <InviteNewAssetOwnerForm contractId={contractId} />
+            <InviteNewAssetOwnerForm owner={owner} issuer={issuer} symbol={symbol} fungible={isFungible} reference={""}/>
           </CardContent>
         </Card>
       </Box>

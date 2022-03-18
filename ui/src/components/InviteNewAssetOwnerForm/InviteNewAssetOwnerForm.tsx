@@ -10,7 +10,12 @@ import { useNavigate } from 'react-router-dom';
 import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 
 interface InviteNewAssetOwnerFormProps {
-  contractId: string;
+  owner: string;
+  issuer: string;
+  symbol: string;
+  fungible: boolean;
+  //TODO add reference
+  reference?: string;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -33,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 
-export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = ({contractId}) => {
+export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = ({ issuer, reference,symbol, fungible, owner}) => {
   const classes = useStyles();
   const [hasError, setError] = React.useState(false);
   const [recipient, setRecipient] = React.useState("");
@@ -42,12 +47,12 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
   const nav = useNavigate();
   const ledgerHooks = useLedgerHooks();
 
-  const onCancel = () => {
+  const onBack = () => {
     nav(-1)
   }
   const onSubmit = async () => {
     setLoading(true);
-    const result = await ledgerHooks.inviteNewAssetHolder(recipient, contractId)
+    const result = await ledgerHooks.inviteNewAssetHolder({recipient, owner, assetType: {issuer, reference: reference || "", fungible, symbol}})
     if(result.isOk){
       setLoading(false);
       setSuccessful(true);
@@ -94,8 +99,8 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
       >
         {isSuccessful ? 'Sent, send another' : 'Invite'}
       </LoadingButton>
-      <Button fullWidth variant='outlined' onClick={onCancel}>
-        cancel
+      <Button fullWidth variant='outlined' onClick={onBack}>
+        Back
       </Button>
       </FormControl>
       {

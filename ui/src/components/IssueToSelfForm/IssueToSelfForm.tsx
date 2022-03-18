@@ -6,6 +6,7 @@ import React from 'react';
 import { LoadingButton } from '@mui/lab';
 import { IssueSuccess } from '../IssueSuccess/IssueSuccess';
 import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
+import { useNavigate } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -25,6 +26,10 @@ interface IssueToSelfFormProps {
 export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ cancelText, issueLater, onDoneClick, onNext, ticker, handleClose }) => {
   const classes = useStyles()
   const ledgerHooks = useLedgerHooks();
+  const nav = useNavigate();
+  const onBack = () => {
+    nav(-1)
+  }
   const [hasError, setError] = React.useState<boolean>(false);
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [amount, setAmount] = React.useState<string>('0');
@@ -106,11 +111,11 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ cancelText, is
       </LoadingButton>
           <Button
             variant='outlined'
-            size='small'
+            size='medium'
             fullWidth
-            onClick={(issueLater && issueLater) || handleClose}
+            onClick={onBack || (issueLater && issueLater) || handleClose}
           >
-            {cancelText || 'Cancel'}
+            {cancelText || 'Back'}
           </Button>
 
         </>)}

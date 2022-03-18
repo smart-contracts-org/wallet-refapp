@@ -65,6 +65,7 @@ export interface AssetType {
   reference: string;
 }
 export const useGetAssetAccountByKey = (assetType: AssetType) => {
+  console.log('getasset')
   const myPartyId = useParty();
   const contract = useFetchByKey(Account.AssetHoldingAccount, () => ({_1: assetType, _2: myPartyId}), []);
   return contract
@@ -150,14 +151,27 @@ export const useLedgerHooks = () => {
     }
   }
 
-  const inviteNewAssetHolder = async (recipient: string, assetAccountCid: ContractId<AssetHoldingAccount>) => {
+  interface InviteNewAssetHolder {
+    assetType: {
+      issuer: string,
+      symbol: string,
+      reference: string,
+      fungible: boolean
+    }, 
+    owner: string, 
+    recipient: string
+  }
+  const inviteNewAssetHolder = async (args: InviteNewAssetHolder) => {
+   const {assetType, owner, recipient} = args;
+    const {issuer, symbol, reference, fungible} = assetType;
     try {
       // TODO: update documentation
       // needing to use _1:, _2:, not obvious enough.
       // how to parse error messages? not user friendly
-      const result = await ledger.exercise(Account.AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
-        recipient
-      });
+      const result = await ledger.exerciseByKey(Account.AssetHoldingAccount.Invite_New_Asset_Holder, {_1: {issuer, symbol, reference, fungible }, _2: owner},{recipient})
+      // const result = await ledger.exercise(Account.AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
+      //   recipient
+      // });
 
       return { isOk: true, payload: result }
 
