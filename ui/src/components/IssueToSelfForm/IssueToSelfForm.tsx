@@ -27,7 +27,7 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ cancelText, is
   const ledgerHooks = useLedgerHooks();
   const [hasError, setError] = React.useState<boolean>(false);
   const [isLoading, setLoading] = React.useState<boolean>(false);
-  const [amount, setAmount] = React.useState<number>(0);
+  const [amount, setAmount] = React.useState<string>('0');
   const [isIssueToSelfSuccess, setIsIssueToSelfSuccess] = React.useState(false);
   const isFungible = true;
 
@@ -114,7 +114,7 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ cancelText, is
           </Button>
 
         </>)}
-      {hasError && <Card>
+      {hasError && <Card sx={{margin: 1, width: '100%'}}>
         <CardContent>
           ERROR
           </CardContent>
