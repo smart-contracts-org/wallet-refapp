@@ -75,6 +75,7 @@ export const useGetAssetHoldingInviteByContractId = (arg: ContractId<AssetHoldin
   return contract
 }
 
+
 export const useGetSingleAssetSendRequest = (args: GetSingleAssetSendRequest) => {
   console.log(args)
   const { recipient, symbol, isFungible, reference, amount, owner, issuer } = args;
@@ -211,9 +212,29 @@ export const useLedgerHooks = () => {
 
     }
   }
+  interface AssetTransferChoies {
+    cancel: Choice<Asset.AssetTransfer, Asset.Cancel_Transfer, ContractId<Asset.Asset>, undefined>,
+    reject: Choice<Asset.AssetTransfer, Asset.Reject_Transfer, ContractId<Asset.Asset>, undefined>
+  }
+  
+  const assetTransferChoices: AssetTransferChoies = {
+    cancel: Asset.AssetTransfer.Cancel_Transfer,
+    reject: Asset.AssetTransfer.Reject_Transfer
+  }
 
+  const exerciseAssetTransferChoice = async(assetTransferCid: ContractId<Asset.AssetTransfer>, action: 'cancel' | 'reject') => {
+    try {
+      const result = await ledger.exercise(assetTransferChoices[action], assetTransferCid, {
+      });
 
-  const cancelAssetTransfer = async (assetTransferCid: ContractId<Asset.Cancel_Transfer>) => {
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
+  const cancelAssetTransfer = async (assetTransferCid: ContractId<Asset.AssetTransfer>) => {
     try {
       const result = await ledger.exercise(Asset.AssetTransfer.Cancel_Transfer, assetTransferCid, {
       });
@@ -254,6 +275,6 @@ export const useLedgerHooks = () => {
     }
   }
 
-  return { exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
+  return {  exerciseAssetTransferChoice, exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
 
 }
