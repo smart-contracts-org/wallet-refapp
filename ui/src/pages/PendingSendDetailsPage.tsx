@@ -2,7 +2,7 @@ import React from 'react';
 import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Box, Button, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
-import { useGetAssetInviteRequests, useGetAssetTransferByContractId, useGetSingleAssetSendRequest, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
+import { useGetAssetAccountByKey, useGetAssetInviteRequests, useGetAssetTransferByContractId, useGetSingleAssetSendRequest, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
 import { useParty } from '@daml/react';
 import { usePageStyles, useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
@@ -37,9 +37,8 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
     isFungible,
     isShareable,
     issuer,
-    owner
+    owner, 
   } = props;
-  console.log('isin', isInbound)
 
   //TODO grab contract details
   const nav = useNavigate();
@@ -48,13 +47,14 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
   
   
   //TODO: can we use something else besdies contract
-  const sendContract = useGetAssetTransferByContractId({contractId: contractId as ContractId<AssetTransfer>});
-  console.log('sendcontract', sendContract);
- 
+  const assetTransferResponse = useGetAssetTransferByContractId({contractId: contractId as ContractId<AssetTransfer>});
+  const assetTransferCid = assetTransferResponse.contract?.contractId
+  const assetAccountResponse = useGetAssetAccountByKey({issuer, symbol: sendTicker, fungible: isFungible, reference: ''})
+  const assetAccountCid = assetAccountResponse.contract?.contractId
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();
   
-  if(!sendContract?.contract){
+  if(!assetTransferCid){
     return (
       <Card>
         <CardContent>
@@ -64,21 +64,22 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
     )
   }
   const onCancel = async() => {
-    if(!sendContract?.contract?.contractId){
+    if(!assetTransferCid){
       return;
     }
-    const result = await ledgerHooks.cancelAssetTransfer(sendContract.contract.contractId as ContractId<Cancel_Transfer>)
+    const result = await ledgerHooks.cancelAssetTransfer(assetTransferCid as ContractId<Cancel_Transfer>)
     if(result.isOk){
       setIsCancelled(true);
     }
   }
-  const onAccept = async() => {
-    if(!sendContract?.contract?.contractId){
+  const onAccept = async () => {
+    if(!assetAccountCid || !assetTransferCid){
+      console.log(assetAccountCid, assetTransferCid)
       return;
     }
-    const result = await ledgerHooks.acceptAssetTransfer(sendContract.contract.contractId as ContractId<Asset.Accept_Transfer>);
+    const result = await ledgerHooks.acceptAssetTransfer(assetAccountCid, assetTransferCid);
     if(result.isOk){
-
+      console.log('reslet', result)
     } else {
       setAcceptError(true)
     }

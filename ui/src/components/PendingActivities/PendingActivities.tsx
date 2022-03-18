@@ -10,8 +10,10 @@ interface PendingActivitiesPageProps {
 export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbound}) => {
   // TODO: fetch pending contracts for swap and assetInvite
   const sendRequests = useGetAssetSendRequests(isInbound);
-  const inviteRequests = useGetAssetInviteRequests(isInbound);
   
+  console.log(sendRequests)
+  const inviteRequests = useGetAssetInviteRequests(isInbound);
+  console.log(inviteRequests)
   const allRequests = sendRequests.contracts
   const allInviteRequests = inviteRequests.contracts
   const all = [...allRequests, ...allInviteRequests]
@@ -22,6 +24,7 @@ export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbou
     AssetTransfer: 'send'
 
   }
+
   
   const pendingRows = all.map((asset, i)=> {
     
@@ -32,6 +35,7 @@ export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbou
     const assetAccountTicker = asset.payload.account?.assetType?.symbol
     const sendTicker = asset.payload?.asset?.assetType.symbol
     const issuer = asset.payload?.asset?.assetType.issuer
+    const isFungible = asset.payload?.asset?.assetType.fungible;
     const templateId = asset.templateId.split(':')[2]
     console.log('tempid', templateId)
     
@@ -40,7 +44,7 @@ export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbou
       return null;
     }
     return (
-      <PendingRow contractId={contractId} issuer={issuer} sendTicker={assetAccountTicker || sendTicker} sender={sender} sendAmount={sendAmount} templateName={templateNameMap[templateId]} receiver={receiver} isInbound={isInbound} isNarrow={true} key={i}/>
+      <PendingRow isFungible={isFungible}  contractId={contractId} issuer={issuer} sendTicker={assetAccountTicker || sendTicker} sender={sender} sendAmount={sendAmount} templateName={templateNameMap[templateId]} receiver={receiver} isInbound={isInbound} isNarrow={true} key={i}/>
     )
   })
   

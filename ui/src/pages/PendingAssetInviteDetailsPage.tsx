@@ -28,7 +28,6 @@ interface PendingSendDetailsPageProps {
 }
 export type ActionType = 'accept' | 'reject' | 'cancel';
 
-
 export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps> = (props) => {
   const {
     contractId,
@@ -45,10 +44,6 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
 
   //TODO grab contract details
   const nav = useNavigate();
-  const [isAccepted, setAccepted] = React.useState(false);
-  const [isRejected, setRejected] = React.useState(false);
-  const [isCancelled, setIsCancelled] = React.useState(false);
-  const [hasAcceptError, setAcceptError] = React.useState(false);
   const [isLoading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState<'accept'|'reject'|'cancel'|undefined>();
   const [error, setError] = React.useState<'accept'|'reject'|'cancel'|undefined>();
@@ -93,7 +88,6 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
     cancel: 'canceled'
   }
   
-
   const onClick = async(action: ActionType) => {
     if(!contract?.contract?.contractId){
       return;
@@ -162,7 +156,7 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
             {isInbound === 'true' && <Button onClick={() =>onClick('reject')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Reject
           </Button>}
-          {isInbound === 'false' && !isCancelled && <Button disabled={isCancelled} onClick={() =>onClick('cancel')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
+          {isInbound === 'false' && success !== 'cancel' && <Button disabled={success==='cancel'} onClick={() =>onClick('cancel')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Cancel
           </Button>}
           </div>}
