@@ -15,7 +15,7 @@ import { enableFabBack } from './IssueAirdropPage';
 import { chipColors } from '../components/RowChip/RowChip';
 import { useParty } from '@daml/react';
 import { numberWithCommas } from '../utils/numberWithCommas';
-import { useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
+import { useGetAssetAccountByKey, useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
 import { getAssetSum } from '../utils/getAssetSum';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
@@ -82,15 +82,16 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
 export const AssetProfilePage: React.FC = () => {
   const nav = useNavigate();
   const query = useQuery();
-  const issuer = query.get('issuer')
-  const symbol = query.get('ticker');
-  const contractId = query.get('contractId');
+  const issuer = query.get('issuer') || ""
+  const symbol = query.get('ticker') || ""
   const isFungible = query.get('isFungible') === 'true'
-  const isShareable = query.get('isShareable') === 'true'
-  const isAirdroppable=query.get('isAirdroppable') === 'true'
-  const party = useParty();
+  const { contract: assetAccountContract} = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference: ''})
+  const contractId = query.get('contractId');
+  const isShareable = assetAccountContract?.payload.resharable
+  const isAirdroppable= assetAccountContract?.payload.airdroppable
   
-  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer || "", symbol: symbol || "", isFungible: !!isFungible, owner: party });
+  const party = useParty();
+  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
   const amount = getAssetSum(contracts);
   const formattedSum = numberWithCommas(amount)
   const classes = usePageStyles();
@@ -172,7 +173,7 @@ export const AssetProfilePage: React.FC = () => {
           isAirdroppable={!!isAirdroppable} 
           owner={party}  
           issuer={issuer || "issuer"}  
-          isFungible={isFungible} quantity={amount} ticker={symbol || 'Ticker'} />
+          isFungible={isFungible} quantity={formattedSum} ticker={symbol || 'Ticker'} />
         </CardContent>
       </Card>
 

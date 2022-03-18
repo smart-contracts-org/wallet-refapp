@@ -3,6 +3,7 @@ import React from 'react';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { demoPartyId } from '../TopAppBar/TopAppBar';
+import { useGetAssetAccountByKey } from '../../ledgerHooks/ledgerHooks';
 
 const useStyles = makeStyles((theme: Theme) => ({
   row: {
@@ -25,7 +26,7 @@ export interface AssetDetailsProps {
   ticker: string;
   issuer: string;
   owner: string;
-  quantity: string;
+  quantity?: string;
   isShareable: boolean;
   isFungible: boolean;
   isAirdroppable: boolean;
@@ -35,6 +36,7 @@ const dataColor = 'primary'
 
 export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quantity, isShareable, isFungible, isAirdroppable, ticker }) => {
   const classes = useStyles();
+
   return (
     <div className={classes.table}>
       <div className={classes.row}>
