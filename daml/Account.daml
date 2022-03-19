@@ -11,9 +11,11 @@ module Account where
 
 import DA.Action
 import DA.List as L
+import DA.Set as Set
 import DA.Foldable (forA_)
-import Asset
 import DA.Optional (whenSome)
+import Asset
+import Trade
 
 -- AssetHoldingAccount represents an account, where Asset contracts can be held
 -- Assets held in the account are all Asset contracts from Active Contract Set,
@@ -63,6 +65,51 @@ template AssetHoldingAccount with
           assetType
           owner
           amount
+          observers = Set.empty
+
+    -- This choice consolidates the input set of assets in the account and from the total amount
+    -- creates new set of Asset contract in the desired input amounts plus one more Asset with the remaining amount
+    nonconsuming choice Merge_Split : [ContractId Asset]
+      with
+        -- The list of assets to consolidate
+        assetCids : [ContractId Asset]
+        -- The desired amounts of the output assets
+        outputAmounts : [Decimal]
+      controller owner
+      do
+        assertMsg "Non fungible assets cannot be merged" $
+          assetType.fungible
+        totAssetAmount <- sum . map (\x -> x.amount) <$> forA assetCids \assetCid -> do
+          asset <- fetch assetCid
+          assertMsg "Asset type mismatch between asset and account" $
+            asset.assetType == assetType
+          assertMsg "Owner mismatch between asset and account" $
+            asset.owner == owner
+          archive assetCid
+          return asset
+        assertMsg "Insufficient funds passed to create all output assets" $
+          totAssetAmount >= sum outputAmounts
+        let 
+          createOutputAssets assetsList amt = do
+            assertMsg "Each output asset amount must be positive" $
+              amt > 0.0
+            a <- create Asset with
+              assetType
+              owner
+              amount = amt
+              observers = Set.empty
+            return $ a :: assetsList
+        outputAssets <- foldlA createOutputAssets [] outputAmounts
+        if (totAssetAmount > sum outputAmounts)
+        then do 
+          a <- create Asset with
+            assetType
+            owner
+            amount = (totAssetAmount - sum outputAmounts)
+            observers = Set.empty
+          return $ a :: outputAssets
+        else
+          return outputAssets
 
     -- The purpose of this choice is to allow client application to create a transfer proposal using multiple Asset 
     -- contracts held in the account. Client application can query for all active Asset contracts, where assetType and owner 
@@ -78,13 +125,15 @@ template AssetHoldingAccount with
       controller owner 
       do
 
-        assertMsg "Cannot create transfer. The amount of non fungible asset must be 1.0" $
+        assertMsg "The amount of non fungible asset must be 1.0." $
           assetType.fungible || amount==1.0
+        assertMsg "Transfer amount must be positive." $
+          amount>0.0
         totAssetAmount <- sum . map (\x -> x.amount) <$> forA assetCids \assetCid -> do
           asset <- fetch assetCid
-          assertMsg "Cannot create transfer. Asset type mismatch between asset and account" $
+          assertMsg "Asset type mismatch between asset and account" $
             asset.assetType == assetType
-          assertMsg "Cannot create transfer. Owner mismatch between asset and account" $
+          assertMsg "Owner mismatch between asset and account" $
             asset.owner == owner
           archive assetCid
           return asset
@@ -124,11 +173,14 @@ template AssetHoldingAccount with
         assertMsg "Insufficient funds passed to create transfers" $
           totAssetAmount >= sum txAmounts
         forA_ transfers (\tx -> do
+          assertMsg "Each transfer amount must be positive" $
+            tx._1 > 0.0
           create AssetTransfer with
             asset = Asset with
               assetType
               owner
               amount = tx._1
+              observers = Set.empty
             recipient = tx._2
           )
         when (totAssetAmount > sum txAmounts) do 
@@ -136,6 +188,7 @@ template AssetHoldingAccount with
             assetType
             owner
             amount = (totAssetAmount - sum txAmounts)
+            observers = Set.empty
           return ()
 
     -- The purpose of this choice is to obtain issuer's authority required to accept the transfer.
@@ -151,6 +204,61 @@ template AssetHoldingAccount with
         assertMsg "Mismatch between account owner and transfer recipient" $
           transfer.recipient == owner
         exercise transferCid Accept_Transfer
+
+    -- This choice allows to propose a trade using a set of assets held in the account
+    nonconsuming choice Create_Trade : ContractId Trade
+      with
+        -- The list of assets to create the offered asset from
+        assetCids : [ContractId Asset]
+        -- The amount of offered asset in trade proposal
+        offeredAssetAmount : Decimal
+        -- The asset to trade or swap the offered asset for
+        requestedAsset : Asset
+      controller owner
+      do
+        assertMsg "Non fungible assets must be traded one at a time" $
+          assetType.fungible || L.length assetCids==1
+        totAssetAmount <- sum . map (\x -> x.amount) <$> forA assetCids \assetCid -> do
+          asset <- fetch assetCid
+          assertMsg "Asset type mismatch between asset and account" $
+            asset.assetType == assetType
+          assertMsg "Owner mismatch between asset and account" $
+            asset.owner == owner
+          archive assetCid
+          return asset
+        assertMsg "Insufficient funds passed to create the trade" $
+          totAssetAmount >= offeredAssetAmount
+        offeredAsset <- create Asset with
+          assetType
+          owner
+          amount = offeredAssetAmount
+          observers = Set.fromList [requestedAsset.owner]
+        when (totAssetAmount > offeredAssetAmount) do
+          create Asset with
+            assetType
+            owner
+            amount = (totAssetAmount - offeredAssetAmount)
+            observers = Set.empty
+          return ()
+        requestedAssetsTxPreApproval <- 
+          exerciseByKey @AssetHoldingAccount (requestedAsset.assetType, owner) Preapprove_Transfer_In with 
+            asset = requestedAsset
+        create Trade with
+          proposer = owner
+          receiver = requestedAsset.owner
+          offeredAsset 
+          requestedAssetsTxPreApproval
+
+    -- This choice creates a pre-approval for incoming transfer, which gives the transfer originator
+    -- the authority to deposit transfer asset to this account
+    nonconsuming choice Preapprove_Transfer_In : ContractId TransferPreApproval
+      with
+        asset : Asset
+      controller owner
+      do
+        create TransferPreApproval with
+          asset
+          newOwner = owner
 
     -- Propose/accept pattern for closing the account allows issuer to burn assets held in the account.
     -- When accepting AssetHoldingAccountCloseProposal, the issuer should archive all Asset contracts
@@ -210,8 +318,3 @@ template AssetHoldingAccountCloseProposal with
       controller account.assetType.issuer 
       do
         return ()
-
-
-
-
-

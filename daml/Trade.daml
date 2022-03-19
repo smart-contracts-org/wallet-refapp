@@ -1,0 +1,73 @@
+-- Copyright (c) 2021 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+
+-- This module implements atomic swap of assets.
+module Trade where
+
+import DA.Set as Set
+import Asset
+
+template Trade
+  with
+    proposer : Party
+    receiver : Party
+    offeredAsset : ContractId Asset
+    requestedAssetsTxPreApproval : ContractId TransferPreApproval
+  where
+    signatory proposer
+    observer receiver
+
+    choice Trade_Cancel : ()
+      controller proposer
+      do
+        return ()
+
+    choice Trade_Reject : ()
+      controller receiver
+      do
+        return ()
+
+    choice Trade_Settle : (ContractId Asset, ContractId Asset)
+      with
+        requestedAsset : ContractId Asset
+        offeredTxPreApproval : ContractId TransferPreApproval
+      controller receiver
+      do
+        newReceiverAsset <- exercise offeredTxPreApproval TransferPreApproval_Transfer 
+            with txAssetCid = offeredAsset
+        newProposerAsset <- exercise requestedAssetsTxPreApproval TransferPreApproval_Transfer 
+            with txAssetCid = requestedAsset
+        return (newProposerAsset, newReceiverAsset)
+
+-- TransferPreApproal template gives the transfer originator the authority to change the asset owner
+-- from the transfer originator party to the transfer recipient party
+template TransferPreApproval
+  with
+    asset : Asset
+    newOwner : Party
+  where
+    signatory asset.assetType.issuer
+    observer newOwner
+
+    choice TransferPreApproval_Cancel : ()
+      controller asset.owner
+      do
+        return ()
+
+    choice TransferPreApproval_Reject : ()
+      controller newOwner
+      do
+        return ()
+
+    choice TransferPreApproval_Transfer : ContractId Asset
+      with
+        txAssetCid : ContractId Asset
+      controller asset.owner, newOwner
+      do
+        txAsset <- fetch txAssetCid
+        assertMsg "Transfer pre-approval asset and transfer asset do not match" $
+          asset == txAsset with observers = asset.observers
+        archive txAssetCid
+        create txAsset with
+          owner = newOwner
+          observers = Set.empty
