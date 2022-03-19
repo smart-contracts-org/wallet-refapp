@@ -120,3 +120,27 @@ TBD
 ## How to get help
 
 TBD
+## swap workflow
+// Workflow for sender: 
+//1. Get Sender Asset Holding Contract
+// 2. Exercise create_trade on asset holding contract, 
+// 3. with the list of assets for that account
+// with amount
+// inbound asset details
+
+// Receiver
+// aobve creates trade contract
+// 1. grab Trade contract
+// 2. Grab asset account of what you need send
+// call merge split, with all assets, with amount
+// get account for what you want to receive
+// call Preparove transfer_in, get from Trade
+
+// 1. exercise create_trade on asset account of proposer
+// creates a Trade contract, belongs to reciever
+
+//2. grab all the asset contracts of the
+// 3. pass all assets to merge_split choice
+// ouputs target amoutn for swap
+
+// accont holding contract create pre-approve contract

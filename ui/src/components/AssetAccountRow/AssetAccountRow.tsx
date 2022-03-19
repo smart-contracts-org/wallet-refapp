@@ -45,14 +45,14 @@ export interface AssetAccountRowProps {
 export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({contractId,isFungible, issuer, ticker, owner, isShareable, isAirdroppable }) => {
   const classes = useStyles()
   const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner});
-  const assetProfilePath = `/asset?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable ? 'true' : 'false'}&isAirdroppable=${isAirdroppable ? 'true': 'false'}&contractId=${contractId}`
+  const path = `/asset?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable ? 'true' : 'false'}&isAirdroppable=${isAirdroppable ? 'true': 'false'}&contractId=${contractId}`
   const assetSum = getAssetSum(contracts);
   const formattedSum = numberWithCommas(assetSum)
   console.log(issuer, owner)
   return (
     <>
       <Card sx={{marginBottom: 1}} >
-        <CardActionArea component={Link} to={assetProfilePath}
+        <CardActionArea component={Link} to={path}
         >
           <CardContent className={classes.root}  >
             <Avatar sx={{ marginRight: 1 }}>

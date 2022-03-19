@@ -2,7 +2,7 @@ import React from 'react';
 import {  useNavigate } from 'react-router-dom'
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Card, CardContent, IconButton, LinearProgress, Typography } from '@mui/material';
@@ -86,6 +86,7 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
 export const AssetProfilePage: React.FC = () => {
   const nav = useNavigate();
   const query = useQuery();
+  const reference = ""
   const issuer = query.get('issuer') || ""
   const symbol = query.get('ticker') || ""
   const isFungible = query.get('isFungible') === 'true'
@@ -98,11 +99,13 @@ export const AssetProfilePage: React.FC = () => {
   const amount = getAssetSum(contracts);
   const formattedSum = numberWithCommas(amount)
   const classes = usePageStyles();
-  const attributesPath = `?issuer=${issuer}&ticker=${symbol}&isFungible=${isFungible}&isShareable=${isShareable }&isAirdroppable=${isAirdroppable}&owner=${party}&contractId=${contractId}`
+  const attributesPath = `?issuer=${issuer}&ticker=${symbol}&isFungible=${isFungible}&isShareable=${isShareable }&isAirdroppable=${isAirdroppable}&owner=${party}&contractId=${contractId}&reference=${reference}`
   const sendPath = `/send${attributesPath}`
   const swapPath = `/swap${attributesPath}`
   const assetInvitePath = `/invite${attributesPath}`
   const issueAirdropPath = `/issue${attributesPath}`
+  
+
   const onBack = () => {
     nav(-1)
   }
