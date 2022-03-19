@@ -8,6 +8,8 @@
 
 module Asset where
 
+import DA.Set as Set
+
 -- Asset type is identified by a combination of issuer, symbol, fungible and reference properties.
 -- Optional reference field can be used for purposes like
 -- identifying a specific item in a run of non-fungible tokens.
@@ -33,8 +35,10 @@ template Asset with
     owner : Party
     -- The amount of the asset
     amount : Decimal
+    observers : Set Party
   where
     signatory assetType.issuer, owner
+    observer observers
     ensure (if assetType.fungible then amount>0.0 else (amount==1.0))
 
 -- The AssetTransfer template represents an asset in transfer.
@@ -47,9 +51,11 @@ template AssetTransfer
     -- The recepient of the transfer.
     recipient : Party
   where
-  
     signatory (signatory asset)
     observer recipient
+    key (asset.assetType, recipient) : (AssetType, Party)
+    maintainer key._1.issuer
+    ensure (if asset.assetType.fungible then asset.amount>0.0 else (asset.amount==1.0))
 
     choice Cancel_Transfer : ContractId Asset
       controller asset.owner 
@@ -62,6 +68,9 @@ template AssetTransfer
         create asset
 
     choice Accept_Transfer : ContractId Asset
+      -- Requiring the authority of both the recipient and the asset issuer ensures that transfer can only be accepted
+      -- by calling Deposit_Transfer_Into_Account choice on the AssetHoldingAccount template,
+      -- which in turn ensures one cannot accept asset transfer without having asset holding account
       controller recipient, asset.assetType.issuer
       do
         create asset with

@@ -6,6 +6,8 @@ import { Accept_Transfer, AssetTransfer, Cancel_Transfer, Reject_Transfer } from
 import { AssetHoldingAccount, AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
 import { ActionType } from '../pages/PendingAssetInviteDetailsPage';
 import { Archive } from '@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662/lib/DA/Internal/Template';
+import { Set } from '@daml.js/97b883cd8a2b7f49f90d5d39c981cf6e110cf1f1c64427a28a6d58ec88c43657/lib/DA/Set/Types';
+import { makeDamlSet } from '../utils/common';
 
 export const useGetAllAssetAccounts = () => {
   const myPartyId = useParty();
@@ -311,10 +313,12 @@ export const useLedgerHooks = () => {
       const asset = await ledger.create(Asset.Asset, {
         assetType: { issuer: party, symbol: ticker, fungible: isFungible, reference: '' },
         owner: party,
-        amount
+        amount, 
+        observers: makeDamlSet<string>([party])
       })
       return { isOk: true, payload: asset }
     } catch (e) {
+      console.log(e)
       return { isOk: false, payload: e }
     }
   }
