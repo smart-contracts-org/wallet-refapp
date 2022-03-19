@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { SwapForm } from '../components/SwapForm/SwapForm';
@@ -7,11 +7,33 @@ import { usePageStyles } from './AssetProfilePage';
 import { isMobile } from '../platform/platform';
 import { enableFabBack } from './IssueAirdropPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
+import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
+import { useGetAssetAccountByKey, useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
+import { getAssetSum } from '../utils/getAssetSum';
+import { useParty } from '@daml/react';
 
 
 export const SwapPage: React.FC = () => {
   const nav = useNavigate();
-  const params = useParams();
+  const query = useQuery();
+  
+  const reference = ""
+  const party = useParty();
+  const contractId = query.get('contractId');
+  const issuer = query.get('issuer') || ""
+  const symbol = query.get('ticker') || ""
+  const isFungible = query.get('isFungible') === 'true'
+  // get your owned asset account
+  const { contract: assetAccountContract, loading: assetAccountContractLoading} = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference: ''})
+  const isShareable = assetAccountContract?.payload.resharable
+  const isAirdroppable= assetAccountContract?.payload.airdroppable
+  
+  const { loading: assetContractsLoading, contracts: assetContracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
+  const amount = getAssetSum(assetContracts);
+
+
+
+
   const classes = usePageStyles();
   const onBack = () => {
     nav(-1)
@@ -33,9 +55,9 @@ export const SwapPage: React.FC = () => {
       <Card variant='outlined' >
         <CardContent className={classes.cardContent}>
           <Avatar className={classes.avatar}>
-            {params?.ticker?.[0] || 'undefined'}
+            {symbol?.[0] || 'undefined'}
           </Avatar>
-          <SwapForm  ticker={params.ticker || 'NA'}/>
+          <SwapForm issuer={issuer} isFungible={isFungible} reference={reference}  symbol={symbol || 'NA'}/>
         </CardContent>
       </Card>
       </Box>

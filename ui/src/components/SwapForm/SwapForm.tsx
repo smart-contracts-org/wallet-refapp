@@ -1,6 +1,6 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import { Box, Card, FormControl, Typography, Link, Button } from '@mui/material';
+import { Box, Card, FormControl, Typography, Link, Button, MenuItem, Select, InputLabel, SelectChangeEvent, LinearProgress, Avatar } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -9,10 +9,18 @@ import WestIcon from '@mui/icons-material/West';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
+import { getAssetSum } from '../../utils/getAssetSum';
+import { useParty } from '@daml/react';
+import { useGetAllAssetAccounts, useGetAssetAccountByKey, useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
+import { AssetType } from '@daml.js/wallet-refapp/lib/Asset';
 
 
 interface SwapFormProps {
-  ticker: string
+  symbol: string;
+  reference: string;
+  issuer: string;
+  isFungible: boolean;
+
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -22,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: 'left'
   },
   helpMessage: {
-    margin: theme.spacing(1, 0, 1, 0), 
+    margin: theme.spacing(1, 0, 1, 0),
   },
   recipient: {
     marginBottom: theme.spacing(1)
@@ -56,34 +64,82 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 
-export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
+export const SwapForm: React.FC<SwapFormProps> = (props) => {
+  const { symbol, isFungible, issuer, reference } = props
   const [isLoading, setLoading] = React.useState<boolean>(false);
+  const [inboundAssetType, setInboundAssetType] = React.useState<undefined | AssetType>();
+
+  const handleChange = (event: SelectChangeEvent) => {
+    const inboundAssetType = (event.target.value);
+    console.log(inboundAssetType)
+    setInSymbol(event.target.value);
+  };
+  const [recipient, setRecipient] = React.useState("");
+  const [outAmount, setOutAmount] = React.useState("");
+  const [inAmount, setInAmount] = React.useState("");
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
+  const [inSymbol, setInSymbol] = React.useState<string>("");
   const nav = useNavigate();
+  const ledgerHooks = useLedgerHooks();
+  const party = useParty();
+
+
+  // get a list of available asset accounts you own:
+  const { loading: loadingOwnedAssetAccounts, contracts: ownedAssetAccounts } = useGetAllAssetAccounts();
+
+
+  const { loading: loadingAssetContracts, contracts: assetContracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
+console.log('assetContracts', assetContracts)
+  const outAssetCids = assetContracts.map((contract) => contract.contractId)
+  const totalBalance = getAssetSum(assetContracts);
+  
   const onCancel = () => {
     nav(-1)
   }
-  const onSubmit = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false)
-      setSuccessful(true);
-    }, 1000)
+  const onSubmit = async () => {
+    const result = await ledgerHooks.proposeSwap(
+      {
+        outAmount,
+        outSymbol: symbol,
+        outFungible: isFungible,
+        outReference: reference,
+        outIssuer: issuer,
+        outAssetCids: outAssetCids,
+        inAmount,
+        inIssuer: inboundAssetType?.issuer || "",
+        inSymbol,
+        inFungible: inboundAssetType?.fungible || false,
+        inReference: inboundAssetType?.reference || "",
+        inOwner: recipient
+      }
+    )
+    console.log(result)
   }
-  
+  console.log(inboundAssetType)
   const classes = useStyles();
+  if(loadingAssetContracts||loadingOwnedAssetAccounts){
+    return (
+      <LinearProgress/>
+    )
+  }
   return (
     <Box display='flex' flexDirection='column'>
-      <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
         <Typography color='text.secondary' variant='body2' marginRight={1} gutterBottom>
           Swapping
         </Typography>
         <Typography color='primary' variant='body2' gutterBottom>
-          {ticker}
+          {symbol}
+        </Typography>
+        <Typography sx={{marginLeft: 1}} color='text.secondary' variant='body2' marginRight={1} gutterBottom>
+          Balance
+        </Typography>
+        <Typography color='primary' variant='body2' gutterBottom>
+          {totalBalance}
         </Typography>
       </Box>
 
-      <FormControl className={classes.root}>
+      <div className={classes.root}>
         <Box className={classes.recipient}>
           <TextField
             id="recipient"
@@ -92,86 +148,105 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
             fullWidth
             variant="outlined"
             size='small'
+            value={recipient}
             className={classes.recipientTextField}
+            onChange={(e) => setRecipient(e.currentTarget.value)}
           />
         </Box>
         <div className={classes.swapAssetContainer} >
           <Box display='flex' flexDirection='column' justifyContent='center'>
             <Box className={classes.directionContainer}>
-              <Typography sx={{marginRight: 1}} color='text.secondary' variant='caption'>
+              <Typography sx={{ marginRight: 1 }} color='text.secondary' variant='caption'>
                 Swapping Out
               </Typography>
               <EastIcon className={classes.outboundArrow} />
             </Box>
-            <Box  display='flex' flexDirection='row'>
-            <Box className={classes.textFieldContainer} mr={0.5}>
-              <TextField
-                margin="dense"
-                id="Ticker"
-                label={ticker}
-                type="text"
-                disabled
-                variant="outlined"
-                size='small'
-              />
-            </Box>
-            <Box className={classes.textFieldContainer}>
-              <TextField
-                margin="dense"
-                id="amount"
-                label="Amount"
-                type="text"
-                variant="outlined"
-                size='small'
-              />
-            </Box>
+            <Box display='flex' flexDirection='row'>
+              <Box className={classes.textFieldContainer} mr={0.5}>
+                <TextField
+                  margin="dense"
+                  id="Ticker"
+                  label={symbol}
+                  type="text"
+                  disabled
+                  variant="outlined"
+                  size='small'
+                />
+              </Box>
+              <Box className={classes.textFieldContainer}>
+                <TextField
+                  margin="dense"
+                  id="outbound-amount"
+                  label="Amount"
+                  type="text"
+                  variant="outlined"
+                  size='small'
+                  onChange={(e) => setOutAmount(e.currentTarget.value)}
+
+                />
+              </Box>
             </Box>
           </Box>
         </div>
-        <div className={classes.swapAssetContainer} >
+        <FormControl className={classes.swapAssetContainer} >
           <Box display='flex' flexDirection='column' justifyContent='center'>
             <Box className={classes.directionContainer}>
-            <WestIcon className={classes.inboundArrow}/>
-              <Typography sx={{marginLeft: 1}} color='text.secondary' variant='caption'>
+              <WestIcon className={classes.inboundArrow} />
+              <Typography sx={{ marginLeft: 1 }} color='text.secondary' variant='caption'>
                 Swapping In
               </Typography>
             </Box>
-            <Box  display='flex' flexDirection='row'>
-            <Box className={classes.textFieldContainer} mr={0.5}>
-              <TextField
-                margin="dense"
-                id="ticker"
-                label="ticker"
-                type="text"
-                variant="outlined"
-                size='small'
-              />
-            </Box>
-            <Box className={classes.textFieldContainer}>
-              <TextField
-                margin="dense"
-                id="amount"
-                label="Amount"
-                type="text"
-                variant="outlined"
-                size='small'
-              />
-            </Box>
+            <Box display='flex' flexDirection='row' alignItems='center'>
+              <Box className={classes.textFieldContainer} mr={0.5}>
+                {/* <InputLabel id="inbound-swap">swap</InputLabel> */}
+                <Select
+                  margin='dense'
+                  labelId="inbound-swap"
+                  id="demo-simple-select-autowidth"
+                  value={inboundAssetType?.symbol ||""}
+                  onChange={handleChange}
+                  fullWidth
+                  size="small"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {ownedAssetAccounts.map((account) => {
+                    const symbol = account.payload.assetType.symbol
+                    return (
+                      <MenuItem onClick={() => { setInboundAssetType(account.payload.assetType) }} value={symbol}>{symbol}</MenuItem>
+                    )
+                  })}
+
+                </Select>
+              </Box>
+              <Box className={classes.textFieldContainer}>
+                <TextField
+                  margin="none"
+                  id="inbound-amount"
+                  label="Amount"
+                  type="text"
+                  variant="outlined"
+                  size='small'
+                  onChange={(e) => setInAmount(e.currentTarget.value)}
+                />
+              </Box>
             </Box>
           </Box>
-        </div>
-        
+        </FormControl>
+
         <Card elevation={0} variant='outlined' className={classes.helpMessage}>
           <Typography color='text.primary' variant='body2' p={1}>
             You will be proposing to swap your assets for the users assets. Once the recipient accepts, the assets will atomocailly swap ownership. See how to create atomic swaps using Daml <Link href={'#'}>here</Link>
-        </Typography>
+          </Typography>
         </Card>
         <LoadingButton
-          endIcon={isSuccessful ? <CheckCircleIcon/> : <SwapHorizIcon/>}
+          disabled={recipient.length === 0}
+          endIcon={isSuccessful ? <CheckCircleIcon /> : <SwapHorizIcon />}
           loading={isLoading}
           fullWidth
           onClick={isSuccessful ? undefined : onSubmit}
-          color={isSuccessful? 'success' : undefined}
+          color={isSuccessful ? 'success' : undefined}
           loadingPosition="end"
           variant="outlined"
           sx={{
@@ -179,9 +254,9 @@ export const SwapForm: React.FC<SwapFormProps> = ({ ticker }) => {
           }}
         >
           {isSuccessful ? "Swap Request Sent" : "Request Swap"}
-      </LoadingButton>
-      <Button variant='outlined' onClick={onCancel}>Cancel</Button>
-      </FormControl>
+        </LoadingButton>
+        <Button variant='outlined' onClick={onCancel}>Cancel</Button>
+      </div>
     </Box>
   );
 }
