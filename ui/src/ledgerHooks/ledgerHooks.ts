@@ -6,8 +6,8 @@ import { Accept_Transfer, AssetTransfer, Cancel_Transfer, Reject_Transfer } from
 import { AssetHoldingAccount, AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
 import { ActionType } from '../pages/PendingAssetInviteDetailsPage';
 import { Archive } from '@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662/lib/DA/Internal/Template';
-import { Set } from '@daml.js/97b883cd8a2b7f49f90d5d39c981cf6e110cf1f1c64427a28a6d58ec88c43657/lib/DA/Set/Types';
 import { makeDamlSet } from '../utils/common';
+import { Trade, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
 
 export const useGetAllAssetAccounts = () => {
   const myPartyId = useParty();
@@ -66,6 +66,14 @@ export const useGetAssetTransferByContractId = (arg: useGetAssetTransferByContra
   const contract = useFetch(Asset.AssetTransfer, arg.contractId)
   return contract
 }
+export const useGetAssetContractByContractId = (contractId: ContractId<Asset.Asset>) => {
+  const contract = useFetch(Asset.Asset, contractId)
+  return contract
+}
+export const useGetTransferPreapprovalContractByContractId = (contractId: ContractId<TransferPreApproval>) => {
+  const contract = useFetch(TransferPreApproval, contractId)
+  return contract
+}
 export interface AssetType {
   issuer: string;
   symbol: string;
@@ -73,7 +81,6 @@ export interface AssetType {
   reference: string;
 }
 export const useGetAssetAccountByKey = (assetType: AssetType) => {
-  console.log('getasset')
   const myPartyId = useParty();
   const contract = useFetchByKey(Account.AssetHoldingAccount, () => ({ _1: assetType, _2: myPartyId }), []);
   return contract
@@ -96,6 +103,11 @@ export const useGetAssetSendRequests = (isInbound?: boolean) => {
   const myPartyId = useParty();
   const allAssetSendRequests = useStreamQueries(Asset.AssetTransfer, () => [{ recipient: isInbound ? myPartyId : undefined }]);
   return allAssetSendRequests
+}
+export const useGetAssetSwapRequests = (isInbound ? : boolean) => {
+  const myPartyId = useParty();
+  const trades = useStreamQueries(Trade, () => [{ receiver: isInbound ? myPartyId : undefined, proposer: isInbound? undefined : myPartyId } ]);
+  return trades
 }
 
 // Asset Invites
@@ -121,11 +133,6 @@ export const useGetMyInboundAssetSendRequests = () => {
   return allAssetSendRequests
 }
 
-//TODO;
-export const useGetAssetSwapRequests = () => {
-  const assetHoldingAccount = useStreamQueries(Asset.AssetTransfer);
-  return assetHoldingAccount
-}
 export const useGetAssetAccountInvites = () => {
   const assetHoldingAccount = useStreamQueries(Account.AssetHoldingAccountCloseProposal);
   return assetHoldingAccount
@@ -227,6 +234,37 @@ export const useLedgerHooks = () => {
         }
 
       })
+
+      // const result = await ledger.exercise(Account.AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
+      //   recipient
+      // });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
+  interface ExerciseMergeSplit {
+    outSymbol: string;
+    outFungible: boolean;
+    outReference: string;
+    outIssuer: string;
+    assetCids: ContractId<Asset.Asset>[];
+    amount: string;
+    outputAmount: string;
+  }
+  const exerciseMergeSplit = async (args: ExerciseMergeSplit) => {
+    const { assetCids, outputAmount, outSymbol, outFungible, outIssuer, outReference } = args;
+    try {
+      // TODO: update documentation
+      // needing to use _1:, _2:, not obvious enough.
+      // how to parse error messages? not user friendly
+      const result = await ledger.exerciseByKey(Account.AssetHoldingAccount.Merge_Split, { _1: { issuer: outIssuer, symbol: outSymbol, reference: outReference, fungible: outFungible }, _2: party }, {
+        assetCids: assetCids, outputAmounts: [outputAmount], 
+      })
+      
       // const result = await ledger.exercise(Account.AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
       //   recipient
       // });
@@ -389,6 +427,6 @@ export const useLedgerHooks = () => {
     }
   }
 
-  return { proposeSwap, exerciseAirdrop, exerciseAssetTransferChoice, exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
+  return {exerciseMergeSplit, proposeSwap, exerciseAirdrop, exerciseAssetTransferChoice, exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
 
 }

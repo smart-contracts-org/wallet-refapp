@@ -48,7 +48,6 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({contractId,isFu
   const path = `/asset?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable ? 'true' : 'false'}&isAirdroppable=${isAirdroppable ? 'true': 'false'}&contractId=${contractId}`
   const assetSum = getAssetSum(contracts);
   const formattedSum = numberWithCommas(assetSum)
-  console.log(issuer, owner)
   return (
     <>
       <Card sx={{marginBottom: 1}} >

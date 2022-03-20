@@ -3,18 +3,15 @@ import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import SendIcon from '@mui/icons-material/Send';
 import { Link } from "react-router-dom";
-import CancelIcon from '@mui/icons-material/Cancel';
-import { SendRowContents } from '../SendRowContents/SendRowContents';
 import { Avatar, Box, CardActionArea, IconButton, Typography } from '@mui/material';
 import { PendingRowProps } from '../PendingRow/PendingRow';
 import { PendingSwapRowContents } from '../PendingSwapRowContents/PendingSwapRowContents';
 import { PendingAssetInviteRowContent } from '../PendingAssetInviteRowContent/PendingAssetInviteRowContent';
 import { isMobile } from '../../platform/platform';
-import { useGetAssetContractByContractId } from '../../ledgerHooks/ledgerHooks';
+import { useGetAssetContractByContractId, useGetTransferPreapprovalContractByContractId } from '../../ledgerHooks/ledgerHooks';
+
 export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   card: {
     display: 'flex',
@@ -83,8 +80,14 @@ export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-export const PendingRowContents: React.FC<PendingRowProps> = ({inboundAssetCid,requestedAssetsTxPreApproval, isFungible, contractId, receiver, outboundQuantity, sendAmount, sendTicker, outboundTicker, templateName, isNarrow, isInbound, sender, inboundTicker, inboundQuantity, issuer}) => {
+export const PendingSwapRow: React.FC<PendingRowProps> = ({ outboundAssetCid, requestedAssetsTxPreApproval, isFungible, contractId, sendTicker, templateName, isInbound, sender, sendAmount, issuer }) => {
   const classes = useNarrowPendingStyles();
+  const transferPreapproval = useGetTransferPreapprovalContractByContractId(requestedAssetsTxPreApproval).contract;
+  const offeredAsset = useGetAssetContractByContractId(outboundAssetCid).contract
+  const inboundTicker = isInbound? offeredAsset?.payload.assetType?.symbol : transferPreapproval?.payload.asset.assetType.symbol
+  const inboundQuantity = isInbound ? offeredAsset?.payload.amount : transferPreapproval?.payload.asset.amount
+  const outboundTicker = !isInbound ? offeredAsset?.payload.assetType.symbol : transferPreapproval?.payload.asset.assetType.symbol
+  const outboundQuantity = !isInbound ? offeredAsset?.payload.amount : transferPreapproval?.payload.asset.amount
   
   const onAccept = (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -97,35 +100,38 @@ export const PendingRowContents: React.FC<PendingRowProps> = ({inboundAssetCid,r
     event.preventDefault();
   }
 
+  const outboundAsset = useGetAssetContractByContractId(outboundAssetCid).contract
+  console.log('Asset Got', outboundAsset)
+  
+  const receiver = transferPreapproval?.payload.asset.owner || ""
+  console.log('transfer', transferPreapproval)
+  console.log('inboundTicker', inboundTicker)
+  console.log('inboundAmount', inboundQuantity)
 
-
-  const path = `/pending-activity?isInbound=${isInbound ? 'true': 'false'}&templateName=${templateName}&sender=${sender}&inboundTicker=${inboundTicker}&sendAmount=${sendAmount}&sendTicker=${sendTicker}&outboundTicker=${outboundTicker}&outboundQuantity=${outboundQuantity}&receiver=${receiver}&issuer=${issuer}&contractId=${contractId}&isFungible=${isFungible}`
-console.log(templateName)
+  const path = `/pending-activity?isInbound=${isInbound ? 'true' : 'false'}&templateName=${templateName}&sender=${sender}&inboundQuantity=${inboundQuantity}&inboundTicker=${inboundTicker}&sendAmount=${sendAmount}&sendTicker=${sendTicker}&outboundTicker=${outboundTicker}&outboundQuantity=${outboundQuantity}&receiver=${receiver}&issuer=${issuer}&contractId=${contractId}&isFungible=${isFungible}&outboundAssetCid=${outboundAssetCid}&requestedAssetsTxPreApproval=${requestedAssetsTxPreApproval}`
   return (
     <>
       <Card className={classes.card}>
         <CardActionArea component={Link} to={path}>
           <div className={classes.symbolTextContainer} >
             <Avatar className={classes.avatar}>
-              {templateName === 'send' && <SendIcon />}
-              {templateName === 'swap' && <SwapHorizIcon />}
-              {templateName === 'assetInvite' &&  <AccountBalanceWalletIcon />}
+              <SwapHorizIcon />
             </Avatar>
-            {
-              templateName==='send' &&  <SendRowContents issuer={issuer} isInbound={isInbound} receiver={receiver} sendAmount={sendAmount} isNarrow={isNarrow} sender={sender} sendTicker={sendTicker} outboundTicker={outboundTicker} />
-            }
-            {
-              templateName==='swap' &&  <PendingSwapRowContents 
-              inboundAssetCid={inboundAssetCid}
+
+            <PendingSwapRowContents
+              outboundAssetCid={outboundAssetCid}
               requestedAssetsTxPreApproval={requestedAssetsTxPreApproval}
-                receiver={receiver} outboundQuantity={outboundQuantity} outboundTicker={outboundTicker} isInbound={isInbound} sender={sender} inboundQuantity={inboundQuantity} inboundTicker={ inboundTicker} />
-            }
-            {
-              templateName === 'assetInvite' && <PendingAssetInviteRowContent issuer={issuer} receiver={receiver} isInbound={isInbound} sender={sender} inboundTicker={sendTicker || inboundTicker}/>
-            }
+              receiver={receiver} 
+              outboundQuantity={outboundQuantity} 
+              outboundTicker={outboundTicker} 
+              isInbound={isInbound} 
+              sender={sender} 
+              inboundQuantity={inboundQuantity} 
+              inboundTicker={inboundTicker} />
+
             {!isMobile() && <div className={classes.actions}>
               {isInbound && <Button className={classes.button} variant='outlined' size="small" onClick={onAccept}>Accept</Button>}
-              <Button onClick={isInbound? onReject : onCancel} className={classes.button} variant='outlined' size="small">{isInbound ? 'Reject Request' : 'Cancel Request'}</Button>
+              <Button onClick={isInbound ? onReject : onCancel} className={classes.button} variant='outlined' size="small">{isInbound ? 'Reject Request' : 'Cancel Request'}</Button>
               <Button className={classes.button} variant='outlined' size="small"
               >Details</Button>
             </div>}
