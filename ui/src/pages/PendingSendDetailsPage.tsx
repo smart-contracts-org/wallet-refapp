@@ -38,12 +38,10 @@ interface PendingSendDetailsPageProps {
   contractId: any;
   isInbound: string;
   recipient: string;
-  sendTicker: string;
-  sendAmount: string;
+  symbol: string;
+  amount: string;
   issuer: string;
   owner: string;
-  isShareable: boolean;
-  isAirdroppable: boolean;
   isFungible: boolean;
 }
 
@@ -51,12 +49,10 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
   const {
     contractId,
     recipient,
-    sendTicker,
-    sendAmount,
+    symbol,
+    amount,
     isInbound,
-    isAirdroppable,
     isFungible,
-    isShareable,
     issuer,
     owner, 
   } = props;
@@ -70,7 +66,7 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
   //TODO: can we use something else besdies contract
   const assetTransferResponse = useGetAssetTransferByContractId({contractId: contractId as ContractId<AssetTransfer>});
   const assetTransferCid = assetTransferResponse.contract?.contractId
-  const assetAccountResponse = useGetAssetAccountByKey({issuer, symbol: sendTicker, fungible: isFungible, reference: ''})
+  const assetAccountResponse = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference: ''})
   const assetAccountCid = assetAccountResponse.contract?.contractId
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();
@@ -84,7 +80,6 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
           Contract doesn't exist anymore
           <Button onClick={onBack} size={'small'} sx={{marginLeft: 1}} variant='outlined'>Go Back</Button>
         </CardContent>
-        
       </Card>
     )
   }
@@ -132,7 +127,7 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
         <IconButton color='primary'>
           <ArrowBackIosNewIcon />
         </IconButton>
-        {isMobile() && <Typography color='primary'>Accounts / {sendTicker}</Typography>
+        {isMobile() && <Typography color='primary'>Accounts / {symbol}</Typography>
         }
       </div>}
       <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
@@ -151,17 +146,17 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
               </Typography>
             </div>
              <Avatar className={classes.avatar}>
-              {sendTicker?.[0] || 'U'}
+              {symbol?.[0] || 'U'}
             </Avatar>
             <div className={classes.tickerAmount}>
                <Typography sx={{ marginRight: 1 }}>
-                {sendAmount || 0}
+                {amount || 0}
               </Typography>
               <Typography>
-                { sendTicker || '[TickerName]'}
+                { symbol || '[TickerName]'}
               </Typography>
             </div>
-             <AssetDetails issuer={issuer} owner={owner} isAirdroppable={isAirdroppable} isFungible={isFungible} isShareable={isShareable} quantity={sendAmount} ticker={sendTicker || '[Ticker]'} />
+             <AssetDetails issuer={issuer} owner={owner} isFungible={isFungible}  quantity={amount} ticker={symbol || '[Ticker]'} />
           </CardContent>
           {
             success && !!successMessage[success] && <Card sx={{margin: 1}}><CardContent>{successMessage[success]}</CardContent></Card>

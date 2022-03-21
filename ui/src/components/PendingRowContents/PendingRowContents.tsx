@@ -112,7 +112,7 @@ console.log(templateName)
               {templateName === 'assetInvite' &&  <AccountBalanceWalletIcon />}
             </Avatar>
             {
-              templateName==='send' &&  <SendRowContents issuer={issuer} isInbound={isInbound} receiver={receiver} sendAmount={sendAmount} isNarrow={isNarrow} sender={sender} sendTicker={sendTicker} outboundTicker={outboundTicker} />
+              templateName==='send' &&  <SendRowContents issuer={issuer} isInbound={isInbound} receiver={receiver} amount={sendAmount} isNarrow={isNarrow} sender={sender} sendTicker={sendTicker} outboundTicker={outboundTicker} />
             }
             {
               templateName==='swap' &&  <PendingSwapRowContents 

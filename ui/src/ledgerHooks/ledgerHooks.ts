@@ -367,7 +367,6 @@ export const useLedgerHooks = () => {
 
   const acceptAssetTransfer = async (accountHoldingCid: ContractId<Account.AssetHoldingAccount>, transferCid: ContractId<Asset.AssetTransfer>) => {
     try {
-      console.log('assettansfer', accountHoldingCid)
       const result = await ledger.exercise(Account.AssetHoldingAccount.Deposit_Transfer_Into_Account, accountHoldingCid, {
         transferCid
       });

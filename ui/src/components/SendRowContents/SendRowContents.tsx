@@ -5,7 +5,6 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import clx from 'clsx'
 import { Divider } from '@mui/material';
-import { PendingRowProps } from '../PendingRow/PendingRow';
 
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -52,7 +51,17 @@ const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-export const SendRowContents: React.FC<PendingRowProps> = ({sendAmount, sendTicker, receiver, isNarrow, isInbound, sender, inboundTicker, inboundQuantity, outboundQuantity, outboundTicker }) => {
+interface SendRowContentsProps {
+  issuer: string;
+  isInbound: boolean;
+  receiver: string;
+  amount: string;
+  isNarrow: boolean; 
+  sender: string;
+  symbol: string;
+}
+export const SendRowContents: React.FC<SendRowContentsProps> = (props) => {
+  const {amount, symbol, receiver, isNarrow, isInbound, sender } = props;
   const classes = useStyles();
   const inboundMessage = (
     <>
@@ -87,10 +96,11 @@ export const SendRowContents: React.FC<PendingRowProps> = ({sendAmount, sendTick
       {isInbound ? inboundMessage : outboundMessage}
       <div className={ classes.row}>
         <Typography variant='body2' className={classes.text} color="text.secondary"  >
-          {sendAmount}
+          {amount}
         </Typography>
         <Typography variant='body2' className={clx(classes.text, classes.assetName)} color="text.secondary" >
-{sendTicker}        </Typography>
+{symbol}        
+</Typography>
       </div>
       <div className={classes.divider} />
 

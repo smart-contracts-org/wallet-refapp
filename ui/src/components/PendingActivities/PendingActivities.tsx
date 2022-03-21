@@ -4,6 +4,7 @@ import { ContractId } from '@daml/types';
 import React from 'react';
 import { useGetAllAssetAccounts, useGetAssetInviteRequests, useGetAssetSendRequests, useGetAssetSwapRequests } from '../../ledgerHooks/ledgerHooks';
 import { PendingRow } from '../PendingRow/PendingRow';
+import { PendingTransfers } from '../PendingTransfers/PendingTransfers';
 
 interface PendingActivitiesPageProps {
   isInbound: boolean;
@@ -25,6 +26,8 @@ export const flattenObject = (obj: any) => {
   return flattened
 }
 
+// the key is the assetTemplate
+// mapping it to a string
 interface TemplateNameMap {
   AssetHoldingAccountProposal: string,
   AssetTransfer: string;
@@ -48,17 +51,19 @@ interface Contract {
   offeredAsset?: string;
 }
 
+// This components grabs all pending contracts
+// that need to be actioned on
 export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbound}) => {
-  // TODO: get swap requests
-  const assetTransferContracts = useGetAssetSendRequests(isInbound).contracts;
+  
   const assetInviteContracts = useGetAssetInviteRequests(isInbound).contracts;
   const allSwapContracts = useGetAssetSwapRequests(isInbound).contracts
-  const allContracts = [...assetTransferContracts, ...assetInviteContracts, ...allSwapContracts]
+  const allContracts = [ ...assetInviteContracts, ...allSwapContracts]
   const flattenedAllContracts = allContracts.map((contract) => flattenObject(contract)) as Contract[]
   const myPartyId = useParty();
 
 
- 
+
+
   const pendingRows = flattenedAllContracts.map((contract, i)=> {
     
     console.log(contract)
@@ -71,6 +76,8 @@ export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbou
     const issuer = contract?.issuer || ""
     const isFungible = contract?.fungible;
     const templateId = contract.templateId?.split(':')[2] || ""
+    
+    // used in swaps
     const outboundAssetCid = contract?.offeredAsset as ContractId<Asset> || "";
     const requestedAssetsTxPreApproval = contract?.requestedAssetsTxPreApproval || ""
     // Todo: make query for sender instead of doing this filter
@@ -78,6 +85,7 @@ export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbou
     if(!isInbound && receiver === myPartyId){
       return null;
     }
+    if(templateNameMap[templateId] === 'swap' )
     return (
       <PendingRow 
       isFungible={isFungible}  
@@ -98,6 +106,7 @@ export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbou
   
   return (
     <>
+    <PendingTransfers isInbound={isInbound}/>
       {pendingRows}
     </>
   )
