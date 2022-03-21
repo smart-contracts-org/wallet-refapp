@@ -52,7 +52,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, h
         {party && (<Box sx={{ flexGrow: 0, marginLeft: 'auto' }}>
           <Tooltip title="Open settings" >
             <IconButton size='small' onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar sx={{ marginLeft: 'auto' }} alt="profile" />
+              <Avatar sx={{ marginLeft: 'auto' }} alt="profile" >{party[0]}</Avatar>
             </IconButton>
           </Tooltip>
           <Menu

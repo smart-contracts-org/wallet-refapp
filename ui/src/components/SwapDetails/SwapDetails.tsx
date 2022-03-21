@@ -57,7 +57,6 @@ export const SwapDetails: React.FC<PendingRowProps> = ({ receiver, isInbound, se
     ticker: inboundTicker, 
     quantity: inboundQuantity
   }
-  
   // User receiving a swap request
   // display what user is swapping in (recieving)
   const inboundSwap = [swappingIn, swappingOut];

@@ -21,6 +21,7 @@ export interface PendingRowProps {
   isFungible?: boolean;
   outboundAssetCid?: ContractId<Asset>;
   requestedAssetsTxPreApproval?: string;
+  tradeCid?: string;
 }
 
 export const PendingRow: React.FC<PendingRowProps> = (props) => {

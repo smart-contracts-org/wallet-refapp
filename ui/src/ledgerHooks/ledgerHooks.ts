@@ -39,8 +39,11 @@ interface UseGetMyOwnedAssetsByAssetType {
 
 // Get all Asset owned templates based on fields
 export const useGetMyOwnedAssetsByAssetType = ({ issuer, symbol, isFungible, owner, reference }: UseGetMyOwnedAssetsByAssetType) => {
-  const assetHoldingAccounts = useStreamQueries(Asset.Asset, () => [{ owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
-  return assetHoldingAccounts
+  console.log('USE GET MY OWNED ASSETS BY ASSET')
+  console.log('args from ledgerr hook', issuer, owner, isFungible, symbol)
+  const assetContracts = useStreamQueries(Asset.Asset, () => [{ owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
+  console.log('asset contrcts', assetContracts)
+  return assetContracts
 }
 export const useGetAssetHoldingAccount = ({ isAirdroppable, isShareable, issuer, symbol, isFungible, owner, reference }: UseGetMyOwnedAssetsByAssetType) => {
   const assetHoldingAccount = useStreamQueries(Account.AssetHoldingAccount, () => [{ airdroppable: isAirdroppable, reshareable: isShareable, owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
@@ -68,6 +71,10 @@ export const useGetAssetTransferByContractId = (arg: useGetAssetTransferByContra
 }
 export const useGetAssetContractByContractId = (contractId: ContractId<Asset.Asset>) => {
   const contract = useFetch(Asset.Asset, contractId)
+  return contract
+}
+export const useGetTradeContractByCid = (tradeContractId: ContractId<Trade>) => {
+  const contract = useFetch(Trade, tradeContractId)
   return contract
 }
 export const useGetTransferPreapprovalContractByContractId = (contractId: ContractId<TransferPreApproval>) => {
@@ -176,6 +183,7 @@ export const useLedgerHooks = () => {
     }
   }
 
+
   interface InviteNewAssetHolder {
     assetType: {
       issuer: string,
@@ -215,11 +223,12 @@ export const useLedgerHooks = () => {
   const proposeSwap = async (args: ProposeSwap) => {
     const { inOwner, outSymbol, outFungible, outIssuer, outReference, outAmount, outAssetCids, inAmount, inIssuer, inSymbol, inFungible, inReference } = args;
     try {
-      // TODO: update documentation
-      // needing to use _1:, _2:, not obvious enough.
-      // how to parse error messages? not user friendly
+      
       const result = await ledger.exerciseByKey(Account.AssetHoldingAccount.Create_Trade, { _1: { issuer: outIssuer, symbol: outSymbol, reference: outReference, fungible: outFungible }, _2: party }, {
-        assetCids: outAssetCids, offeredAssetAmount: outAmount, requestedAsset: {
+        // offered Cids
+        assetCids: outAssetCids, 
+        offeredAssetAmount: outAmount, 
+        requestedAsset: {
           assetType: {
             issuer: inIssuer,
             fungible: inFungible,
@@ -252,7 +261,6 @@ export const useLedgerHooks = () => {
     outReference: string;
     outIssuer: string;
     assetCids: ContractId<Asset.Asset>[];
-    amount: string;
     outputAmount: string;
   }
   const exerciseMergeSplit = async (args: ExerciseMergeSplit) => {
@@ -263,6 +271,46 @@ export const useLedgerHooks = () => {
       // how to parse error messages? not user friendly
       const result = await ledger.exerciseByKey(Account.AssetHoldingAccount.Merge_Split, { _1: { issuer: outIssuer, symbol: outSymbol, reference: outReference, fungible: outFungible }, _2: party }, {
         assetCids: assetCids, outputAmounts: [outputAmount], 
+      })
+      
+      // const result = await ledger.exercise(Account.AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
+      //   recipient
+      // });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
+  interface ExercisePreapprove {
+    issuer: string;
+    fungible: boolean;
+    reference: string;
+    symbol: string;
+    amount: string;
+    owner: string;
+    
+  }
+  const exercisePreApprove = async (args: ExercisePreapprove) => {
+    const {issuer,owner,fungible, reference, symbol, amount } = args;
+    try {
+      // TODO: update documentation
+      // needing to use _1:, _2:, not obvious enough.
+      // how to parse error messages? not user friendly
+      const result = await ledger.exerciseByKey(Account.AssetHoldingAccount.Preapprove_Transfer_In, { _1: { issuer, symbol, reference, fungible }, _2: party }, {
+        asset: {
+          assetType: {
+            issuer, 
+            symbol, 
+            fungible, 
+            reference
+          },
+          owner,
+          amount,
+          observers: makeDamlSet<string>([])
+        }
       })
       
       // const result = await ledger.exercise(Account.AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
@@ -384,6 +432,45 @@ export const useLedgerHooks = () => {
 
     }
   }
+
+  
+  const exerciseTradeSettle = async (tradeCid: ContractId<Trade>, requestedAsset: ContractId<Asset.Asset>, offeredTxPreApproval: ContractId<TransferPreApproval> ) => {
+    try {
+      const result = await ledger.exercise(Trade.Trade_Settle, tradeCid, {
+        requestedAsset,
+        offeredTxPreApproval
+      });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
+  const exerciseTradeCancel = async (tradeCid: ContractId<Trade> ) => {
+    try {
+      const result = await ledger.exercise(Trade.Trade_Cancel, tradeCid, {
+      });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+    }
+  }
+  const exerciseTradeReject = async (tradeCid: ContractId<Trade> ) => {
+    try {
+      const result = await ledger.exercise(Trade.Trade_Reject, tradeCid, {
+      });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+    }
+  }
+
   const cancelAssetTransfer = async (assetTransferCid: ContractId<Asset.AssetTransfer>) => {
     try {
       const result = await ledger.exercise(Asset.AssetTransfer.Cancel_Transfer, assetTransferCid, {
@@ -427,6 +514,6 @@ export const useLedgerHooks = () => {
     }
   }
 
-  return {exerciseMergeSplit, proposeSwap, exerciseAirdrop, exerciseAssetTransferChoice, exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
+  return {exercisePreApprove, exerciseTradeReject, exerciseTradeCancel, exerciseTradeSettle, exerciseMergeSplit, proposeSwap, exerciseAirdrop, exerciseAssetTransferChoice, exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
 
 }

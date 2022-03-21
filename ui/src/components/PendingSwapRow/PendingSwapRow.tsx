@@ -104,7 +104,7 @@ export const PendingSwapRow: React.FC<PendingRowProps> = ({ outboundAssetCid, re
   console.log('Asset Got', outboundAsset)
   
   const receiver = transferPreapproval?.payload.asset.owner || ""
-  console.log('transfer', transferPreapproval)
+  console.log('Transfer pre approval', transferPreapproval)
   console.log('inboundTicker', inboundTicker)
   console.log('inboundAmount', inboundQuantity)
 

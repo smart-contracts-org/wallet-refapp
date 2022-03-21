@@ -3,7 +3,6 @@ import Typography from '@mui/material/Typography';
 import clx from 'clsx'
 import { Divider } from '@mui/material';
 import { useNarrowPendingStyles } from '../PendingRowContents/PendingRowContents';
-import { useGetAssetContractByContractId, useGetTransferPreapprovalContractByContractId } from '../../ledgerHooks/ledgerHooks';
 
 export interface PendingSwapRowProps {
   inboundTicker: string;

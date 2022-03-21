@@ -2,7 +2,7 @@ import { Asset } from '@daml.js/wallet-refapp/lib/Asset';
 import { useParty } from '@daml/react';
 import { ContractId } from '@daml/types';
 import React from 'react';
-import { useGetAssetInviteRequests, useGetAssetSendRequests, useGetAssetSwapRequests } from '../../ledgerHooks/ledgerHooks';
+import { useGetAllAssetAccounts, useGetAssetInviteRequests, useGetAssetSendRequests, useGetAssetSwapRequests } from '../../ledgerHooks/ledgerHooks';
 import { PendingRow } from '../PendingRow/PendingRow';
 
 interface PendingActivitiesPageProps {
@@ -74,6 +74,7 @@ export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbou
     const outboundAssetCid = contract?.offeredAsset as ContractId<Asset> || "";
     const requestedAssetsTxPreApproval = contract?.requestedAssetsTxPreApproval || ""
     // Todo: make query for sender instead of doing this filter
+    
     if(!isInbound && receiver === myPartyId){
       return null;
     }
