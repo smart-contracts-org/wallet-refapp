@@ -92,8 +92,8 @@ export const PendingActivityDetailsPage: React.FC = () => {
   //TODO: can we use something else besdies contract
   
   const actionLabel = query.get('templateName')
-  const sendTicker = query.get('sendTicker') || "";
-  const sendAmount = query.get('sendAmount')||"0";
+  const sendTicker = query.get('symbol') || "";
+  const sendAmount = query.get('amount')||"0";
   const recipient = query.get('receiver') ||""
   const issuer = query.get('issuer') || ""
   const isInbound = query.get('isInbound') || 'false';
@@ -105,6 +105,9 @@ export const PendingActivityDetailsPage: React.FC = () => {
   const isAirdroppable = query.get('isAirdroppable') === 'true'
   const outboundQuantity = query.get('outboundQuantity')
   const sender = query.get('sender');
+  const symbol = query.get('symbol');
+  const amount = query.get('amount');
+  const owner = query.get('owner');
 
   const props = {
     sender, 
@@ -123,10 +126,23 @@ export const PendingActivityDetailsPage: React.FC = () => {
     isInbound, 
     recipient
   }
+  console.log(symbol, amount,owner)
   
-  if(actionLabel === 'send'){
+  if(actionLabel === 'send' &&
+    symbol !== null &&
+    amount !== null &&
+    owner !== null
+  ){
     return <PendingSendDetailsPage
-      {...props}
+    contractId={contractId}
+    recipient={recipient}
+    symbol={symbol}
+    amount={amount}
+    isInbound={isInbound}
+    isFungible={isFungible}
+    issuer={issuer}
+    owner={owner}
+
 
     
     />
@@ -140,8 +156,11 @@ export const PendingActivityDetailsPage: React.FC = () => {
     return <PendingSwapDetailsPage/>
   }
   return (
-    <Card>
+    <Card sx={{margin: 1, width: '100%'}}>
+      <CardContent>
+
       Page doesn't exist
+      </CardContent>
     </Card>
   )
 }

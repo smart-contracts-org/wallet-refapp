@@ -115,7 +115,6 @@ console.log('assetContracts', assetContracts)
     )
     console.log(result)
   }
-  console.log(inboundAssetType)
   const classes = useStyles();
   if(loadingAssetContracts||loadingOwnedAssetAccounts){
     return (

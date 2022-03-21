@@ -29,9 +29,10 @@ export interface AssetDetailsProps {
   issuer: string;
   owner: string;
   quantity: string;
-  isShareable: boolean;
   isFungible: boolean;
-  isAirdroppable: boolean;
+  // belong to asset account
+  isShareable?: boolean;
+  isAirdroppable?: boolean;
 }
 
 const dataColor = 'primary'

@@ -1,21 +1,33 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import clx from 'clsx'
-import {  Divider } from '@mui/material';
+import { Divider } from '@mui/material';
 import { useNarrowPendingStyles } from '../PendingRowContents/PendingRowContents';
 
 export interface PendingSwapRowProps {
-  inboundTicker?: string;
-  inboundQuantity?: number;
-  outboundTicker?: string;
-  outboundQuantity?: number;
+  inboundTicker: string;
+  inboundQuantity: string;
+  outboundTicker: string;
+  outboundQuantity: string;
   sender: string;
   isInbound?: boolean;
   receiver: string;
   isSwapDetailsPage?: boolean;
+  outboundAssetCid?: string;
+  requestedAssetsTxPreApproval?: string;
 }
 
-export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = ({receiver,isSwapDetailsPage, isInbound, outboundQuantity, outboundTicker, sender, inboundTicker, inboundQuantity }) => {
+export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = (props) => {
+  const {
+    inboundQuantity,
+    inboundTicker,
+    outboundQuantity,
+    outboundTicker,
+    isSwapDetailsPage,
+    receiver,
+    isInbound,
+    sender
+  } = props
   const classes = useNarrowPendingStyles();
   const inboundMessage = (
     <>
@@ -27,7 +39,7 @@ export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = ({receiver,
         <Divider className={classes.divider} />
         <Typography variant='body2' color='text.secondary' className={classes.text} >
           {!isSwapDetailsPage ? 'wants to swap' : 'swapping'}
-          </Typography>
+        </Typography>
         <Divider className={classes.divider} />
 
         <div className={classes.inboundForOutboundContainer}>
@@ -60,12 +72,12 @@ export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = ({receiver,
         <div className={classes.divider} />
         <Typography variant='body2' color='text.secondary' className={classes.text} >
           {isSwapDetailsPage ? 'swapping' : 'you want to swap with'}
-          </Typography>
+        </Typography>
         <Divider className={classes.divider} />
         {!isSwapDetailsPage && <><Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
-          {sender}
+          {receiver}
         </Typography>
-        <Divider className={classes.divider} /></>}
+          <Divider className={classes.divider} /></>}
 
         <div className={classes.inboundForOutboundContainer}>
           <Typography variant='body2' className={clx(classes.text, classes.outboundQuantity)} color="text.secondary"  >
@@ -92,10 +104,10 @@ export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = ({receiver,
 
   return (
     <>
-          
-          {isInbound ? inboundMessage : outboundMessage}
-         
-    
+
+      {isInbound ? inboundMessage : outboundMessage}
+
+
     </>
   );
 }

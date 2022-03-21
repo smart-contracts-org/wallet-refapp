@@ -6,8 +6,8 @@ import { Accept_Transfer, AssetTransfer, Cancel_Transfer, Reject_Transfer } from
 import { AssetHoldingAccount, AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
 import { ActionType } from '../pages/PendingAssetInviteDetailsPage';
 import { Archive } from '@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662/lib/DA/Internal/Template';
-import { Set } from '@daml.js/97b883cd8a2b7f49f90d5d39c981cf6e110cf1f1c64427a28a6d58ec88c43657/lib/DA/Set/Types';
 import { makeDamlSet } from '../utils/common';
+import { Trade, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
 
 export const useGetAllAssetAccounts = () => {
   const myPartyId = useParty();
@@ -39,8 +39,11 @@ interface UseGetMyOwnedAssetsByAssetType {
 
 // Get all Asset owned templates based on fields
 export const useGetMyOwnedAssetsByAssetType = ({ issuer, symbol, isFungible, owner, reference }: UseGetMyOwnedAssetsByAssetType) => {
-  const assetHoldingAccounts = useStreamQueries(Asset.Asset, () => [{ owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
-  return assetHoldingAccounts
+  console.log('USE GET MY OWNED ASSETS BY ASSET')
+  console.log('args from ledgerr hook', issuer, owner, isFungible, symbol)
+  const assetContracts = useStreamQueries(Asset.Asset, () => [{ owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
+  console.log('asset contrcts', assetContracts)
+  return assetContracts
 }
 export const useGetAssetHoldingAccount = ({ isAirdroppable, isShareable, issuer, symbol, isFungible, owner, reference }: UseGetMyOwnedAssetsByAssetType) => {
   const assetHoldingAccount = useStreamQueries(Account.AssetHoldingAccount, () => [{ airdroppable: isAirdroppable, reshareable: isShareable, owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
@@ -66,6 +69,18 @@ export const useGetAssetTransferByContractId = (arg: useGetAssetTransferByContra
   const contract = useFetch(Asset.AssetTransfer, arg.contractId)
   return contract
 }
+export const useGetAssetContractByContractId = (contractId: ContractId<Asset.Asset>) => {
+  const contract = useFetch(Asset.Asset, contractId)
+  return contract
+}
+export const useGetTradeContractByCid = (tradeContractId: ContractId<Trade>) => {
+  const contract = useFetch(Trade, tradeContractId)
+  return contract
+}
+export const useGetTransferPreapprovalContractByContractId = (contractId: ContractId<TransferPreApproval>) => {
+  const contract = useFetch(TransferPreApproval, contractId)
+  return contract
+}
 export interface AssetType {
   issuer: string;
   symbol: string;
@@ -73,7 +88,6 @@ export interface AssetType {
   reference: string;
 }
 export const useGetAssetAccountByKey = (assetType: AssetType) => {
-  console.log('getasset')
   const myPartyId = useParty();
   const contract = useFetchByKey(Account.AssetHoldingAccount, () => ({ _1: assetType, _2: myPartyId }), []);
   return contract
@@ -96,6 +110,11 @@ export const useGetAssetSendRequests = (isInbound?: boolean) => {
   const myPartyId = useParty();
   const allAssetSendRequests = useStreamQueries(Asset.AssetTransfer, () => [{ recipient: isInbound ? myPartyId : undefined }]);
   return allAssetSendRequests
+}
+export const useGetAssetSwapRequests = (isInbound ? : boolean) => {
+  const myPartyId = useParty();
+  const trades = useStreamQueries(Trade, () => [{ receiver: isInbound ? myPartyId : undefined, proposer: isInbound? undefined : myPartyId } ]);
+  return trades
 }
 
 // Asset Invites
@@ -121,11 +140,6 @@ export const useGetMyInboundAssetSendRequests = () => {
   return allAssetSendRequests
 }
 
-//TODO;
-export const useGetAssetSwapRequests = () => {
-  const assetHoldingAccount = useStreamQueries(Asset.AssetTransfer);
-  return assetHoldingAccount
-}
 export const useGetAssetAccountInvites = () => {
   const assetHoldingAccount = useStreamQueries(Account.AssetHoldingAccountCloseProposal);
   return assetHoldingAccount
@@ -169,6 +183,7 @@ export const useLedgerHooks = () => {
     }
   }
 
+
   interface InviteNewAssetHolder {
     assetType: {
       issuer: string,
@@ -208,11 +223,12 @@ export const useLedgerHooks = () => {
   const proposeSwap = async (args: ProposeSwap) => {
     const { inOwner, outSymbol, outFungible, outIssuer, outReference, outAmount, outAssetCids, inAmount, inIssuer, inSymbol, inFungible, inReference } = args;
     try {
-      // TODO: update documentation
-      // needing to use _1:, _2:, not obvious enough.
-      // how to parse error messages? not user friendly
+      
       const result = await ledger.exerciseByKey(Account.AssetHoldingAccount.Create_Trade, { _1: { issuer: outIssuer, symbol: outSymbol, reference: outReference, fungible: outFungible }, _2: party }, {
-        assetCids: outAssetCids, offeredAssetAmount: outAmount, requestedAsset: {
+        // offered Cids
+        assetCids: outAssetCids, 
+        offeredAssetAmount: outAmount, 
+        requestedAsset: {
           assetType: {
             issuer: inIssuer,
             fungible: inFungible,
@@ -227,6 +243,76 @@ export const useLedgerHooks = () => {
         }
 
       })
+
+      // const result = await ledger.exercise(Account.AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
+      //   recipient
+      // });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
+  interface ExerciseMergeSplit {
+    outSymbol: string;
+    outFungible: boolean;
+    outReference: string;
+    outIssuer: string;
+    assetCids: ContractId<Asset.Asset>[];
+    outputAmount: string;
+  }
+  const exerciseMergeSplit = async (args: ExerciseMergeSplit) => {
+    const { assetCids, outputAmount, outSymbol, outFungible, outIssuer, outReference } = args;
+    try {
+      // TODO: update documentation
+      // needing to use _1:, _2:, not obvious enough.
+      // how to parse error messages? not user friendly
+      const result = await ledger.exerciseByKey(Account.AssetHoldingAccount.Merge_Split, { _1: { issuer: outIssuer, symbol: outSymbol, reference: outReference, fungible: outFungible }, _2: party }, {
+        assetCids: assetCids, outputAmounts: [outputAmount], 
+      })
+      
+      // const result = await ledger.exercise(Account.AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
+      //   recipient
+      // });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
+  interface ExercisePreapprove {
+    issuer: string;
+    fungible: boolean;
+    reference: string;
+    symbol: string;
+    amount: string;
+    owner: string;
+    
+  }
+  const exercisePreApprove = async (args: ExercisePreapprove) => {
+    const {issuer,owner,fungible, reference, symbol, amount } = args;
+    try {
+      // TODO: update documentation
+      // needing to use _1:, _2:, not obvious enough.
+      // how to parse error messages? not user friendly
+      const result = await ledger.exerciseByKey(Account.AssetHoldingAccount.Preapprove_Transfer_In, { _1: { issuer, symbol, reference, fungible }, _2: party }, {
+        asset: {
+          assetType: {
+            issuer, 
+            symbol, 
+            fungible, 
+            reference
+          },
+          owner,
+          amount,
+          observers: makeDamlSet<string>([])
+        }
+      })
+      
       // const result = await ledger.exercise(Account.AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
       //   recipient
       // });
@@ -281,7 +367,6 @@ export const useLedgerHooks = () => {
 
   const acceptAssetTransfer = async (accountHoldingCid: ContractId<Account.AssetHoldingAccount>, transferCid: ContractId<Asset.AssetTransfer>) => {
     try {
-      console.log('assettansfer', accountHoldingCid)
       const result = await ledger.exercise(Account.AssetHoldingAccount.Deposit_Transfer_Into_Account, accountHoldingCid, {
         transferCid
       });
@@ -346,6 +431,45 @@ export const useLedgerHooks = () => {
 
     }
   }
+
+  
+  const exerciseTradeSettle = async (tradeCid: ContractId<Trade>, requestedAsset: ContractId<Asset.Asset>, offeredTxPreApproval: ContractId<TransferPreApproval> ) => {
+    try {
+      const result = await ledger.exercise(Trade.Trade_Settle, tradeCid, {
+        requestedAsset,
+        offeredTxPreApproval
+      });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+
+    }
+  }
+  const exerciseTradeCancel = async (tradeCid: ContractId<Trade> ) => {
+    try {
+      const result = await ledger.exercise(Trade.Trade_Cancel, tradeCid, {
+      });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+    }
+  }
+  const exerciseTradeReject = async (tradeCid: ContractId<Trade> ) => {
+    try {
+      const result = await ledger.exercise(Trade.Trade_Reject, tradeCid, {
+      });
+
+      return { isOk: true, payload: result }
+
+    } catch (e) {
+      return { isOk: false, payload: e }
+    }
+  }
+
   const cancelAssetTransfer = async (assetTransferCid: ContractId<Asset.AssetTransfer>) => {
     try {
       const result = await ledger.exercise(Asset.AssetTransfer.Cancel_Transfer, assetTransferCid, {
@@ -389,6 +513,6 @@ export const useLedgerHooks = () => {
     }
   }
 
-  return { proposeSwap, exerciseAirdrop, exerciseAssetTransferChoice, exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
+  return {exercisePreApprove, exerciseTradeReject, exerciseTradeCancel, exerciseTradeSettle, exerciseMergeSplit, proposeSwap, exerciseAirdrop, exerciseAssetTransferChoice, exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
 
 }
