@@ -28,9 +28,10 @@ export interface AssetDetailsProps {
   ticker: string;
   issuer: string;
   owner: string;
-  quantity: string;
-  isFungible: boolean;
-  // belong to asset account
+  // optional because for account invite, there is no quantity
+  quantity?: string;
+  isFungible?: boolean;
+  // optional because template Asset won't have these attributes
   isShareable?: boolean;
   isAirdroppable?: boolean;
 }
