@@ -9,7 +9,6 @@ import { enableFabBack } from './IssueAirdropPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { useGetAssetAccountByKey, useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
-import { getAssetSum } from '../utils/getAssetSum';
 import { useParty } from '@daml/react';
 
 
@@ -23,9 +22,9 @@ export const SwapPage: React.FC = () => {
   const symbol = query.get('ticker') || ""
   const isFungible = query.get('isFungible') === 'true'
   // get your owned asset account
-  const { contract: assetAccountContract, loading: assetAccountContractLoading} = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference: ''})
-  
-  const { loading: assetContractsLoading, contracts: assetContracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
+  const { loading: assetAccountContractLoading} = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference: ''})
+
+  const { loading: assetContractsLoading} = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
 
 
   const classes = usePageStyles();
@@ -34,7 +33,7 @@ export const SwapPage: React.FC = () => {
   }
   // TODO: 
   // Fetch token quantity
-  if(assetContractsLoading){
+  if(assetContractsLoading || assetAccountContractLoading){
     return (
       <LinearProgress/>
     )

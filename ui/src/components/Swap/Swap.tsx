@@ -1,7 +1,6 @@
 
-import {  IconButton, Box, Typography, Fab } from '@mui/material';
+import {Card, CardContent,  IconButton, Box, Typography, Fab } from '@mui/material';
 import React from 'react';
-import { Card, CardContent } from 'semantic-ui-react';
 import { useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { enableFabBack } from '../../pages/IssueAirdropPage';
 import { isMobile } from '../../platform/platform';
@@ -61,7 +60,6 @@ export const Swap: React.FC<SwapProps> = (props) => {
   const {
     tradeCid,
     proposer,
-    proposerAssetCid,
     receiverAssetSymbol,
     receiverAssetIsFungible,
     receiverAssetIssuer,
@@ -85,9 +83,10 @@ export const Swap: React.FC<SwapProps> = (props) => {
   const [success, setSuccess] = React.useState<'accept'|'reject'|'cancel'|undefined>();
   const [error, setError] = React.useState<'accept'|'reject'|'cancel'|undefined>();
 
-  console.log('BEFORE CALL')
   
+  // TODO: Docs:
   // Getting all the assets of what the proposer wants
+  // as the receiver of the swap, these will be assets you will be swapping out.
   const outboundAssetContracts = useGetMyOwnedAssetsByAssetType(
     { 
       issuer: receiverAssetIssuer , 
@@ -97,16 +96,13 @@ export const Swap: React.FC<SwapProps> = (props) => {
       reference: receiverAssetReference
     }).contracts
 
-  // for the receiver, this is what they will be sending out
+  // TODO: for the receiver, this is what they will be sending out
   const outboundAssetCids = outboundAssetContracts.map((contract) => contract.contractId)
   
   
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();
   // const acceptersAssetsOld = useGetMyOwnedAssetsByAssetType({ issuer: !isInbound? offeredIssuer: transferPreapprovalIssuer , symbol: !isInbound? offeredSymbol :  transferPreapprovalSymbol, isFungible: !isInbound? offeredFungible :  transferPreapprovalFungible, owner: myPartyId}).contracts
-  console.log('MY OUTBOUND CIDS', outboundAssetCids)
-  
-  
   
   const swapProps = {
     isInbound: isInbound === 'true',
@@ -126,8 +122,28 @@ export const Swap: React.FC<SwapProps> = (props) => {
      receiver
    }
   
-  const onReject = () => {
-
+  const onReject = async () => {
+    setLoading('reject')
+    const result = await ledgerHooks.exerciseTradeReject(tradeCid)
+    if(!result.isOk){
+      setLoading(undefined)
+      setSuccess(undefined)
+      setError('reject')
+    }
+    setLoading(undefined)
+      setSuccess('reject')
+      setError(undefined)
+  }
+  const onCancel = async () => {
+    const result = await ledgerHooks.exerciseTradeCancel(tradeCid);
+    if(!result.isOk){
+      setLoading(undefined)
+      setSuccess(undefined)
+      setError('cancel')
+    }
+    setLoading(undefined)
+      setSuccess('cancel')
+      setError(undefined)
   }
 
   // For ACCEPTING a swap
@@ -181,23 +197,7 @@ export const Swap: React.FC<SwapProps> = (props) => {
     setError(undefined);
     setSuccess('accept');
   }
-  
-  const onClick = async(action: 'cancel' | 'reject') => {
-    // if(!assetAccountCid || !assetTransferCid){
-    //   return;
-    // }
-    // setLoading(action);
-    // const result = await ledgerHooks.exerciseAssetTransferChoice(assetTransferCid, action);
-    // if(result.isOk){
-    //   setSuccess(action);
-    //   setError(undefined);
-    //   setLoading(undefined);
-    // } else {
-    //   setError(action)
-    //   setSuccess(undefined);
-    //   setLoading(undefined);
-    // }
-  }
+
 
   const onBack = () => {
     nav(-1)
@@ -239,10 +239,10 @@ export const Swap: React.FC<SwapProps> = (props) => {
             {isInbound === 'true' && <LoadingButton loadingPosition='end' loading={isLoading === 'accept'} onClick={onAccept} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
               Accept Request
             </LoadingButton>}
-            {isInbound === 'true' && <LoadingButton loadingPosition='end' loading={isLoading === 'reject'} fullWidth onClick={() => onClick('reject')} sx={{ marginRight: 1 }} variant='outlined'>
+            {isInbound === 'true' && <LoadingButton loadingPosition='end' loading={isLoading === 'reject'} fullWidth onClick={onReject} sx={{ marginRight: 1 }} variant='outlined'>
               Reject Request
           </LoadingButton>}
-          {isInbound === 'false' && success !== 'cancel' && <LoadingButton  loadingPosition='end' loading={isLoading === 'cancel'} onClick={() => {onClick('cancel')}} fullWidth sx={{ margin: 1 }} variant='outlined'>
+          {isInbound === 'false' && success !== 'cancel' && <LoadingButton  loadingPosition='end' loading={isLoading === 'cancel'} onClick={onCancel} fullWidth sx={{ margin: 1 }} variant='outlined'>
               Cancel Request
           </LoadingButton>}
           </div>}
