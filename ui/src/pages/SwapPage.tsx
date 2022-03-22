@@ -1,7 +1,7 @@
 import React from 'react';
 import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, IconButton, LinearProgress, Typography } from '@mui/material';
 import { SwapForm } from '../components/SwapForm/SwapForm';
 import { usePageStyles } from './AssetProfilePage';
 import { isMobile } from '../platform/platform';
@@ -24,11 +24,8 @@ export const SwapPage: React.FC = () => {
   const isFungible = query.get('isFungible') === 'true'
   // get your owned asset account
   const { contract: assetAccountContract, loading: assetAccountContractLoading} = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference: ''})
-  const isShareable = assetAccountContract?.payload.resharable
-  const isAirdroppable= assetAccountContract?.payload.airdroppable
   
   const { loading: assetContractsLoading, contracts: assetContracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
-  const amount = getAssetSum(assetContracts);
 
 
   const classes = usePageStyles();
@@ -37,6 +34,11 @@ export const SwapPage: React.FC = () => {
   }
   // TODO: 
   // Fetch token quantity
+  if(assetContractsLoading){
+    return (
+      <LinearProgress/>
+    )
+  }
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer} onClick={onBack}>

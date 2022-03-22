@@ -1,6 +1,6 @@
 import { Asset } from '@daml.js/wallet-refapp';
 import { ContractId } from '@daml/types';
-import {  LinearProgress } from '@mui/material';
+import {   LinearProgress } from '@mui/material';
 import React from 'react'; 
 import { useGetAssetSwapRequests } from '../../ledgerHooks/ledgerHooks';
 import { PendingActivitiesPageProps } from '../PendingActivities/PendingActivities';
@@ -38,7 +38,7 @@ export const PendingSwaps: React.FC<PendingActivitiesPageProps> = (props) => {
       tradeCid
     }
     return (
-      <PendingSwapRow {...pendingSwapRowProps}/>
+      <PendingSwapRow key={tradeCid} {...pendingSwapRowProps}/>
     )
   })
 

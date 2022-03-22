@@ -2,7 +2,7 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import clx from 'clsx'
 import { Divider } from '@mui/material';
-import { useNarrowPendingStyles } from '../PendingRowContents/PendingRowContents';
+import { useNarrowPendingStyles } from '../PendingStyles/PendingStyles';
 
 export interface PendingSwapRowProps {
   inboundTicker: string;

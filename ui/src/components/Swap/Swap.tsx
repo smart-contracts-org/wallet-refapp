@@ -135,7 +135,6 @@ export const Swap: React.FC<SwapProps> = (props) => {
   
   const onAccept = async () => {
     if(outboundAssetContracts.length === 0){
-      console.log('cannot')
       return
     }
     // receiver exercises mergeSplit on the account that

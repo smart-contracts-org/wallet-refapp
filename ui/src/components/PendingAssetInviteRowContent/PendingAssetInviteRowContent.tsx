@@ -3,8 +3,8 @@ import Typography from '@mui/material/Typography';
 import {  Divider } from '@mui/material';
 
 import clx from 'clsx'
-import { useNarrowPendingStyles } from '../PendingRowContents/PendingRowContents';
 import { PendingRowProps } from '../PendingRow/PendingRow';
+import { useNarrowPendingStyles } from '../PendingStyles/PendingStyles';
 
 export const PendingAssetInviteRowContent: React.FC<PendingRowProps> = (props) => {
   const { 

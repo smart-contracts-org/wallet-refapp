@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { SendRowContents } from '../SendRowContents/SendRowContents';
 import { Avatar, CardActionArea } from '@mui/material';
 import { isMobile } from '../../platform/platform';
-import { useNarrowPendingStyles } from '../PendingRowContents/PendingRowContents';
+import { useNarrowPendingStyles } from '../PendingStyles/PendingStyles';
 import { createQueriesString } from '../../utils/createQueriesString';
 
 export interface PendingTransferRowProps {

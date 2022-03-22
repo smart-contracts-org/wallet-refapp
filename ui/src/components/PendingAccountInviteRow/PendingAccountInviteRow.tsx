@@ -4,10 +4,10 @@ import Button from '@mui/material/Button';
 import { Link } from "react-router-dom";
 import { Avatar, CardActionArea} from '@mui/material';
 import { isMobile } from '../../platform/platform';
-import { useNarrowPendingStyles } from '../PendingRowContents/PendingRowContents';
 import { createQueriesString } from '../../utils/createQueriesString';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { PendingAssetInviteRowContent } from '../PendingAssetInviteRowContent/PendingAssetInviteRowContent';
+import { useNarrowPendingStyles } from '../PendingStyles/PendingStyles';
 
 export interface PendingAccountInviteRowProps {
   sender: string;

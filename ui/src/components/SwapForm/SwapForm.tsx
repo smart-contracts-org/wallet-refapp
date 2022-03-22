@@ -1,6 +1,6 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import { Box, Card, FormControl, Typography, Link, Button, MenuItem, Select, InputLabel, SelectChangeEvent, LinearProgress, Avatar } from '@mui/material';
+import { Box, Card, FormControl, Typography, Link, Button, MenuItem, Select, SelectChangeEvent, LinearProgress, CircularProgress } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -11,7 +11,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
 import { getAssetSum } from '../../utils/getAssetSum';
 import { useParty } from '@daml/react';
-import { useGetAllAssetAccounts, useGetAssetAccountByKey, useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
+import { useGetAllAssetAccounts, useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { AssetType } from '@daml.js/wallet-refapp/lib/Asset';
 
 
@@ -93,10 +93,11 @@ console.log('assetContracts', assetContracts)
   const outAssetCids = assetContracts.map((contract) => contract.contractId)
   const totalBalance = getAssetSum(assetContracts);
   
-  const onCancel = () => {
+  const onBack = () => {
     nav(-1)
   }
   const onSubmit = async () => {
+    setLoading(true)
     const result = await ledgerHooks.proposeSwap(
       {
         outAmount,
@@ -113,12 +114,20 @@ console.log('assetContracts', assetContracts)
         inOwner: recipient
       }
     )
+    if(result.isOk){
+      setLoading(false);
+      setSuccessful(true);
+    } else {
+      setLoading(false);
+      setSuccessful(false)
+    }
+
     console.log(result)
   }
   const classes = useStyles();
   if(loadingAssetContracts||loadingOwnedAssetAccounts){
     return (
-      <LinearProgress/>
+      <CircularProgress/>
     )
   }
   return (
@@ -218,7 +227,7 @@ console.log('assetContracts', assetContracts)
                   {ownedAssetAccounts.map((account) => {
                     const symbol = account.payload.assetType.symbol
                     return (
-                      <MenuItem onClick={() => { setInboundAssetType(account.payload.assetType) }} value={symbol}>{symbol}</MenuItem>
+                      <MenuItem key={account.contractId} onClick={() => { setInboundAssetType(account.payload.assetType) }} value={symbol}>{symbol}</MenuItem>
                     )
                   })}
 
@@ -264,7 +273,7 @@ console.log('assetContracts', assetContracts)
         >
           {isSuccessful ? "Swap Request Sent" : "Request Swap"}
         </LoadingButton>
-        <Button variant='outlined' onClick={onCancel}>Cancel</Button>
+        <Button variant='outlined' onClick={onBack}>Back</Button>
       </div>
     </Box>
   );
