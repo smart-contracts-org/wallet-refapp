@@ -110,6 +110,8 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
   const proposerAssetSymbol = proposerAsset?.payload.assetType?.symbol|| "";
   const proposerAssetAmount = proposerAsset?.payload.amount|| "";
   const proposerAssetIsFungible = proposerAsset?.payload.assetType.fungible || false 
+  console.log('pending',proposerAssetIsFungible
+  )
   const proposerAssetIssuer = proposerAsset?.payload.assetType.issuer|| "";
   const proposerAssetOwner = proposerAsset?.payload.owner|| "";
 
@@ -159,7 +161,7 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
     ['proposerAssetAmount', proposerAssetAmount],
     ['proposerAssetOwner', proposerAssetOwner],
     ['proposerAssetReference', proposerAssetReference],
-    ['proposerAssetisFungible', `${proposerAssetIsFungible}`],
+    ['proposerAssetIsFungible', `${proposerAssetIsFungible}`],
 
 
    

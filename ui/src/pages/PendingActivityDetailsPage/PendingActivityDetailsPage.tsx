@@ -126,6 +126,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
   const proposerAssetSymbol = query.get('proposerAssetSymbol')|| "";
   const proposerAssetIssuer = query.get('proposerAssetIssuer')|| "";
   const proposerAssetIsFungible = query.get('proposerAssetIsFungible') === 'true';
+  console.log('PAGES',proposerAssetIsFungible)
   const proposerAssetOwner = query.get('proposerAssetOwner') || "";
   const proposerAssetReference = query.get('proposerAssetReference') || ""
   // receiver asset

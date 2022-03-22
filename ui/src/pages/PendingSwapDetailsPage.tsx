@@ -69,7 +69,6 @@ export const PendingSwapDetailsPage: React.FC<PendingSwapDetailsPageProps> = (pr
  
  
   if(transferPreapprovalLoading){
-   console.log(transferPreapprovalLoading)
    return (<LinearProgress/>)
  }
  const swapProps = {

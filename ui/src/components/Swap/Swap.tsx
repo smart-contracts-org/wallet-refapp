@@ -125,6 +125,7 @@ export const Swap: React.FC<SwapProps> = (props) => {
      proposer,
      receiver
    }
+   console.log('swap props', swapProps)
   
   const onReject = () => {
 

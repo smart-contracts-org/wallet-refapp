@@ -90,7 +90,6 @@ export const SwapDetails: React.FC<SwapDetailsProps> = (
     owner: proposerAssetOwner,
 
   }
-  console.log(isInbound)
 
   const receiverGroup = {
     label: !isInbound ? 'Swapping In' : 'Swapping Out',
