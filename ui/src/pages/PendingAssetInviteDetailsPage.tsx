@@ -1,7 +1,7 @@
 import React from 'react';
 import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Button, Card, CardContent, IconButton, LinearProgress, Typography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, IconButton, LinearProgress, Typography } from '@mui/material';
 import { useGetAssetHoldingInviteByContractId,  useLedgerHooks } from '../ledgerHooks/ledgerHooks';
 import { usePageStyles } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
@@ -10,6 +10,7 @@ import { enableFabBack } from './IssueAirdropPage';
 import { ContractId } from '@daml/types';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 import { AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
+import { LoadingButton } from '@mui/lab';
 
 
 interface Errors {
@@ -62,7 +63,7 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
 
   //TODO grab contract details
   const nav = useNavigate();
-  const [isLoading, setLoading] = React.useState(false);
+  const [actionLoading, setLoadingAction] = React.useState<string| undefined>(undefined);
   const [success, setSuccess] = React.useState<'accept'|'reject'|'cancel'|undefined>();
   const [error, setError] = React.useState<'accept'|'reject'|'cancel'|undefined>();
 
@@ -92,16 +93,16 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
 
   
   const onClick = async(action: ActionType) => {
-    setLoading(true);
+    setLoadingAction(action);
     const result = await ledgerHooks.exerciseAssetHolderInvite(contractId as ContractId<AssetHoldingAccountProposal>, action);
     if(result.isOk){
       setSuccess(action);
       setError(undefined);
-      setLoading(false);
+      setLoadingAction(undefined);
     } else {
       setError(action)
       setSuccess(undefined);
-      setLoading(false);
+      setLoadingAction(undefined);
     }
   }
 
@@ -150,15 +151,15 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
           
   
           {(success === undefined )&& <div className={classes.actions}>
-            {isInbound === 'true' && <Button onClick={() =>onClick('accept')} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
+            {isInbound === 'true' && <LoadingButton  loading={actionLoading === 'accept'}  onClick={() =>onClick('accept')} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
               Accept
-            </Button>}
-            {isInbound === 'true' && <Button onClick={() =>onClick('reject')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
+            </LoadingButton>}
+            {isInbound === 'true' && <LoadingButton loading={actionLoading === 'reject'}   onClick={() =>onClick('reject')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Reject
-          </Button>}
-          {isInbound === 'false' && success !== 'cancel' && <Button disabled={success==='cancel'} onClick={() =>onClick('cancel')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
+          </LoadingButton>}
+          {isInbound === 'false' && success !== 'cancel' && <LoadingButton loading={actionLoading === 'cacenl'}   disabled={success==='cancel'} onClick={() =>onClick('cancel')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Cancel
-          </Button>}
+          </LoadingButton>}
           </div>}
         </Card>
       </Box>

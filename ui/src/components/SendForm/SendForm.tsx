@@ -87,13 +87,7 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
       <LinearProgress/>
     )
   }
-  if(contracts.length === 0){
-    return (
-      <Card>
-        No contracts
-      </Card>
-    )
-  }
+  
   return (
     <>
       <FormControl className={classes.root}>

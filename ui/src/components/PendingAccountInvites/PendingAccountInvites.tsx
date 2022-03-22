@@ -40,7 +40,7 @@ export const PendingAccountInvites: React.FC<PendingActivitiesPageProps> = (prop
   }
 
     return (
-      <PendingAccountInviteRow {...pendingAccountInviteRowProps} />
+      <PendingAccountInviteRow key={accountInviteCid} {...pendingAccountInviteRowProps} />
     )
   })
   
