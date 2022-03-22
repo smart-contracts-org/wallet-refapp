@@ -1,8 +1,8 @@
 
-import { LinearProgress, IconButton, Box, Typography, Avatar, Fab } from '@mui/material';
+import {  IconButton, Box, Typography, Fab } from '@mui/material';
 import React from 'react';
-import { Card, CardContent, Button } from 'semantic-ui-react';
-import { useGetAssetContractByContractId, useGetMyOwnedAssetsByAssetType, useGetTradeContractByCid, useGetTransferPreapprovalContractByContractId, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
+import { Card, CardContent } from 'semantic-ui-react';
+import { useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { enableFabBack } from '../../pages/IssueAirdropPage';
 import { isMobile } from '../../platform/platform';
 import { SwapDetails } from '../SwapDetails/SwapDetails';
@@ -13,7 +13,7 @@ import { Asset } from '@daml.js/wallet-refapp';
 import { ContractId } from '@daml/types';
 import { Trade } from '@daml.js/wallet-refapp/lib/Trade/module';
 import { usePageStyles } from '../../pages/PendingActivityDetailsPage/PendingActivityDetailsPage';
-
+import { LoadingButton } from '@mui/lab';
 interface SwapProps {
   proposerAssetCid: ContractId<Asset.Asset>;
   receiverAssetSymbol: string;
@@ -125,7 +125,6 @@ export const Swap: React.FC<SwapProps> = (props) => {
      proposer,
      receiver
    }
-   console.log('swap props', swapProps)
   
   const onReject = () => {
 
@@ -182,10 +181,23 @@ export const Swap: React.FC<SwapProps> = (props) => {
     setLoading(undefined);
     setError(undefined);
     setSuccess('accept');
-    console.log('m', resultTrade)
   }
-  const onCancel = async() => {
-   
+  
+  const onClick = async(action: 'cancel' | 'reject') => {
+    // if(!assetAccountCid || !assetTransferCid){
+    //   return;
+    // }
+    // setLoading(action);
+    // const result = await ledgerHooks.exerciseAssetTransferChoice(assetTransferCid, action);
+    // if(result.isOk){
+    //   setSuccess(action);
+    //   setError(undefined);
+    //   setLoading(undefined);
+    // } else {
+    //   setError(action)
+    //   setSuccess(undefined);
+    //   setLoading(undefined);
+    // }
   }
 
   const onBack = () => {
@@ -224,9 +236,17 @@ export const Swap: React.FC<SwapProps> = (props) => {
           {
             error && !!errors[error] && <Card sx={{margin: 1}}><CardContent>{errors[error]}</CardContent></Card>
           }
-          <Button
-          onClick={onAccept}
-          >accept</Button>
+          {success === undefined && <div className={classes.actions}>
+            {isInbound === 'true' && <LoadingButton loadingPosition='end' loading={isLoading === 'accept'} onClick={onAccept} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
+              Accept Request
+            </LoadingButton>}
+            {isInbound === 'true' && <LoadingButton loadingPosition='end' loading={isLoading === 'reject'} fullWidth onClick={() => onClick('reject')} sx={{ marginRight: 1 }} variant='outlined'>
+              Reject Request
+          </LoadingButton>}
+          {isInbound === 'false' && success !== 'cancel' && <LoadingButton  loadingPosition='end' loading={isLoading === 'cancel'} onClick={() => {onClick('cancel')}} fullWidth sx={{ margin: 1 }} variant='outlined'>
+              Cancel Request
+          </LoadingButton>}
+          </div>}
         </Card>
       </Box>
 

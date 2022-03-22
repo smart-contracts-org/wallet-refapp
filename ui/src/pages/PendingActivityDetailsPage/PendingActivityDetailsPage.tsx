@@ -1,12 +1,9 @@
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation,  } from 'react-router-dom'
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { Avatar, Box, Button, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
+import { Card, CardContent } from '@mui/material';
 import { isMobile } from '../../platform/platform';
-import { SwapDetails } from '../../components/SwapDetails/SwapDetails';
-import { useGetAssetInviteRequests, useGetAssetTransferByContractId, useGetSingleAssetSendRequest, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
-import { useParty } from '@daml/react';
 import { PendingSendDetailsPage } from '../PendingSendDetailsPage';
 import { PendingSwapDetailsPage } from '../PendingSwapDetailsPage';
 import { chipColors } from '../../components/RowChip/RowChip';
@@ -14,6 +11,7 @@ import { PendingAssetInviteDetailsPage } from '../PendingAssetInviteDetailsPage'
 import { ContractId } from '@daml/types';
 import { Trade, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
 import { Asset } from '@daml.js/wallet-refapp';
+import { AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
 
 export const useQuery = () => {
   const { search } = useLocation();
@@ -88,27 +86,19 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
 }))
 
 export const PendingActivityDetailsPage: React.FC = () => {
-  
   const query = useQuery()
-  const contractId = query.get('contractId')
-  const myPartyId=useParty()
-  //TODO: can we use something else besdies contract
+  const contractId = query.get('contractId') as ContractId<AssetHoldingAccountProposal>
   
   // Common: 
   const isInbound = query.get('isInbound') || 'false';
   const recipient = query.get('receiver') ||""
 
   const actionLabel = query.get('templateName')
-  const sendTicker = query.get('symbol') || "";
-  const sendAmount = query.get('amount')||"0";
   const issuer = query.get('issuer') || ""
-  const inboundTicker = query.get('inboundTicker');
-  const outboundTicker = query.get('outboundTicker')
-  const inboundQuantity = query.get('inboundQuantity')
+  
   const isShareable = query.get('isShareable') === 'true';
   const isFungible = query.get('isFungible') === 'true';
   const isAirdroppable = query.get('isAirdroppable') === 'true'
-  const outboundQuantity = query.get('outboundQuantity')
   
   const sender = query.get('sender');
   const symbol = query.get('symbol');
@@ -126,7 +116,6 @@ export const PendingActivityDetailsPage: React.FC = () => {
   const proposerAssetSymbol = query.get('proposerAssetSymbol')|| "";
   const proposerAssetIssuer = query.get('proposerAssetIssuer')|| "";
   const proposerAssetIsFungible = query.get('proposerAssetIsFungible') === 'true';
-  console.log('PAGES',proposerAssetIsFungible)
   const proposerAssetOwner = query.get('proposerAssetOwner') || "";
   const proposerAssetReference = query.get('proposerAssetReference') || ""
   // receiver asset

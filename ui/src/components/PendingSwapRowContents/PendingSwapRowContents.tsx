@@ -117,7 +117,7 @@ export const PendingSwapRowContents: React.FC<PendingSwapRowContentsProps> = (pr
 
   return (
     <>
-
+e
       {isInbound ? inboundMessage : outboundMessage}
 
 

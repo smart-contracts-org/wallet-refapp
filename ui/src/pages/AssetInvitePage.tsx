@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { InviteNewAssetOwnerForm } from '../components/InviteNewAssetOwnerForm/InviteNewAssetOwnerForm';
@@ -8,8 +8,6 @@ import { enableFabBack } from './IssueAirdropPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 import { isMobile } from '../platform/platform';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
-import { AssetHoldingAccount } from '@daml.js/wallet-refapp/lib/Account';
-import { ContractId } from '@daml/types';
 
 
 export const AssetInvitePage: React.FC = () => {
@@ -19,11 +17,8 @@ export const AssetInvitePage: React.FC = () => {
   const issuer = query.get('issuer') || ""
   const symbol = query.get('ticker') || ""
   const owner = query.get('owner') || ""
-  const contractId = query.get('contractId') as ContractId<AssetHoldingAccount>
   const isFungible = query.get('isFungible') === 'true'
-  const isShareable = query.get('isShareable') === 'true'
-  const isAirdroppable = query.get('isAirdroppable') === 'true'
-  
+
   const onBack = () => {
     nav(-1)
   }

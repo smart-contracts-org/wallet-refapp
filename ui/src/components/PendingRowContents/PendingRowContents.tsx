@@ -7,14 +7,12 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import SendIcon from '@mui/icons-material/Send';
 import { Link } from "react-router-dom";
-import CancelIcon from '@mui/icons-material/Cancel';
 import { SendRowContents } from '../SendRowContents/SendRowContents';
-import { Avatar, Box, CardActionArea, IconButton, Typography } from '@mui/material';
+import { Avatar, CardActionArea } from '@mui/material';
 import { PendingRowProps } from '../PendingRow/PendingRow';
 import { PendingSwapRowContents } from '../PendingSwapRowContents/PendingSwapRowContents';
 import { PendingAssetInviteRowContent } from '../PendingAssetInviteRowContent/PendingAssetInviteRowContent';
 import { isMobile } from '../../platform/platform';
-import { useGetAssetContractByContractId } from '../../ledgerHooks/ledgerHooks';
 export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   card: {
     display: 'flex',
@@ -83,7 +81,7 @@ export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-export const PendingRowContents: React.FC<PendingRowProps> = ({inboundAssetCid,requestedAssetsTxPreApproval, isFungible, contractId, receiver, outboundQuantity, sendAmount, sendTicker, outboundTicker, templateName, isNarrow, isInbound, sender, inboundTicker, inboundQuantity, issuer}) => {
+export const PendingRowContents: React.FC<PendingRowProps> = ({requestedAssetsTxPreApproval, isFungible, contractId, receiver, outboundQuantity, sendAmount, sendTicker, outboundTicker, templateName, isNarrow, isInbound, sender, inboundTicker, inboundQuantity, issuer}) => {
   const classes = useNarrowPendingStyles();
   
   const onAccept = (event: React.SyntheticEvent) => {

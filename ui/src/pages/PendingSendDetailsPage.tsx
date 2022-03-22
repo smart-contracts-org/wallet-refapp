@@ -1,7 +1,7 @@
 import React from 'react';
 import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Button, Card, CardActions, CardContent, Fab, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { useGetAssetAccountByKey, useGetAssetTransferByContractId, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
 import { usePageStyles } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';

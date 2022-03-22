@@ -1,10 +1,8 @@
 import React from 'react';
-import { Card, CardContent, LinearProgress } from '@mui/material';
+import {  LinearProgress } from '@mui/material';
 import { PendingActivitiesPageProps } from '../PendingActivities/PendingActivities';
 import { useGetAssetInviteRequests } from '../../ledgerHooks/ledgerHooks';
 import { PendingAccountInviteRow } from '../PendingAccountInviteRow/PendingAccountInviteRow';
-
-
 
 export const PendingAccountInvites: React.FC<PendingActivitiesPageProps> = (props) => {
   const {isInbound} = props;

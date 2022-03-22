@@ -12,7 +12,6 @@ export interface PendingActivitiesPageProps {
 
 
 export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbound}) => { 
-  console.log(isInbound)
   return (
     <>
     <PendingTransfers isInbound={isInbound}/>

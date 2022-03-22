@@ -5,10 +5,8 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { Link } from "react-router-dom";
-import { Avatar, Box, CardActionArea, CardContent, IconButton, Typography } from '@mui/material';
-import { PendingRowProps } from '../PendingRow/PendingRow';
+import { Avatar, CardActionArea, CardContent } from '@mui/material';
 import { PendingSwapRowContents } from '../PendingSwapRowContents/PendingSwapRowContents';
-import { PendingAssetInviteRowContent } from '../PendingAssetInviteRowContent/PendingAssetInviteRowContent';
 import { isMobile } from '../../platform/platform';
 import { useGetAssetContractByContractId, useGetTransferPreapprovalContractByContractId } from '../../ledgerHooks/ledgerHooks';
 import { ContractId } from '@daml/types';
@@ -101,7 +99,6 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
     proposer,
     receiver,
     isInbound,
-    isSwapDetailsPage,
     tradeCid
   } = props;
   const classes = useNarrowPendingStyles();

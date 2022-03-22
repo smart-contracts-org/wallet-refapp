@@ -181,6 +181,11 @@ console.log('assetContracts', assetContracts)
                   variant="outlined"
                   size='small'
                   onChange={(e) => setOutAmount(e.currentTarget.value)}
+                  inputProps={{
+                    inputMode: 'decimal',
+                    type: 'number',
+                    pattern: "[0-9]*"
+                  }}
 
                 />
               </Box>
@@ -228,6 +233,11 @@ console.log('assetContracts', assetContracts)
                   variant="outlined"
                   size='small'
                   onChange={(e) => setInAmount(e.currentTarget.value)}
+                  inputProps={{
+                    inputMode: 'decimal',
+                    type: 'number',
+                    pattern: "[0-9]*"
+                  }}
                 />
               </Box>
             </Box>

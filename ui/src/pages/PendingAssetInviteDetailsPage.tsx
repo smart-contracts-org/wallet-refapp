@@ -1,17 +1,13 @@
 import React from 'react';
 import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Button, Card, CardContent, Fab, IconButton, LinearProgress, Typography } from '@mui/material';
-import { useGetAssetHoldingInviteByContractId, useGetAssetInviteRequests, useGetAssetTransferByContractId, useGetSingleAssetSendRequest, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
-import { useParty } from '@daml/react';
-import { usePageStyles, useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
+import { Avatar, Box, Button, Card, CardContent, IconButton, LinearProgress, Typography } from '@mui/material';
+import { useGetAssetHoldingInviteByContractId,  useLedgerHooks } from '../ledgerHooks/ledgerHooks';
+import { usePageStyles } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
-import { SwapDetails } from '../components/SwapDetails/SwapDetails';
 import { isMobile } from '../platform/platform';
 import { enableFabBack } from './IssueAirdropPage';
-import { AssetTransfer, Cancel_Transfer } from '@daml.js/wallet-refapp/lib/Asset';
 import { ContractId } from '@daml/types';
-import { Asset } from '@daml.js/wallet-refapp';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 import { AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
 
@@ -43,7 +39,7 @@ interface PendingSendDetailsPageProps {
   recipient: string;
   symbol: string;
   issuer: string;
-  contractId: string;
+  contractId: ContractId<AssetHoldingAccountProposal>;
   isInbound: string;
   isAirdroppable: boolean;
   isShareable: boolean;
@@ -74,40 +70,26 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
   // TODO: This is merely used to check if the contract exists
   // If someone copy and pastes a URL with an invalid contractId, 
   // we can error out here, but the below is not necessary
-  // const {loading, contract: accountInviteContract} = useGetAssetHoldingInviteByContractId(contractId);
+  const {loading, contract: accountInviteContract} = useGetAssetHoldingInviteByContractId(contractId);
   
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();
 
-  // if(loading){
-  //   <LinearProgress/>
-  // }
+  if(loading){
+    <LinearProgress/>
+  }
   
-  // if(!accountInviteContract){
-  //   return (
-  //     <Card sx={{width: '100%'}}>
-  //       <CardContent>
-  //        This account invite Contract doesn't exist
-  //       </CardContent>
-  //     </Card>
-  //   )
-  // }
-  // assetType
-  
-  // const {
-  //   symbol, 
-  //   reference, 
-  //   fungible, 
-  //   issuer
-  // } = accountInviteContract.payload.account.assetType;
-  // // account attributes
-  // const { 
-  //   airdroppable, 
-  //   resharable, 
-  //   owner
-  // } = accountInviteContract.payload.account
+  if(!accountInviteContract){
+    return (
+      <Card sx={{width: '100%'}}>
+        <CardContent>
+         This account invite Contract doesn't exist
+        </CardContent>
+      </Card>
+    )
+  }
 
-  // const contractCid = accountInviteContract.contractId
+
   
   const onClick = async(action: ActionType) => {
     setLoading(true);

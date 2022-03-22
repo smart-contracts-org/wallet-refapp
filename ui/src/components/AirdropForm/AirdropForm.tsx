@@ -1,6 +1,6 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import { Box, FormControl, Typography } from '@mui/material';
+import { Box, CardContent, Card, FormControl, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -51,7 +51,7 @@ export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
   const classes = useStyles();
   return (
     <>
-      <FormControl className={classes.root}>
+      <FormControl error={hasError} className={classes.root}>
         <Box mr={0.5}>
         <TextField
           margin="none"
@@ -70,14 +70,19 @@ export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
         </Typography>
         </Box>
         <LoadingButton
-        loading={false}
+        disabled={recipient.length === 0}
+        loading={isLoading}
         loadingPosition="end"
         variant="outlined"
         onClick={onSubmit}
       >
-        Send
+        {isSuccessful ? 'Send': 'Send'}
       </LoadingButton>
       </FormControl>
+      {hasError && <Card   sx={{margin: 1, width: '100%'}} ><CardContent><Typography>
+      An error was encountered, please try again. 
+        </Typography>
+        </CardContent></Card>}
       <AirdropInvites symbol={symbol} isFungible={isFungible} reference={reference}/>
       </>
   );

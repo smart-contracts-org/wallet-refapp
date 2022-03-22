@@ -1,8 +1,7 @@
 import { LinearProgress } from '@mui/material';
 import React from 'react'; 
-import { useGetAllAssetAccounts, useGetAssetInviteRequests, useGetAssetSendRequests, useGetAssetSwapRequests } from '../../ledgerHooks/ledgerHooks';
-import { PendingRowProps } from '../PendingRow/PendingRow';
-import { PendingTransferRow, PendingTransferRowProps } from '../PendingTransferRow/PendingTransferRow';
+import { useGetAssetSendRequests } from '../../ledgerHooks/ledgerHooks';
+import { PendingTransferRow } from '../PendingTransferRow/PendingTransferRow';
 
 interface PendingTransfersProps {
   isInbound: boolean;

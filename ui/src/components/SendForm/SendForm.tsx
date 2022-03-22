@@ -25,7 +25,7 @@ interface SendFormProps {
   assetAccountCid: ContractId<AssetHoldingAccount>;
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
+export const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',

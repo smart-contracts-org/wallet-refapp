@@ -1,19 +1,11 @@
 import React from 'react';
-import {  useNavigate, useParams } from 'react-router-dom'
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Button, Card, CardContent, Fab, IconButton, LinearProgress, Typography } from '@mui/material';
-import { useGetAssetContractByContractId, useGetAssetInviteRequests, useGetAssetTransferByContractId, useGetMyOwnedAssetsByAssetType, useGetSingleAssetSendRequest, useGetTradeContractByCid, useGetTransferPreapprovalContractByContractId, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
-import { useParty } from '@daml/react';
-import { usePageStyles, useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
-import { AssetDetails } from '../components/AssetDetails/AssetDetails';
-import { SwapDetails } from '../components/SwapDetails/SwapDetails';
-import { demoPartyId } from '../components/TopAppBar/TopAppBar';
-import { isMobile } from '../platform/platform';
-import { enableFabBack } from './IssueAirdropPage';
+
 import { ContractId } from '@daml/types';
 import { Asset } from '@daml.js/wallet-refapp/lib/Asset';
 import { Trade, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
 import { Swap } from '../components/Swap/Swap';
+import { useGetTransferPreapprovalContractByContractId } from '../ledgerHooks/ledgerHooks';
+import { LinearProgress } from '@mui/material';
 
 interface PendingSwapDetailsPageProps {
   tradeCid: ContractId<Trade>;

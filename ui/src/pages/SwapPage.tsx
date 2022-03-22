@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/material';
 import { SwapForm } from '../components/SwapForm/SwapForm';
@@ -19,7 +19,6 @@ export const SwapPage: React.FC = () => {
   
   const reference = ""
   const party = useParty();
-  const contractId = query.get('contractId');
   const issuer = query.get('issuer') || ""
   const symbol = query.get('ticker') || ""
   const isFungible = query.get('isFungible') === 'true'
@@ -30,8 +29,6 @@ export const SwapPage: React.FC = () => {
   
   const { loading: assetContractsLoading, contracts: assetContracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
   const amount = getAssetSum(assetContracts);
-
-
 
 
   const classes = usePageStyles();

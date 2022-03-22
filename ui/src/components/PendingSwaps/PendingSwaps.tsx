@@ -1,12 +1,10 @@
 import { Asset } from '@daml.js/wallet-refapp';
 import { ContractId } from '@daml/types';
-import { Card, CardContent, LinearProgress } from '@mui/material';
+import {  LinearProgress } from '@mui/material';
 import React from 'react'; 
-import { useGetAllAssetAccounts, useGetAssetInviteRequests, useGetAssetSendRequests, useGetAssetSwapRequests } from '../../ledgerHooks/ledgerHooks';
+import { useGetAssetSwapRequests } from '../../ledgerHooks/ledgerHooks';
 import { PendingActivitiesPageProps } from '../PendingActivities/PendingActivities';
-import { PendingRowProps } from '../PendingRow/PendingRow';
 import { PendingSwapRow } from '../PendingSwapRow/PendingSwapRow';
-import { PendingTransferRow, PendingTransferRowProps } from '../PendingTransferRow/PendingTransferRow';
 
 
 export const PendingSwaps: React.FC<PendingActivitiesPageProps> = (props) => {
