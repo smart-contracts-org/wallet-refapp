@@ -51,11 +51,7 @@ export const PendingAccountInvites: React.FC<PendingActivitiesPageProps> = (prop
   }
   if(contracts.length === 0){
     return (
-      <Card sx={{margin: 1, width: '100%'}}>
-        <CardContent>
-          No pending Account Invites
-        </CardContent>
-      </Card>
+      null
     )
   }
   

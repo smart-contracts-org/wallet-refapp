@@ -17,24 +17,37 @@ export interface PendingSwapRowProps {
   requestedAssetsTxPreApproval?: string;
 }
 
-export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = (props) => {
+interface PendingSwapRowContentsProps {
+  proposer: string;
+  receiver: string;
+  proposerAssetAmount: string;
+  proposerAssetSymbol: string;
+  receiverAssetAmount: string;
+  receiverAssetSymbol: string;
+  isSwapDetailsPage: boolean;
+  isInbound: boolean;
+}
+
+export const PendingSwapRowContents: React.FC<PendingSwapRowContentsProps> = (props) => {
   const {
-    inboundQuantity,
-    inboundTicker,
-    outboundQuantity,
-    outboundTicker,
-    isSwapDetailsPage,
+    proposer,
     receiver,
-    isInbound,
-    sender
+    proposerAssetAmount,
+    proposerAssetSymbol,
+    receiverAssetAmount,
+    receiverAssetSymbol,
+    isSwapDetailsPage,
+    isInbound
+
   } = props
+  console.log(props)
   const classes = useNarrowPendingStyles();
   const inboundMessage = (
     <>
       <div>
         <div className={classes.divider} />
         {!isSwapDetailsPage && <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
-          {sender}
+          { proposer}
         </Typography>}
         <Divider className={classes.divider} />
         <Typography variant='body2' color='text.secondary' className={classes.text} >
@@ -44,19 +57,19 @@ export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = (props) => 
 
         <div className={classes.inboundForOutboundContainer}>
           <Typography variant='body2' className={clx(classes.text, classes.inboundQuantity)} color="text.secondary"  >
-            {inboundQuantity}
+            {proposerAssetAmount}
           </Typography>
           <Typography variant='body2' className={clx(classes.text, classes.inboundTicker)} color="text.secondary" >
-            {inboundTicker}
+            {proposerAssetSymbol}
           </Typography>
           <Typography variant='body2' color='text.secondary' className={classes.text} >
             for
           </Typography>
           <Typography variant='body2' className={clx(classes.text, classes.outboundQuantity)} color="text.secondary"  >
-            {outboundQuantity}
+            {receiverAssetAmount}
           </Typography>
           <Typography variant='body2' className={clx(classes.text)} color="primary" >
-            {outboundTicker}
+            {receiverAssetSymbol}
           </Typography>
 
         </div>
@@ -81,19 +94,19 @@ export const PendingSwapRowContents: React.FC<PendingSwapRowProps> = (props) => 
 
         <div className={classes.inboundForOutboundContainer}>
           <Typography variant='body2' className={clx(classes.text, classes.outboundQuantity)} color="text.secondary"  >
-            {outboundQuantity}
+            {proposerAssetAmount}
           </Typography>
           <Typography variant='body2' className={clx(classes.text)} color="primary" >
-            {outboundTicker}
+            {proposerAssetSymbol}
           </Typography>
           <Typography variant='body2' color='text.secondary' className={classes.text} >
             for
           </Typography>
           <Typography variant='body2' className={clx(classes.text, classes.inboundQuantity)} color="text.secondary"  >
-            {inboundQuantity}
+            {receiverAssetAmount}
           </Typography>
           <Typography variant='body2' className={clx(classes.text, classes.inboundTicker)} color="text.secondary" >
-            {inboundTicker}
+            {receiverAssetSymbol}
           </Typography>
         </div>
         <div className={classes.divider} />

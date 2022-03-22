@@ -5,12 +5,16 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { Link } from "react-router-dom";
-import { Avatar, Box, CardActionArea, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, CardActionArea, CardContent, IconButton, Typography } from '@mui/material';
 import { PendingRowProps } from '../PendingRow/PendingRow';
 import { PendingSwapRowContents } from '../PendingSwapRowContents/PendingSwapRowContents';
 import { PendingAssetInviteRowContent } from '../PendingAssetInviteRowContent/PendingAssetInviteRowContent';
 import { isMobile } from '../../platform/platform';
 import { useGetAssetContractByContractId, useGetTransferPreapprovalContractByContractId } from '../../ledgerHooks/ledgerHooks';
+import { ContractId } from '@daml/types';
+import { TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
+import { createQueriesString } from '../../utils/createQueriesString';
+import { Asset } from '@daml.js/wallet-refapp';
 
 export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -80,15 +84,49 @@ export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-export const PendingSwapRow: React.FC<PendingRowProps> = ({ outboundAssetCid, requestedAssetsTxPreApproval, isFungible, contractId, sendTicker, templateName, isInbound, sender, sendAmount, issuer }) => {
+interface PendingSwapRowProps {
+  proposer: string;
+  receiver: string;
+  requestedAssetsTxPreApproval: ContractId<TransferPreApproval>;
+  proposerAssetCid: ContractId<Asset.Asset>;
+  isInbound: boolean;
+  isSwapDetailsPage?: boolean;
+  tradeCid: string;
+}
+
+export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
+  const { 
+    proposerAssetCid, 
+    requestedAssetsTxPreApproval, 
+    proposer,
+    receiver,
+    isInbound,
+    isSwapDetailsPage,
+    tradeCid
+  } = props;
   const classes = useNarrowPendingStyles();
   const transferPreapproval = useGetTransferPreapprovalContractByContractId(requestedAssetsTxPreApproval).contract;
-  const offeredAsset = useGetAssetContractByContractId(outboundAssetCid).contract
-  const inboundTicker = isInbound? offeredAsset?.payload.assetType?.symbol : transferPreapproval?.payload.asset.assetType.symbol
-  const inboundQuantity = isInbound ? offeredAsset?.payload.amount : transferPreapproval?.payload.asset.amount
-  const outboundTicker = !isInbound ? offeredAsset?.payload.assetType.symbol : transferPreapproval?.payload.asset.assetType.symbol
-  const outboundQuantity = !isInbound ? offeredAsset?.payload.amount : transferPreapproval?.payload.asset.amount
+  const proposerAsset = useGetAssetContractByContractId(proposerAssetCid).contract
+  const proposerAssetSymbol = proposerAsset?.payload.assetType?.symbol|| "";
+  const proposerAssetAmount = proposerAsset?.payload.amount|| "";
+  const proposerAssetIsFungible = proposerAsset?.payload.assetType.fungible || false 
+  const proposerAssetIssuer = proposerAsset?.payload.assetType.issuer|| "";
+  const proposerAssetOwner = proposerAsset?.payload.owner|| "";
+
+
+  const proposerAssetReference = proposerAsset?.payload.assetType.reference as string
+
+  const receiverAssetSymbol = transferPreapproval?.payload.asset.assetType.symbol || "";
+  const receiverAssetAmount = transferPreapproval?.payload.asset.amount|| ""
+  const receiverAssetIssuer = transferPreapproval?.payload.asset.assetType.issuer || "";
+  const receiverAssetIsFungible = transferPreapproval?.payload.asset.assetType.fungible|| ""
+  const receiverAssetReference = transferPreapproval?.payload.asset.assetType.reference as string
+
+  const receiverAssetOwner = transferPreapproval?.payload.asset.owner || "";
   
+  if(!proposerAsset || !transferPreapproval){
+    return null
+  }
   const onAccept = (event: React.SyntheticEvent) => {
     event.preventDefault();
   }
@@ -100,15 +138,47 @@ export const PendingSwapRow: React.FC<PendingRowProps> = ({ outboundAssetCid, re
     event.preventDefault();
   }
 
-  const outboundAsset = useGetAssetContractByContractId(outboundAssetCid).contract
-  console.log('Asset Got', outboundAsset)
   
-  const receiver = transferPreapproval?.payload.asset.owner || ""
-  console.log('Transfer pre approval', transferPreapproval)
-  console.log('inboundTicker', inboundTicker)
-  console.log('inboundAmount', inboundQuantity)
 
-  const path = `/pending-activity?isInbound=${isInbound ? 'true' : 'false'}&templateName=${templateName}&sender=${sender}&inboundQuantity=${inboundQuantity}&inboundTicker=${inboundTicker}&sendAmount=${sendAmount}&sendTicker=${sendTicker}&outboundTicker=${outboundTicker}&outboundQuantity=${outboundQuantity}&receiver=${receiver}&issuer=${issuer}&contractId=${contractId}&isFungible=${isFungible}&outboundAssetCid=${outboundAssetCid}&requestedAssetsTxPreApproval=${requestedAssetsTxPreApproval}`
+  const queriesInput: string[][] = [
+    ['proposer', proposer],
+    ['receiver', receiver],
+    ['requestedAssetsTxPreApproval', requestedAssetsTxPreApproval],
+    ['tradeCid', tradeCid],
+    ['isInbound', `${isInbound}`],
+    ['templateName', 'swap'],
+    ['proposerAssetCid', proposerAssetCid],
+    ['receiverAssetIssuer', receiverAssetIssuer],
+    ['receiverAssetSymbol', receiverAssetSymbol],
+    ['proposerAssetSymbol', proposerAssetSymbol],
+    ['receiverAssetIsFungible', `${receiverAssetIsFungible}`],
+    ['receiverAssetOwner', receiverAssetOwner],
+    ['receiverAssetAmount', receiverAssetAmount],
+    ['receiverAssetReference', receiverAssetReference],
+    ['proposerAssetIssuer', proposerAssetIssuer],
+    ['proposerAssetAmount', proposerAssetAmount],
+    ['proposerAssetOwner', proposerAssetOwner],
+    ['proposerAssetReference', proposerAssetReference],
+    ['proposerAssetisFungible', `${proposerAssetIsFungible}`],
+
+
+   
+  ]
+  const queries = createQueriesString(queriesInput)
+  const path = `/pending-activity?` + queries
+  
+  if(proposerAssetAmount === undefined || proposerAssetSymbol === undefined || receiverAssetAmount === undefined || receiverAssetSymbol === undefined){
+    return (
+      <>
+      <Card>
+        <CardContent>
+          Error in retriving data
+        </CardContent>
+      </Card>
+      </>
+    )
+  }
+
   return (
     <>
       <Card className={classes.card}>
@@ -119,15 +189,15 @@ export const PendingSwapRow: React.FC<PendingRowProps> = ({ outboundAssetCid, re
             </Avatar>
 
             <PendingSwapRowContents
-              outboundAssetCid={outboundAssetCid}
-              requestedAssetsTxPreApproval={requestedAssetsTxPreApproval}
-              receiver={receiver} 
-              outboundQuantity={outboundQuantity} 
-              outboundTicker={outboundTicker} 
-              isInbound={isInbound} 
-              sender={sender} 
-              inboundQuantity={inboundQuantity} 
-              inboundTicker={inboundTicker} />
+              proposer={proposer}
+              receiver={receiver}
+              isInbound={isInbound}
+              isSwapDetailsPage={false}
+              proposerAssetAmount={proposerAssetAmount}
+              proposerAssetSymbol={proposerAssetSymbol}
+              receiverAssetAmount={receiverAssetAmount}
+              receiverAssetSymbol={receiverAssetSymbol}
+              />
 
             {!isMobile() && <div className={classes.actions}>
               {isInbound && <Button className={classes.button} variant='outlined' size="small" onClick={onAccept}>Accept</Button>}
