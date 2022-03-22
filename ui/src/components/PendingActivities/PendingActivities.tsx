@@ -3,10 +3,11 @@ import { useParty } from '@daml/react';
 import { ContractId } from '@daml/types';
 import React from 'react';
 import { useGetAllAssetAccounts, useGetAssetInviteRequests, useGetAssetSendRequests, useGetAssetSwapRequests } from '../../ledgerHooks/ledgerHooks';
+import { PendingAccountInvites } from '../PendingAccountInvites/PendingAccountInvites';
 import { PendingRow } from '../PendingRow/PendingRow';
 import { PendingTransfers } from '../PendingTransfers/PendingTransfers';
 
-interface PendingActivitiesPageProps {
+export interface PendingActivitiesPageProps {
   isInbound: boolean;
 }
 
@@ -107,7 +108,7 @@ export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbou
   return (
     <>
     <PendingTransfers isInbound={isInbound}/>
-      {pendingRows}
+    <PendingAccountInvites isInbound={isInbound}/>
     </>
   )
 }

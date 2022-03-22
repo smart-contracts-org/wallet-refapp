@@ -1,7 +1,7 @@
 import React from 'react';
 import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Button, Card, CardContent, Fab, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, CardContent, Fab, IconButton, LinearProgress, Typography } from '@mui/material';
 import { useGetAssetHoldingInviteByContractId, useGetAssetInviteRequests, useGetAssetTransferByContractId, useGetSingleAssetSendRequest, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
 import { useParty } from '@daml/react';
 import { usePageStyles, useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
@@ -13,18 +13,41 @@ import { AssetTransfer, Cancel_Transfer } from '@daml.js/wallet-refapp/lib/Asset
 import { ContractId } from '@daml/types';
 import { Asset } from '@daml.js/wallet-refapp';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
+import { AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
 
+
+interface Errors {
+  accept: string;
+  reject: string;
+  cancel: string;
+}
+const errors: Errors = {
+  accept: 'Error, unable to accept',
+  reject: 'Error, unable to reject',
+  cancel: 'Error, unable to cancel'
+}
+
+interface Success  {
+  accept: string,
+  reject: string,
+  cancel: string 
+}
+
+const successMessage: Success = {
+  accept: 'accepted',
+  reject: 'rejected',
+  cancel: 'canceled'
+}
 interface PendingSendDetailsPageProps {
-  contractId: any;
-  isInbound: string;
+  sender: string;
   recipient: string;
-  sendTicker: string;
-  sendAmount: string;
+  symbol: string;
   issuer: string;
-  owner: string;
-  isShareable: boolean;
+  contractId: string;
+  isInbound: string;
   isAirdroppable: boolean;
-  isFungible: boolean;
+  isShareable: boolean;
+  owner: string;
 }
 export type ActionType = 'accept' | 'reject' | 'cancel';
 
@@ -32,13 +55,12 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
   const {
     contractId,
     recipient,
-    sendTicker,
-    sendAmount,
     isInbound,
-    isAirdroppable,
-    isFungible,
-    isShareable,
+    sender, 
+    symbol,
     issuer,
+    isAirdroppable,
+    isShareable,
     owner
   } = props;
 
@@ -49,51 +71,47 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
   const [error, setError] = React.useState<'accept'|'reject'|'cancel'|undefined>();
 
   //TODO: can we use something else besdies contract
-  const contract = useGetAssetHoldingInviteByContractId(contractId);
-  console.log('sendcontract', contract);
-
+  // TODO: This is merely used to check if the contract exists
+  // If someone copy and pastes a URL with an invalid contractId, 
+  // we can error out here, but the below is not necessary
+  // const {loading, contract: accountInviteContract} = useGetAssetHoldingInviteByContractId(contractId);
+  
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();
-  
-  if(!contract?.contract){
-    return (
-      <Card sx={{width: '100%'}}>
-        <CardContent>
-          Contract doesn't exist
-        </CardContent>
-      </Card>
-    )
-  }
 
-  interface Errors {
-    accept: string;
-    reject: string;
-    cancel: string;
-  }
-  const errors: Errors = {
-    accept: 'Error, unable to accept',
-    reject: 'Error, unable to reject',
-    cancel: 'Error, unable to cancel'
-  }
-
-  interface Success  {
-    accept: string,
-    reject: string,
-    cancel: string 
-  }
+  // if(loading){
+  //   <LinearProgress/>
+  // }
   
-  const successMessage: Success = {
-    accept: 'accepted',
-    reject: 'rejected',
-    cancel: 'canceled'
-  }
+  // if(!accountInviteContract){
+  //   return (
+  //     <Card sx={{width: '100%'}}>
+  //       <CardContent>
+  //        This account invite Contract doesn't exist
+  //       </CardContent>
+  //     </Card>
+  //   )
+  // }
+  // assetType
+  
+  // const {
+  //   symbol, 
+  //   reference, 
+  //   fungible, 
+  //   issuer
+  // } = accountInviteContract.payload.account.assetType;
+  // // account attributes
+  // const { 
+  //   airdroppable, 
+  //   resharable, 
+  //   owner
+  // } = accountInviteContract.payload.account
+
+  // const contractCid = accountInviteContract.contractId
   
   const onClick = async(action: ActionType) => {
-    if(!contract?.contract?.contractId){
-      return;
-    }
     setLoading(true);
-    const result = await ledgerHooks.exerciseAssetHolderInvite(contract.contract.contractId as ContractId<Asset.Accept_Transfer>, action);
+    const result = await ledgerHooks.exerciseAssetHolderInvite(contractId as ContractId<AssetHoldingAccountProposal>, action);
     if(result.isOk){
       setSuccess(action);
       setError(undefined);
@@ -115,7 +133,7 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
         <IconButton color='primary'>
           <ArrowBackIosNewIcon />
         </IconButton>
-        {isMobile() && <Typography color='primary'>Accounts / {sendTicker}</Typography>
+        {isMobile() && <Typography color='primary'>Accounts / {symbol}</Typography>
         }
       </div>}
       <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
@@ -130,16 +148,16 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
                 {isInbound === 'true' ? 'From:' : 'To:'}
               </Typography>
               <Typography variant='caption' color='primary'>
-                {recipient}
+                {isInbound? recipient : sender}
               </Typography>
             </div>
              <Avatar className={classes.avatar}>
-              {sendTicker?.[0] || 'U'}
+              {symbol[0] || 'U'}
             </Avatar>
             <Typography>
-              {sendTicker}
+              {symbol}
             </Typography>
-             <AssetDetails issuer={issuer} owner={owner} isAirdroppable={isAirdroppable} isFungible={isFungible} isShareable={isShareable} quantity={sendAmount} ticker={sendTicker || '[Ticker]'} />
+             <AssetDetails  issuer={issuer} owner={owner} isAirdroppable={isAirdroppable} isShareable={isShareable} ticker={symbol} />
           </CardContent>
           {
             success && !!successMessage[success] && <Card sx={{margin: 1}}><CardContent>{successMessage[success]}</CardContent></Card>

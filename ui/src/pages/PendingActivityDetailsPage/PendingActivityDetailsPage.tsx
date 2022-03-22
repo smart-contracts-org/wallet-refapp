@@ -104,34 +104,19 @@ export const PendingActivityDetailsPage: React.FC = () => {
   const isFungible = query.get('isFungible') === 'true';
   const isAirdroppable = query.get('isAirdroppable') === 'true'
   const outboundQuantity = query.get('outboundQuantity')
+  
   const sender = query.get('sender');
   const symbol = query.get('symbol');
   const amount = query.get('amount');
   const owner = query.get('owner');
 
-  const props = {
-    sender, 
-    inboundQuantity,
-    inboundTicker,
-    outboundTicker,
-    outboundQuantity,
-    issuer,
-    isFungible,
-    isAirdroppable,
-    isShareable,
-    sendAmount,
-    sendTicker,
-    contractId,
-    owner: myPartyId,
-    isInbound, 
-    recipient
-  }
   console.log(symbol, amount,owner)
   
   if(actionLabel === 'send' &&
     symbol !== null &&
     amount !== null &&
-    owner !== null
+    owner !== null && 
+    contractId !== null
   ){
     return <PendingSendDetailsPage
     contractId={contractId}
@@ -142,14 +127,24 @@ export const PendingActivityDetailsPage: React.FC = () => {
     isFungible={isFungible}
     issuer={issuer}
     owner={owner}
-
-
-    
     />
   }
-  if(actionLabel ==='assetInvite'){
+  if(actionLabel ==='accountInvite' &&
+    sender !== null &&
+    symbol !== null &&
+    owner !== null && 
+    contractId !== null
+  ){
     return <PendingAssetInviteDetailsPage
-    {...props}
+      sender={sender}
+      recipient={recipient}
+      isInbound={isInbound}
+      symbol={symbol}
+      issuer={issuer}
+      isAirdroppable={isAirdroppable}
+      isShareable={isShareable}
+      owner={owner}
+      contractId={contractId}
     />
   }
   if(actionLabel ==='swap'){
@@ -158,7 +153,6 @@ export const PendingActivityDetailsPage: React.FC = () => {
   return (
     <Card sx={{margin: 1, width: '100%'}}>
       <CardContent>
-
       Page doesn't exist
       </CardContent>
     </Card>

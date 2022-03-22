@@ -35,7 +35,7 @@ const successMessage: Success = {
   cancel: 'canceled'
 }
 interface PendingSendDetailsPageProps {
-  contractId: any;
+  contractId: string;
   isInbound: string;
   recipient: string;
   symbol: string;
