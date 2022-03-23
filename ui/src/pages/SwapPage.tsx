@@ -1,7 +1,7 @@
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Card, CardContent, IconButton, Typography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, IconButton, LinearProgress, Typography } from '@mui/material';
 import { SwapForm } from '../components/SwapForm/SwapForm';
 import { usePageStyles } from './AssetProfilePage';
 import { isMobile } from '../platform/platform';
@@ -9,7 +9,6 @@ import { enableFabBack } from './IssueAirdropPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { useGetAssetAccountByKey, useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
-import { getAssetSum } from '../utils/getAssetSum';
 import { useParty } from '@daml/react';
 
 
@@ -19,19 +18,13 @@ export const SwapPage: React.FC = () => {
   
   const reference = ""
   const party = useParty();
-  const contractId = query.get('contractId');
   const issuer = query.get('issuer') || ""
   const symbol = query.get('ticker') || ""
   const isFungible = query.get('isFungible') === 'true'
   // get your owned asset account
-  const { contract: assetAccountContract, loading: assetAccountContractLoading} = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference: ''})
-  const isShareable = assetAccountContract?.payload.resharable
-  const isAirdroppable= assetAccountContract?.payload.airdroppable
-  
-  const { loading: assetContractsLoading, contracts: assetContracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
-  const amount = getAssetSum(assetContracts);
+  const { loading: assetAccountContractLoading} = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference: ''})
 
-
+  const { loading: assetContractsLoading} = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
 
 
   const classes = usePageStyles();
@@ -40,6 +33,11 @@ export const SwapPage: React.FC = () => {
   }
   // TODO: 
   // Fetch token quantity
+  if(assetContractsLoading || assetAccountContractLoading){
+    return (
+      <LinearProgress/>
+    )
+  }
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer} onClick={onBack}>

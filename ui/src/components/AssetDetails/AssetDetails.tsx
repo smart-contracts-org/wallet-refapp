@@ -3,7 +3,6 @@ import React from 'react';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { demoPartyId } from '../TopAppBar/TopAppBar';
-import { useGetAssetAccountByKey } from '../../ledgerHooks/ledgerHooks';
 
 const useStyles = makeStyles((theme: Theme) => ({
   row: {

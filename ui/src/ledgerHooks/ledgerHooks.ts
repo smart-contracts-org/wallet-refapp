@@ -3,7 +3,7 @@ import { Account, Asset } from '@daml.js/wallet-refapp';
 import { useStreamQueries } from '@daml/react';
 import { Choice, ContractId } from '@daml/types';
 import { Accept_Transfer, AssetTransfer, Cancel_Transfer, Reject_Transfer } from '@daml.js/wallet-refapp/lib/Asset';
-import { AssetHoldingAccount, AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
+import { AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
 import { ActionType } from '../pages/PendingAssetInviteDetailsPage';
 import { Archive } from '@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662/lib/DA/Internal/Template';
 import { makeDamlSet } from '../utils/common';
@@ -60,12 +60,12 @@ interface GetSingleAssetSendRequest {
   issuer: string;
 }
 
-interface useGetAssetTransferByContractId {
+interface useGetAssetTransferByContractIdArgs {
   contractId: ContractId<AssetTransfer>;
 }
 
 
-export const useGetAssetTransferByContractId = (arg: useGetAssetTransferByContractId) => {
+export const useGetAssetTransferByContractId = (arg: useGetAssetTransferByContractIdArgs) => {
   const contract = useFetch(Asset.AssetTransfer, arg.contractId)
   return contract
 }
@@ -154,12 +154,6 @@ interface SendAsset {
   assetCids: any
 }
 
-interface CancelAssetTransfer {
-  assetTransferCid: ContractId<Asset.Cancel_Transfer>;
-  amount: any;
-  recipient: any;
-  assetCids: any
-}
 
 export const useLedgerHooks = () => {
   const ledger = useLedger();

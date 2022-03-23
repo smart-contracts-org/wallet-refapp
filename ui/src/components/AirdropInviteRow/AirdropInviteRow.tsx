@@ -1,4 +1,4 @@
-import { Paper, TextField, Typography } from '@mui/material';
+import {  Paper, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -63,6 +63,9 @@ export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = (props) => {
   const ledgerHooks = useLedgerHooks();
 
   const onSubmit = async () => {
+    if(amount.length === 0){
+      setError(true)
+    }
     setLoading(true);
     const result = await ledgerHooks.exerciseAirdrop({ assetType: {issuer, symbol, reference, fungible}, amount, owner })
     if(result.isOk){
@@ -86,6 +89,7 @@ export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = (props) => {
         {isAccepted? 'Accepted' : 'Pending'}
       </Typography>
       <TextField
+      error={hasError}
         margin="none"
         id="quantity"
         label="Amount"
@@ -109,7 +113,8 @@ export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = (props) => {
         className={classes.button}
         onClick={onSubmit}
       >
-        Send
+        
+        {hasError ? 'Error' : isSuccessful? 'done' : 'send'}
       </LoadingButton>
     </Paper>
   )

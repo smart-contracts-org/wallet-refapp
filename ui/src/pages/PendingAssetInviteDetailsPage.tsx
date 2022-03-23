@@ -1,19 +1,16 @@
 import React from 'react';
 import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Box, Button, Card, CardContent, Fab, IconButton, LinearProgress, Typography } from '@mui/material';
-import { useGetAssetHoldingInviteByContractId, useGetAssetInviteRequests, useGetAssetTransferByContractId, useGetSingleAssetSendRequest, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
-import { useParty } from '@daml/react';
-import { usePageStyles, useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
+import { Avatar, Box, Card, CardContent, IconButton, LinearProgress, Typography } from '@mui/material';
+import { useGetAssetHoldingInviteByContractId,  useLedgerHooks } from '../ledgerHooks/ledgerHooks';
+import { usePageStyles } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
-import { SwapDetails } from '../components/SwapDetails/SwapDetails';
 import { isMobile } from '../platform/platform';
 import { enableFabBack } from './IssueAirdropPage';
-import { AssetTransfer, Cancel_Transfer } from '@daml.js/wallet-refapp/lib/Asset';
 import { ContractId } from '@daml/types';
-import { Asset } from '@daml.js/wallet-refapp';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 import { AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
+import { LoadingButton } from '@mui/lab';
 
 
 interface Errors {
@@ -43,7 +40,7 @@ interface PendingSendDetailsPageProps {
   recipient: string;
   symbol: string;
   issuer: string;
-  contractId: string;
+  contractId: ContractId<AssetHoldingAccountProposal>;
   isInbound: string;
   isAirdroppable: boolean;
   isShareable: boolean;
@@ -66,7 +63,7 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
 
   //TODO grab contract details
   const nav = useNavigate();
-  const [isLoading, setLoading] = React.useState(false);
+  const [actionLoading, setLoadingAction] = React.useState<string| undefined>(undefined);
   const [success, setSuccess] = React.useState<'accept'|'reject'|'cancel'|undefined>();
   const [error, setError] = React.useState<'accept'|'reject'|'cancel'|undefined>();
 
@@ -74,52 +71,38 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
   // TODO: This is merely used to check if the contract exists
   // If someone copy and pastes a URL with an invalid contractId, 
   // we can error out here, but the below is not necessary
-  // const {loading, contract: accountInviteContract} = useGetAssetHoldingInviteByContractId(contractId);
+  const {loading, contract: accountInviteContract} = useGetAssetHoldingInviteByContractId(contractId);
   
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();
 
-  // if(loading){
-  //   <LinearProgress/>
-  // }
+  if(loading){
+    <LinearProgress/>
+  }
   
-  // if(!accountInviteContract){
-  //   return (
-  //     <Card sx={{width: '100%'}}>
-  //       <CardContent>
-  //        This account invite Contract doesn't exist
-  //       </CardContent>
-  //     </Card>
-  //   )
-  // }
-  // assetType
-  
-  // const {
-  //   symbol, 
-  //   reference, 
-  //   fungible, 
-  //   issuer
-  // } = accountInviteContract.payload.account.assetType;
-  // // account attributes
-  // const { 
-  //   airdroppable, 
-  //   resharable, 
-  //   owner
-  // } = accountInviteContract.payload.account
+  if(!accountInviteContract){
+    return (
+      <Card sx={{width: '100%'}}>
+        <CardContent>
+         This account invite Contract doesn't exist
+        </CardContent>
+      </Card>
+    )
+  }
 
-  // const contractCid = accountInviteContract.contractId
+
   
   const onClick = async(action: ActionType) => {
-    setLoading(true);
+    setLoadingAction(action);
     const result = await ledgerHooks.exerciseAssetHolderInvite(contractId as ContractId<AssetHoldingAccountProposal>, action);
     if(result.isOk){
       setSuccess(action);
       setError(undefined);
-      setLoading(false);
+      setLoadingAction(undefined);
     } else {
       setError(action)
       setSuccess(undefined);
-      setLoading(false);
+      setLoadingAction(undefined);
     }
   }
 
@@ -168,15 +151,15 @@ export const PendingAssetInviteDetailsPage: React.FC<PendingSendDetailsPageProps
           
   
           {(success === undefined )&& <div className={classes.actions}>
-            {isInbound === 'true' && <Button onClick={() =>onClick('accept')} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
+            {isInbound === 'true' && <LoadingButton  loading={actionLoading === 'accept'}  onClick={() =>onClick('accept')} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
               Accept
-            </Button>}
-            {isInbound === 'true' && <Button onClick={() =>onClick('reject')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
+            </LoadingButton>}
+            {isInbound === 'true' && <LoadingButton loading={actionLoading === 'reject'}   onClick={() =>onClick('reject')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Reject
-          </Button>}
-          {isInbound === 'false' && success !== 'cancel' && <Button disabled={success==='cancel'} onClick={() =>onClick('cancel')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
+          </LoadingButton>}
+          {isInbound === 'false' && success !== 'cancel' && <LoadingButton loading={actionLoading === 'cacenl'}   disabled={success==='cancel'} onClick={() =>onClick('cancel')} fullWidth sx={{ marginRight: 1 }} variant='outlined'>
               Cancel
-          </Button>}
+          </LoadingButton>}
           </div>}
         </Card>
       </Box>

@@ -1,10 +1,8 @@
 import React from 'react';
-import { Card, CardContent, LinearProgress } from '@mui/material';
+import {  LinearProgress } from '@mui/material';
 import { PendingActivitiesPageProps } from '../PendingActivities/PendingActivities';
 import { useGetAssetInviteRequests } from '../../ledgerHooks/ledgerHooks';
 import { PendingAccountInviteRow } from '../PendingAccountInviteRow/PendingAccountInviteRow';
-
-
 
 export const PendingAccountInvites: React.FC<PendingActivitiesPageProps> = (props) => {
   const {isInbound} = props;
@@ -42,7 +40,7 @@ export const PendingAccountInvites: React.FC<PendingActivitiesPageProps> = (prop
   }
 
     return (
-      <PendingAccountInviteRow {...pendingAccountInviteRowProps} />
+      <PendingAccountInviteRow key={accountInviteCid} {...pendingAccountInviteRowProps} />
     )
   })
   
@@ -51,11 +49,7 @@ export const PendingAccountInvites: React.FC<PendingActivitiesPageProps> = (prop
   }
   if(contracts.length === 0){
     return (
-      <Card sx={{margin: 1, width: '100%'}}>
-        <CardContent>
-          No pending Account Invites
-        </CardContent>
-      </Card>
+      null
     )
   }
   

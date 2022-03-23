@@ -4,9 +4,9 @@ import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import { Link } from "react-router-dom";
 import { SendRowContents } from '../SendRowContents/SendRowContents';
-import { Avatar, Box, CardActionArea, IconButton, Typography } from '@mui/material';
+import { Avatar, CardActionArea } from '@mui/material';
 import { isMobile } from '../../platform/platform';
-import { useNarrowPendingStyles } from '../PendingRowContents/PendingRowContents';
+import { useNarrowPendingStyles } from '../PendingStyles/PendingStyles';
 import { createQueriesString } from '../../utils/createQueriesString';
 
 export interface PendingTransferRowProps {

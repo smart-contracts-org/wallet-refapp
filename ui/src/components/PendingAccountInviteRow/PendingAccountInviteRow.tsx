@@ -1,17 +1,15 @@
 import React from 'react';
 import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
-import SendIcon from '@mui/icons-material/Send';
 import { Link } from "react-router-dom";
-import { SendRowContents } from '../SendRowContents/SendRowContents';
-import { Avatar, Box, CardActionArea, IconButton, Typography } from '@mui/material';
+import { Avatar, CardActionArea} from '@mui/material';
 import { isMobile } from '../../platform/platform';
-import { useNarrowPendingStyles } from '../PendingRowContents/PendingRowContents';
 import { createQueriesString } from '../../utils/createQueriesString';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { PendingAssetInviteRowContent } from '../PendingAssetInviteRowContent/PendingAssetInviteRowContent';
+import { useNarrowPendingStyles } from '../PendingStyles/PendingStyles';
 
-export interface PendingAccountInviteRow {
+export interface PendingAccountInviteRowProps {
   sender: string;
   receiver: string;
   isNarrow: boolean;
@@ -28,7 +26,7 @@ export interface PendingAccountInviteRow {
 
 }
 
-export const PendingAccountInviteRow: React.FC<PendingAccountInviteRow> = (props) => {
+export const PendingAccountInviteRow: React.FC<PendingAccountInviteRowProps> = (props) => {
   const classes = useNarrowPendingStyles();
   const {
     isAirdroppable, 
@@ -41,7 +39,6 @@ export const PendingAccountInviteRow: React.FC<PendingAccountInviteRow> = (props
     symbol, 
     sender, 
     receiver, 
-    isNarrow, 
     isInbound
   } = props;
   console.log(props)
