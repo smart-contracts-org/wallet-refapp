@@ -47,7 +47,6 @@ export const AccountInvitePage: React.FC = () => {
         </Card>
       </Box>
       {enableFabBack &&  isMobile() && <FloatingBackButton/>}
-
     </div>
   )
 }
