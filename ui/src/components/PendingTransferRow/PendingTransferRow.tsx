@@ -28,16 +28,7 @@ export const PendingTransferRow: React.FC<PendingTransferRowProps> = (props) => 
   const classes = useNarrowPendingStyles();
   const {owner, isFungible, reference, transferCid, issuer, amount, symbol, sender, receiver, isNarrow, isInbound} = props;
   console.log(props)
-  const onAccept = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-  }
-
-  const onCancel = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-  }
-  const onReject = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-  }
+  
   const quriesInput = [
     ['sender', sender],
     ['receiver', receiver],

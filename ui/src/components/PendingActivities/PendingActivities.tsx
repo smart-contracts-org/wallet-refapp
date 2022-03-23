@@ -7,9 +7,6 @@ export interface PendingActivitiesPageProps {
   isInbound: boolean;
 }
 
-// the key is the assetTemplate
-// mapping it to a string
-
 
 export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbound}) => { 
   return (
