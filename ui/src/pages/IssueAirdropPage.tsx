@@ -58,7 +58,7 @@ export const IssueAirdropPage: React.FC = () => {
             <Avatar className={classes.avatar}>
               {symbol[0] || 'undefined'}
             </Avatar>
-            <Box sx={{ marginBottom: 1, display: 'flex', flexDirection: 'row', width: '100%' }}>
+            <Box sx={{ marginTop: 1, marginBottom: 3, display: 'flex', flexDirection: 'row', width: '100%' }}>
               <Button sx={{ marginRight: 0.5 }} onClick={() => { onButtonClick(1) }} fullWidth variant={index === 1 ? 'contained' : 'outlined'} >Issue to Self</Button>
               <Button sx={{ marginLeft: 0.5 }} onClick={() => { onButtonClick(2) }} fullWidth variant={index === 2 ? 'contained' : 'outlined'}>Airdrop</Button>
             </Box>

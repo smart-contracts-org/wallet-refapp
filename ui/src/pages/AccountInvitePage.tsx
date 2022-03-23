@@ -10,7 +10,7 @@ import { isMobile } from '../platform/platform';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 
 
-export const AssetInvitePage: React.FC = () => {
+export const AccountInvitePage: React.FC = () => {
   const nav = useNavigate();
   const classes = usePageStyles();
   const query = useQuery();
@@ -22,8 +22,7 @@ export const AssetInvitePage: React.FC = () => {
   const onBack = () => {
     nav(-1)
   }
-  // TODO: 
-  // Fetch token quantity
+  
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer}>
@@ -48,7 +47,6 @@ export const AssetInvitePage: React.FC = () => {
         </Card>
       </Box>
       {enableFabBack &&  isMobile() && <FloatingBackButton/>}
-
     </div>
   )
 }

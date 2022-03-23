@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate,} from 'react-router-dom';
 import Credentials from '../Credentials';
-import { AssetInvitePage } from './AssetInvitePage';
+import { AccountInvitePage } from './AccountInvitePage';
 import { AssetProfilePage } from './AssetProfilePage';
 import { CreateAssetAccountPage } from './CreateAssetAccountPage';
 import { IssueAirdropPage } from './IssueAirdropPage';
@@ -30,7 +30,7 @@ export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
       } />
       <Route path='/issue' element={<IssueAirdropPage />
       } />
-      <Route path='/invite' element={<AssetInvitePage />
+      <Route path='/invite' element={<AccountInvitePage />
       } />
       
       <Route path='/login' element={<LoginPage onLogin={setCredentials} />
