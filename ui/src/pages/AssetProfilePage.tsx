@@ -1,5 +1,5 @@
 import React from 'react';
-import {  useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
@@ -48,7 +48,7 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     justifySelf: 'center'
   },
   card: {
-    margin: theme.spacing(1), 
+    margin: theme.spacing(1),
   },
   avatar: {
     margin: theme.spacing(1)
@@ -77,7 +77,7 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
   },
   issueButton: {
     color: chipColors.issuer
-  }, 
+  },
   issuerWarning: {
     // backgroundColor: chipColors.issuer, 
   }
@@ -90,32 +90,32 @@ export const AssetProfilePage: React.FC = () => {
   const issuer = query.get('issuer') || ""
   const symbol = query.get('ticker') || ""
   const isFungible = query.get('isFungible') === 'true'
-  const { contract: assetAccountContract} = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference: ''})
+  const { contract: assetAccountContract } = useGetAssetAccountByKey({ issuer, symbol, fungible: isFungible, reference: '' })
   const contractId = query.get('contractId');
   const isShareable = assetAccountContract?.payload.resharable
-  const isAirdroppable= assetAccountContract?.payload.airdroppable
+  const isAirdroppable = assetAccountContract?.payload.airdroppable
   const party = useParty();
   const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
   const amount = getAssetSum(contracts);
   const formattedSum = numberWithCommas(amount)
   const classes = usePageStyles();
-  const attributesPath = `?issuer=${issuer}&ticker=${symbol}&isFungible=${isFungible}&isShareable=${isShareable }&isAirdroppable=${isAirdroppable}&owner=${party}&contractId=${contractId}&reference=${reference}`
+  const attributesPath = `?issuer=${issuer}&ticker=${symbol}&isFungible=${isFungible}&isShareable=${isShareable}&isAirdroppable=${isAirdroppable}&owner=${party}&contractId=${contractId}&reference=${reference}`
   const sendPath = `/send${attributesPath}`
   const swapPath = `/swap${attributesPath}`
   const assetInvitePath = `/invite${attributesPath}`
   const issueAirdropPath = `/issue${attributesPath}`
-  
+
 
   const onBack = () => {
     nav(-1)
   }
-  
+
   if (loading) {
     return (
       <LinearProgress />
     )
   }
-  
+
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer} onClick={onBack}>
@@ -175,20 +175,20 @@ export const AssetProfilePage: React.FC = () => {
               </Typography>
             </div>
           </div>
-          {amount === 0 && issuer === party && <Card className={classes.issuerWarning} sx={{width:'100%', marginBottom: 1}} >
-            <CardContent sx={{display: 'flex', alignItems: 'center'}}>
-            <WarningIcon sx={{marginRight: 1}}/>
-            <Typography variant='body2'sx={{opacity: '100%'}}>
-            You have {amount} amount. Click "issue / airdrop" to issue assets.
+          {amount === 0 && issuer === party && <Card className={classes.issuerWarning} sx={{ width: '100%', marginBottom: 1 }} >
+            <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
+              <WarningIcon sx={{ marginRight: 1 }} />
+              <Typography variant='body2' sx={{ opacity: '100%' }}>
+                You have {amount} amount. Click "issue / airdrop" to issue assets.
               </Typography>
             </CardContent>
           </Card>}
-          <AssetDetails 
-          isShareable={!!isShareable} 
-          isAirdroppable={!!isAirdroppable} 
-          owner={party}  
-          issuer={issuer || "issuer"}  
-          isFungible={isFungible} quantity={formattedSum} ticker={symbol || 'Ticker'} />
+          <AssetDetails
+            isShareable={!!isShareable}
+            isAirdroppable={!!isAirdroppable}
+            owner={party}
+            issuer={issuer || "issuer"}
+            isFungible={isFungible} quantity={formattedSum} ticker={symbol || 'Ticker'} />
         </CardContent>
       </Card>
 
