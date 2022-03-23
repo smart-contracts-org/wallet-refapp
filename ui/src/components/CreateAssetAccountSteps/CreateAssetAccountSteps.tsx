@@ -7,10 +7,7 @@ import Typography from '@mui/material/Typography';
 import { CreateAccountForm } from '../CreateAccountForm/CreateAccountForm';
 import { isMobile } from '../../platform/platform';
 import { Card, CardContent, Paper } from '@mui/material';
-import { IssueAirdropPopupContent } from '../IssueAirdropPopupContent/IssueAirdropPopupContent';
-import { IssueLater } from '../IssueLater/IssueLater';
 import { CreateAssetAccountSuccess } from '../CreateAssetAccountSuccess/CreateAssetAccountSuccess';
-import { CreateAssetWorkflowDone } from '../CreateAssetWorkflowDone/CreateAssetWorkflowDone';
 
 
 const steps = ['Create Asset Account', 'Issue Assets'];
@@ -97,17 +94,6 @@ export const CreateAssetAccountSteps: React.FC = () => {
           onNextClick={() => {setDisplayandActiveSteps(displayedStep+1, activeStep)}} 
           onDoneClick={() => setDisplayandActiveSteps(4,0)} />
         }
-
-        {displayedStep === 2 && (
-          <IssueAirdropPopupContent
-            ticker={'ETH'}
-            cancelText={'Issue Later'}
-            issueLater= {() => setDisplayandActiveSteps(4,0)}
-            handleClose={() => setDisplayandActiveSteps(2,0)}
-            onDoneClick={() => setDisplayandActiveSteps(3,2)}
-            onNext={() => setDisplayandActiveSteps(2,2)} />)}
-        {displayedStep === 3 && <CreateAssetWorkflowDone />}
-        {displayedStep === 4 && <IssueLater />}
       </Paper>
     </Box>
   );
