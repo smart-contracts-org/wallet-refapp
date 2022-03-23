@@ -144,3 +144,13 @@ TBD
 // ouputs target amoutn for swap
 
 // accont holding contract create pre-approve contract
+
+# Landing Page
+Welcome to the DA wallet refApp. The app illustrates how Daml smart contracts can interact together. 
+
+# how the templates work together
+First start by creating an AssetHoldingAccount, the purpose of this template is to define the assetType it wil be associated with. Similar to a bank account. 
+
+Once created, you can issue
+
+To get started, you can create your first AssetAccount template by going to "Create" 
