@@ -40,6 +40,25 @@ template AssetHoldingAccount with
     key (assetType, owner) : (AssetType, Party)
     maintainer key._1.issuer
 
+    -- This function validates whether the list of input assets can be merged and then split for use in
+    -- Merge_Split, Create_Transfers and Create_Trade choices.
+    -- If the assets can be merged and the total amount is sufficient to split it into outputAmounts, then
+    -- the function returns the total amount of input assets. Otherwise the action fails.
+    let
+      validateTxInputs: [ContractId Asset] -> [Decimal] -> Update Decimal
+      validateTxInputs assetCids outputAmounts = do
+        totAssetAmount <- sum . map (\x -> x.amount) <$> forA assetCids \assetCid -> do
+          asset <- fetch assetCid
+          assertMsg "Asset type mismatch between asset and account" $
+            asset.assetType == assetType
+          assertMsg "Owner mismatch between asset and account" $
+            asset.owner == owner
+          archive assetCid
+          return asset
+        assertMsg "Insufficient funds passed to create all output assets" $
+          totAssetAmount >= sum outputAmounts
+        return totAssetAmount
+
     -- Send an invite for a party to create AssetHoldingAccount for this asset type.
     nonconsuming choice Invite_New_Asset_Holder : ContractId AssetHoldingAccountProposal
       with
@@ -68,7 +87,8 @@ template AssetHoldingAccount with
           observers = Set.empty
 
     -- This choice consolidates the input set of assets in the account and from the total amount
-    -- creates new set of Asset contract in the desired input amounts plus one more Asset with the remaining amount
+    -- creates new set of Asset contracts in the desired input amounts plus one more Asset with the remaining amount
+    -- The purpose is to create Asset contracts in desired denomination from the list of assets in the account
     nonconsuming choice Merge_Split : [ContractId Asset]
       with
         -- The list of assets to consolidate
@@ -79,16 +99,7 @@ template AssetHoldingAccount with
       do
         assertMsg "Non fungible assets cannot be merged" $
           assetType.fungible
-        totAssetAmount <- sum . map (\x -> x.amount) <$> forA assetCids \assetCid -> do
-          asset <- fetch assetCid
-          assertMsg "Asset type mismatch between asset and account" $
-            asset.assetType == assetType
-          assertMsg "Owner mismatch between asset and account" $
-            asset.owner == owner
-          archive assetCid
-          return asset
-        assertMsg "Insufficient funds passed to create all output assets" $
-          totAssetAmount >= sum outputAmounts
+        totAssetAmount <- validateTxInputs assetCids outputAmounts
         let 
           createOutputAssets assetsList amt = do
             assertMsg "Each output asset amount must be positive" $
@@ -162,16 +173,7 @@ template AssetHoldingAccount with
         let (txAmounts, txRecipients) = unzip transfers
         assertMsg "Non fungible assets must be transferred one at a time and the amount of non fungible asset must be 1.0" $
           assetType.fungible || (L.length assetCids==1 && L.length transfers==1 && L.head txAmounts==1.0)
-        totAssetAmount <- sum . map (\x -> x.amount) <$> forA assetCids \assetCid -> do
-          asset <- fetch assetCid
-          assertMsg "Asset type mismatch between asset and account" $
-            asset.assetType == assetType
-          assertMsg "Owner mismatch between asset and account" $
-            asset.owner == owner
-          archive assetCid
-          return asset
-        assertMsg "Insufficient funds passed to create transfers" $
-          totAssetAmount >= sum txAmounts
+        totAssetAmount <- validateTxInputs assetCids txAmounts
         forA_ transfers (\tx -> do
           assertMsg "Each transfer amount must be positive" $
             tx._1 > 0.0
@@ -218,21 +220,14 @@ template AssetHoldingAccount with
       do
         assertMsg "Non fungible assets must be traded one at a time" $
           assetType.fungible || L.length assetCids==1
-        totAssetAmount <- sum . map (\x -> x.amount) <$> forA assetCids \assetCid -> do
-          asset <- fetch assetCid
-          assertMsg "Asset type mismatch between asset and account" $
-            asset.assetType == assetType
-          assertMsg "Owner mismatch between asset and account" $
-            asset.owner == owner
-          archive assetCid
-          return asset
-        assertMsg "Insufficient funds passed to create the trade" $
-          totAssetAmount >= offeredAssetAmount
-        offeredAsset <- create Asset with
-          assetType
-          owner
-          amount = offeredAssetAmount
-          observers = Set.fromList [requestedAsset.owner]
+        totAssetAmount <- validateTxInputs assetCids [offeredAssetAmount]
+        offeredAssetCid <- create AssetInSwap with
+          asset = Asset with
+            assetType
+            owner
+            amount = offeredAssetAmount
+            observers = Set.empty
+          receiver = requestedAsset.owner
         when (totAssetAmount > offeredAssetAmount) do
           create Asset with
             assetType
@@ -240,14 +235,14 @@ template AssetHoldingAccount with
             amount = (totAssetAmount - offeredAssetAmount)
             observers = Set.empty
           return ()
-        requestedAssetsTxPreApproval <- 
+        requestedAssetsTxPreApprovalCid <- 
           exerciseByKey @AssetHoldingAccount (requestedAsset.assetType, owner) Preapprove_Transfer_In with 
             asset = requestedAsset
         create Trade with
           proposer = owner
           receiver = requestedAsset.owner
-          offeredAsset 
-          requestedAssetsTxPreApproval
+          offeredAssetCid 
+          requestedAssetsTxPreApprovalCid
 
     -- This choice creates a pre-approval for incoming transfer, which gives the transfer originator
     -- the authority to deposit transfer asset to this account

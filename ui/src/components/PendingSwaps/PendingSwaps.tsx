@@ -1,4 +1,4 @@
-import { Asset } from '@daml.js/wallet-refapp';
+import { AssetInSwap } from '@daml.js/wallet-refapp/lib/Trade';
 import { ContractId } from '@daml/types';
 import {   LinearProgress } from '@mui/material';
 import React from 'react'; 
@@ -11,7 +11,7 @@ export const PendingSwaps: React.FC<PendingActivitiesPageProps> = (props) => {
   const {isInbound} = props;
   const {loading, contracts} = useGetAssetSwapRequests(isInbound)
 
-  
+  console.log(contracts)
   if(loading){
     return <LinearProgress/>
   }
@@ -22,18 +22,18 @@ export const PendingSwaps: React.FC<PendingActivitiesPageProps> = (props) => {
     const proposer = contract.payload.proposer;
     const receiver = contract.payload.receiver;
     const tradeCid = contract.contractId;
-    const proposerAssetCid = contract.payload.offeredAsset as ContractId<Asset.Asset>;
-    
+    const proposerAssetCid = contract.payload.offeredAssetCid as ContractId<AssetInSwap>;
+    console.log('proposerAssetCid',proposerAssetCid)
     // TODO: add to documentation
     // the proposer creates a PreApproval proposal contract, on which the
     // swap receiver needs to accept / reject
-    const requestedAssetsTxPreApproval = contract.payload.requestedAssetsTxPreApproval;
+    const requestedAssetsTxPreApprovalCid = contract.payload.requestedAssetsTxPreApprovalCid;
 
     const pendingSwapRowProps = {
       proposer,
       receiver,
       proposerAssetCid,
-      requestedAssetsTxPreApproval,
+      requestedAssetsTxPreApprovalCid,
       isInbound,
       tradeCid
     }

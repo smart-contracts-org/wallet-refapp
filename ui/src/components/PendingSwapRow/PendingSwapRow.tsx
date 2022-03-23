@@ -8,11 +8,10 @@ import { Link } from "react-router-dom";
 import { Avatar, CardActionArea, CardContent } from '@mui/material';
 import { PendingSwapRowContents } from '../PendingSwapRowContents/PendingSwapRowContents';
 import { isMobile } from '../../platform/platform';
-import { useGetAssetContractByContractId, useGetTransferPreapprovalContractByContractId } from '../../ledgerHooks/ledgerHooks';
+import {  useGetAssetInSwapContractByContractId, useGetTransferPreapprovalContractByContractId } from '../../ledgerHooks/ledgerHooks';
 import { ContractId } from '@daml/types';
-import { TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
+import { AssetInSwap, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
 import { createQueriesString } from '../../utils/createQueriesString';
-import { Asset } from '@daml.js/wallet-refapp';
 
 export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   card: {
@@ -85,8 +84,8 @@ export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
 interface PendingSwapRowProps {
   proposer: string;
   receiver: string;
-  requestedAssetsTxPreApproval: ContractId<TransferPreApproval>;
-  proposerAssetCid: ContractId<Asset.Asset>;
+  requestedAssetsTxPreApprovalCid:  ContractId<TransferPreApproval>;
+  proposerAssetCid: ContractId<AssetInSwap>;
   isInbound: boolean;
   isSwapDetailsPage?: boolean;
   tradeCid: string;
@@ -95,25 +94,28 @@ interface PendingSwapRowProps {
 export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
   const { 
     proposerAssetCid, 
-    requestedAssetsTxPreApproval, 
+    requestedAssetsTxPreApprovalCid, 
     proposer,
     receiver,
     isInbound,
     tradeCid
   } = props;
   const classes = useNarrowPendingStyles();
-  const transferPreapproval = useGetTransferPreapprovalContractByContractId(requestedAssetsTxPreApproval).contract;
-  const proposerAsset = useGetAssetContractByContractId(proposerAssetCid).contract
-  const proposerAssetSymbol = proposerAsset?.payload.assetType?.symbol|| "";
-  const proposerAssetAmount = proposerAsset?.payload.amount|| "";
-  const proposerAssetIsFungible = proposerAsset?.payload.assetType.fungible || false 
+  console.log('requestedAssetsTxPreApprovalCid', requestedAssetsTxPreApprovalCid)
+  const transferPreapproval = useGetTransferPreapprovalContractByContractId(requestedAssetsTxPreApprovalCid).contract;
+  console.log('swap', transferPreapproval)
+  const proposerAsset = useGetAssetInSwapContractByContractId(proposerAssetCid).contract
+  console.log('propse', proposerAsset)
+  const proposerAssetSymbol = proposerAsset?.payload.asset.assetType?.symbol|| "";
+  const proposerAssetAmount = proposerAsset?.payload.asset.amount|| "";
+  const proposerAssetIsFungible = proposerAsset?.payload.asset.assetType.fungible || false 
   console.log('pending',proposerAssetIsFungible
   )
-  const proposerAssetIssuer = proposerAsset?.payload.assetType.issuer|| "";
-  const proposerAssetOwner = proposerAsset?.payload.owner|| "";
+  const proposerAssetIssuer = proposerAsset?.payload.asset.assetType.issuer|| "";
+  const proposerAssetOwner = proposerAsset?.payload.asset.owner|| "";
 
 
-  const proposerAssetReference = proposerAsset?.payload.assetType.reference as string
+  const proposerAssetReference = proposerAsset?.payload.asset.assetType.reference as string
 
   const receiverAssetSymbol = transferPreapproval?.payload.asset.assetType.symbol || "";
   const receiverAssetAmount = transferPreapproval?.payload.asset.amount|| ""
@@ -142,7 +144,7 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
   const queriesInput: string[][] = [
     ['proposer', proposer],
     ['receiver', receiver],
-    ['requestedAssetsTxPreApproval', requestedAssetsTxPreApproval],
+    ['requestedAssetsTxPreApprovalCid', requestedAssetsTxPreApprovalCid],
     ['tradeCid', tradeCid],
     ['isInbound', `${isInbound}`],
     ['templateName', 'swap'],

@@ -27,7 +27,7 @@ interface SwapProps {
   proposerAssetReference: string;
   proposerAssetOwner: string;
   receiverAssetOwner: string;
-  requestedAssetsTxPreApproval: string;
+  requestedAssetsTxPreApprovalCid: string;
   proposer: string;
   tradeCid: ContractId<Trade>;
   receiver: string;

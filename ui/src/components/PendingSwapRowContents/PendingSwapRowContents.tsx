@@ -14,7 +14,7 @@ export interface PendingSwapRowProps {
   receiver: string;
   isSwapDetailsPage?: boolean;
   outboundAssetCid?: string;
-  requestedAssetsTxPreApproval?: string;
+  requestedAssetsTxPreApprovalCid?: string;
 }
 
 interface PendingSwapRowContentsProps {
@@ -117,7 +117,7 @@ export const PendingSwapRowContents: React.FC<PendingSwapRowContentsProps> = (pr
 
   return (
     <>
-e
+
       {isInbound ? inboundMessage : outboundMessage}
 
 

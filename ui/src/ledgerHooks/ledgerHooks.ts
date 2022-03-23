@@ -7,7 +7,7 @@ import { AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account'
 import { ActionType } from '../pages/PendingAssetInviteDetailsPage';
 import { Archive } from '@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662/lib/DA/Internal/Template';
 import { makeDamlSet } from '../utils/common';
-import { Trade, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
+import { AssetInSwap, Trade, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
 
 export const useGetAllAssetAccounts = () => {
   const myPartyId = useParty();
@@ -39,10 +39,7 @@ interface UseGetMyOwnedAssetsByAssetType {
 
 // Get all Asset owned templates based on fields
 export const useGetMyOwnedAssetsByAssetType = ({ issuer, symbol, isFungible, owner, reference }: UseGetMyOwnedAssetsByAssetType) => {
-  console.log('USE GET MY OWNED ASSETS BY ASSET')
-  console.log('args from ledgerr hook', issuer, owner, isFungible, symbol)
   const assetContracts = useStreamQueries(Asset.Asset, () => [{ owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
-  console.log('asset contrcts', assetContracts)
   return assetContracts
 }
 export const useGetAssetHoldingAccount = ({ isAirdroppable, isShareable, issuer, symbol, isFungible, owner, reference }: UseGetMyOwnedAssetsByAssetType) => {
@@ -73,6 +70,10 @@ export const useGetAssetContractByContractId = (contractId: ContractId<Asset.Ass
   const contract = useFetch(Asset.Asset, contractId)
   return contract
 }
+export const useGetAssetInSwapContractByContractId = (contractId: ContractId<AssetInSwap>) => {
+  const contract = useFetch(AssetInSwap, contractId)
+  return contract
+}
 export const useGetTradeContractByCid = (tradeContractId: ContractId<Trade>) => {
   const contract = useFetch(Trade, tradeContractId)
   return contract
@@ -100,7 +101,6 @@ export const useGetAssetHoldingInviteByContractId = (arg: ContractId<AssetHoldin
 
 
 export const useGetSingleAssetSendRequest = (args: GetSingleAssetSendRequest) => {
-  console.log(args)
   const { recipient, symbol, isFungible, reference, amount, owner, issuer } = args;
   const singleAssetSendRequest = useStreamQueries(Asset.AssetTransfer, () => [{ recipient, asset: { amount, owner, assetType: { issuer, fungible: isFungible, symbol, reference } } }]);
   return singleAssetSendRequest
@@ -160,7 +160,6 @@ export const useLedgerHooks = () => {
   const party = useParty();
 
   const sendAsset = async ({ assetAccountCid, amount, recipient, assetCids }: SendAsset) => {
-    console.log(assetAccountCid, amount, recipient, assetCids)
     try {
       // TODO: update documentation
       // needing to use _1:, _2:, not obvious enough.
@@ -427,11 +426,11 @@ export const useLedgerHooks = () => {
   }
 
   
-  const exerciseTradeSettle = async (tradeCid: ContractId<Trade>, requestedAsset: ContractId<Asset.Asset>, offeredTxPreApproval: ContractId<TransferPreApproval> ) => {
+  const exerciseTradeSettle = async (tradeCid: ContractId<Trade>, requestedAssetCid: ContractId<Asset.Asset>, offeredTxPreApprovalCid: ContractId<TransferPreApproval> ) => {
     try {
       const result = await ledger.exercise(Trade.Trade_Settle, tradeCid, {
-        requestedAsset,
-        offeredTxPreApproval
+        requestedAssetCid,
+        offeredTxPreApprovalCid
       });
 
       return { isOk: true, payload: result }
@@ -487,7 +486,6 @@ export const useLedgerHooks = () => {
       })
       return { isOk: true, payload: asset }
     } catch (e) {
-      console.log(e)
       return { isOk: false, payload: e }
     }
   }

@@ -48,7 +48,7 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     justifySelf: 'center'
   },
   card: {
-    // margin: theme.spacing(1), 
+    margin: theme.spacing(1), 
   },
   avatar: {
     margin: theme.spacing(1)
