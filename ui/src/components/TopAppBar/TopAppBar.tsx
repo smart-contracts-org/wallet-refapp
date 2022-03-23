@@ -35,6 +35,13 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, h
     handleCloseUserMenu();
     onLogout && onLogout()
   }
+  const copy = () => {
+    if(!party){
+      return;
+    }
+    navigator.clipboard.writeText(party);
+
+  }
 
   return (
     <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
@@ -52,7 +59,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, h
         {party && (<Box sx={{ flexGrow: 0, marginLeft: 'auto' }}>
           <Tooltip title="Open settings" >
             <IconButton size='small' onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar sx={{ marginLeft: 'auto' }} alt="profile" >{party[0]}</Avatar>
+              <Avatar sx={{ marginLeft: 'auto' }} alt="profile" ></Avatar>
             </IconButton>
           </Tooltip>
           <Menu
@@ -79,7 +86,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, h
                 <Typography variant='caption'>
                   {party || demoPartyId}
                 </Typography>
-                <IconButton size='small'>
+                <IconButton size='small' onClick={copy}>
                   <ContentCopyIcon />
                 </IconButton>
               </CardContent>
