@@ -42,16 +42,6 @@ export const PendingAccountInviteRow: React.FC<PendingAccountInviteRowProps> = (
   } = props;
   console.log(props)
 
-  const onAccept = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-  }
-
-  const onCancel = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-  }
-  const onReject = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-  }
   const queriesInput = [
     ['sender', sender],
     ['receiver', receiver],

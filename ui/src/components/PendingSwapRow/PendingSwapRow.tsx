@@ -126,19 +126,7 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
   if(!proposerAsset || !transferPreapproval){
     return null
   }
-  const onAccept = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-  }
-
-  const onCancel = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-  }
-  const onReject = (event: React.SyntheticEvent) => {
-    event.preventDefault();
-  }
-
-  
-
+ 
   const queriesInput: string[][] = [
     ['proposer', proposer],
     ['receiver', receiver],

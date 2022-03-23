@@ -21,7 +21,7 @@ export const IssueSuccess: React.FC<IssueSuccessProps> = ({onDoneClick, onNext})
     <Card elevation={0} className={classes.success}>
       <CardContent>
         <CheckCircleIcon className={classes.icon}/>
-        <Typography>
+        <Typography sx={{margin:1}}>
          You have successfully issued your token, issue another, or try airdrop.
         </Typography>
         <Button  onClick={onClick} fullWidth className={classes.button} variant='outlined'>
