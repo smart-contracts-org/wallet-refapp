@@ -11,7 +11,6 @@ import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPag
 import { useGetAssetAccountByKey, useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
 import { useParty } from '@daml/react';
 
-
 export const SwapPage: React.FC = () => {
   const nav = useNavigate();
   const query = useQuery();
