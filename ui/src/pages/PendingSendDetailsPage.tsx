@@ -30,9 +30,9 @@ interface Success  {
 }
 
 const successMessage: Success = {
-  accept: 'accepted',
-  reject: 'rejected',
-  cancel: 'canceled'
+  accept: 'Accepted',
+  reject: 'Rejected',
+  cancel: 'Canceled'
 }
 interface PendingSendDetailsPageProps {
   contractId: string;

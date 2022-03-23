@@ -1,13 +1,12 @@
 import React from 'react';
 import Card from '@mui/material/Card';
-import Button from '@mui/material/Button';
 import SendIcon from '@mui/icons-material/Send';
 import { Link } from "react-router-dom";
 import { SendRowContents } from '../SendRowContents/SendRowContents';
 import { Avatar, CardActionArea } from '@mui/material';
-import { isMobile } from '../../platform/platform';
 import { useNarrowPendingStyles } from '../PendingStyles/PendingStyles';
 import { createQueriesString } from '../../utils/createQueriesString';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 export interface PendingTransferRowProps {
   amount: string;
@@ -64,12 +63,9 @@ export const PendingTransferRow: React.FC<PendingTransferRowProps> = (props) => 
               <SendIcon />
             </Avatar>
             <SendRowContents issuer={issuer} isInbound={isInbound} receiver={receiver} amount={amount} isNarrow={isNarrow} sender={sender} symbol={symbol}/>
-            {!isMobile() && <div className={classes.actions}>
-              {isInbound && <Button className={classes.button} variant='outlined' size="small" onClick={onAccept}>Accept</Button>}
-              <Button onClick={isInbound ? onReject : onCancel} className={classes.button} variant='outlined' size="small">{isInbound ? 'Reject Request' : 'Cancel Request'}</Button>
-              <Button className={classes.button} variant='outlined' size="small"
-              >Details</Button>
-            </div>}
+            
+            <ChevronRightIcon sx={{marginRight: 1, marginLeft: 'auto'}}/>
+
           </div>
         </CardActionArea>
       </Card>

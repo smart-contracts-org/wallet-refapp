@@ -22,7 +22,7 @@ export const AccountInvitePage: React.FC = () => {
   const onBack = () => {
     nav(-1)
   }
-  
+
   return (
     <div className={classes.root}>
       <div className={classes.buttonContainer}>
@@ -42,11 +42,11 @@ export const AccountInvitePage: React.FC = () => {
             <Typography>
               {symbol}
             </Typography>
-            <InviteNewAssetOwnerForm owner={owner} issuer={issuer} symbol={symbol} fungible={isFungible} reference={""}/>
+            <InviteNewAssetOwnerForm owner={owner} issuer={issuer} symbol={symbol} fungible={isFungible} reference={""} />
           </CardContent>
         </Card>
       </Box>
-      {enableFabBack &&  isMobile() && <FloatingBackButton/>}
+      {enableFabBack && isMobile() && <FloatingBackButton />}
     </div>
   )
 }

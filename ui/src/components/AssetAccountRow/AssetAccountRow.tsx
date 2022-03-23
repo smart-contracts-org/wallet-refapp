@@ -40,12 +40,18 @@ export interface AssetAccountRowProps {
   isFungible?: boolean;
   isAirdroppable?: boolean;
   contractId: string;
+  reference: string;
 }
 
-export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({contractId,isFungible, issuer, ticker, owner, isShareable, isAirdroppable }) => {
+export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({reference, contractId,isFungible, issuer, ticker, owner, isShareable, isAirdroppable }) => {
   const classes = useStyles()
   const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner});
   const path = `/asset?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable ? 'true' : 'false'}&isAirdroppable=${isAirdroppable ? 'true': 'false'}&contractId=${contractId}`
+  const attributesPath = `?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable}&isAirdroppable=${isAirdroppable}&owner=${owner}&contractId=${contractId}&reference=${reference || ""}`
+  const sendPath = `/send${attributesPath}`
+  const swapPath = `/swap${attributesPath}`
+  const assetInvitePath = `/invite${attributesPath}`
+  const issueAirdropPath = `/issue${attributesPath}`
   const assetSum = getAssetSum(contracts);
   const formattedSum = numberWithCommas(assetSum)
   return (
@@ -67,13 +73,13 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({contractId,isFu
             </div>
             <Box marginLeft={'auto'} display='flex' alignItems='center'>
             {issuer === owner && <RowChip requestType={'issuer'} label='Issuer' />}
-            {!isMobile() && issuer === owner && <Button sx={{marginRight:1}} variant='outlined' size="small" component={Link} to={`/issue/${issuer}/${ticker}`}>Issue / Airdrop</Button>
+            {!isMobile() && issuer === owner && <Button sx={{marginRight:1}} variant='outlined' size="small" component={Link} to={issueAirdropPath}>Issue / Airdrop</Button>
             }
-            {!isMobile() &&<Button sx={{marginRight:1}} component={Link} to={`/send/${issuer}/${ticker}`} disabled={issuer !== owner && !isShareable} variant='outlined' size="small"
+            {!isMobile() &&<Button sx={{marginRight:1}} component={Link} to={sendPath}  variant='outlined' size="small"
             >Send</Button>}
-            {!isMobile() &&<Button sx={{marginRight:1}} component={Link} to={`/swap/${issuer}/${ticker}`} disabled={issuer !== owner && !isShareable} variant='outlined' size="small"
+            {!isMobile() &&<Button sx={{marginRight:1}} component={Link} to={swapPath}  variant='outlined' size="small"
             >Swap</Button>}
-            {!isMobile() &&<Button sx={{marginRight:1}} variant='outlined' component={Link} to={`/invite/${issuer}/${ticker} `} disabled={issuer !== owner && !isShareable} size="small"
+            {!isMobile() &&<Button sx={{marginRight:1}} variant='outlined' component={Link} to={assetInvitePath}  size="small"
             >Invite New Asset Owner</Button>}
           </Box>
           </CardContent>
