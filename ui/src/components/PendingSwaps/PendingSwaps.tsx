@@ -1,4 +1,3 @@
-import { Asset } from '@daml.js/wallet-refapp';
 import { AssetInSwap } from '@daml.js/wallet-refapp/lib/Trade';
 import { ContractId } from '@daml/types';
 import {   LinearProgress } from '@mui/material';

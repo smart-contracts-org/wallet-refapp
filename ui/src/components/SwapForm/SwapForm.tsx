@@ -71,8 +71,7 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
 
   const handleChange = (event: SelectChangeEvent) => {
     const inboundAssetType = (event.target.value);
-    console.log(inboundAssetType)
-    setInSymbol(event.target.value);
+    setInSymbol(inboundAssetType);
   };
   const [recipient, setRecipient] = React.useState("");
   const [outAmount, setOutAmount] = React.useState("");
@@ -89,7 +88,6 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
 
 
   const { loading: loadingAssetContracts, contracts: assetContracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
-console.log('assetContracts', assetContracts)
   const outAssetCids = assetContracts.map((contract) => contract.contractId)
   const totalBalance = getAssetSum(assetContracts);
   
@@ -122,7 +120,6 @@ console.log('assetContracts', assetContracts)
       setSuccessful(false)
     }
 
-    console.log(result)
   }
   const classes = useStyles();
   if(loadingAssetContracts||loadingOwnedAssetAccounts){

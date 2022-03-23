@@ -8,11 +8,10 @@ import { Link } from "react-router-dom";
 import { Avatar, CardActionArea, CardContent } from '@mui/material';
 import { PendingSwapRowContents } from '../PendingSwapRowContents/PendingSwapRowContents';
 import { isMobile } from '../../platform/platform';
-import { useGetAssetContractByContractId, useGetAssetInSwapContractByContractId, useGetTransferPreapprovalContractByContractId } from '../../ledgerHooks/ledgerHooks';
+import {  useGetAssetInSwapContractByContractId, useGetTransferPreapprovalContractByContractId } from '../../ledgerHooks/ledgerHooks';
 import { ContractId } from '@daml/types';
 import { AssetInSwap, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
 import { createQueriesString } from '../../utils/createQueriesString';
-import { Asset } from '@daml.js/wallet-refapp';
 
 export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   card: {
