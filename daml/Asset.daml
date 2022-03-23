@@ -41,8 +41,12 @@ template Asset with
     observer observers
     ensure (if assetType.fungible then amount>0.0 else (amount==1.0))
 
--- The AssetTransfer template represents an asset in transfer.
--- It provides transfer originator with a choice to cancel the transfer.
+-- The AssetTransfer template represents an asset in transfer. When a transfer is created, the asset contract,
+-- which is the source of funds for the transfer, is archived, so it cannot be used to create other transfers.
+-- AssetTransfer contract cannot be created by asset owner using "create" command because this requires the
+-- authority of the issuer. AssetTransfer can only be created by exercising Create_Transfers choice on
+-- AssetHoldingAccount template, which provides the authority of both asset issuer and asset owner.
+-- The template provides transfer originator with a choice to cancel the transfer.
 -- It also provides the recipient with a choice to accept or reject the transfer.
 template AssetTransfer
   with
@@ -53,8 +57,6 @@ template AssetTransfer
   where
     signatory (signatory asset)
     observer recipient
-    key (asset.assetType, recipient) : (AssetType, Party)
-    maintainer key._1.issuer
     ensure (if asset.assetType.fungible then asset.amount>0.0 else (asset.amount==1.0))
 
     choice Cancel_Transfer : ContractId Asset
@@ -75,3 +77,4 @@ template AssetTransfer
       do
         create asset with
           owner = recipient
+          observers = Set.empty
