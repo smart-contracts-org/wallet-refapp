@@ -7,7 +7,7 @@ import { AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account'
 import { ActionType } from '../pages/PendingAssetInviteDetailsPage';
 import { Archive } from '@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662/lib/DA/Internal/Template';
 import { makeDamlSet } from '../utils/common';
-import { Trade, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
+import { AssetInSwap, Trade, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
 
 export const useGetAllAssetAccounts = () => {
   const myPartyId = useParty();
@@ -71,6 +71,10 @@ export const useGetAssetTransferByContractId = (arg: useGetAssetTransferByContra
 }
 export const useGetAssetContractByContractId = (contractId: ContractId<Asset.Asset>) => {
   const contract = useFetch(Asset.Asset, contractId)
+  return contract
+}
+export const useGetAssetInSwapContractByContractId = (contractId: ContractId<AssetInSwap>) => {
+  const contract = useFetch(AssetInSwap, contractId)
   return contract
 }
 export const useGetTradeContractByCid = (tradeContractId: ContractId<Trade>) => {
@@ -427,11 +431,11 @@ export const useLedgerHooks = () => {
   }
 
   
-  const exerciseTradeSettle = async (tradeCid: ContractId<Trade>, requestedAsset: ContractId<Asset.Asset>, offeredTxPreApproval: ContractId<TransferPreApproval> ) => {
+  const exerciseTradeSettle = async (tradeCid: ContractId<Trade>, requestedAssetCid: ContractId<Asset.Asset>, offeredTxPreApprovalCid: ContractId<TransferPreApproval> ) => {
     try {
       const result = await ledger.exercise(Trade.Trade_Settle, tradeCid, {
-        requestedAsset,
-        offeredTxPreApproval
+        requestedAssetCid,
+        offeredTxPreApprovalCid
       });
 
       return { isOk: true, payload: result }

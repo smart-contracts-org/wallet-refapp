@@ -109,7 +109,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
   // Specifically for swap
   const proposer = query.get('proposer');
   const proposerAssetCid = query.get('proposerAssetCid') as ContractId<Asset.Asset>
-  const requestedAssetsTxPreApproval = query.get('requestedAssetsTxPreApproval') as ContractId<TransferPreApproval>
+  const requestedAssetsTxPreApprovalCid = query.get('requestedAssetsTxPreApprovalCid') as ContractId<TransferPreApproval>
   const tradeCid = query.get('tradeCid') as ContractId<Trade>
   // proposer asset
   const proposerAssetAmount = query.get('proposerAssetAmount')|| "";
@@ -164,7 +164,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
   }
   if( actionLabel ==='swap' &&
       tradeCid !== null &&
-      requestedAssetsTxPreApproval !== null &&
+      requestedAssetsTxPreApprovalCid !== null &&
       proposerAssetCid !== null &&
       proposer!== null && 
       proposerAssetSymbol !== null
@@ -172,7 +172,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
     return <PendingSwapDetailsPage
     proposer={proposer}
     receiver={recipient}
-    requestedAssetsTxPreApproval={requestedAssetsTxPreApproval}
+    requestedAssetsTxPreApprovalCid={requestedAssetsTxPreApprovalCid}
     tradeCid={tradeCid}
     proposerAssetCid={proposerAssetCid}
     isInbound={isInbound}
