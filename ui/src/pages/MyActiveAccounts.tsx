@@ -17,7 +17,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 export const MyActiveAccountsPage: React.FC = () => {
   const classes = useStyles();
   const { loading, contracts } = useGetAllAssetAccounts();
-  const assetRows = contracts.map((contract) => <AssetAccountRow key={contract.contractId} contractId={contract.contractId} isFungible={contract.payload.assetType.fungible} owner={contract.payload.owner} issuer={contract.payload.assetType.issuer} ticker={contract.payload.assetType.symbol} />)
+  const assetRows = contracts.map((contract) => <AssetAccountRow
+    key={contract.contractId}
+    contractId={contract.contractId} 
+    isFungible={contract.payload.assetType.fungible} 
+    owner={contract.payload.owner} issuer={contract.payload.assetType.issuer} 
+    reference={contract.payload.assetType.reference || ""}
+    ticker={contract.payload.assetType.symbol} />)
 
   if (loading) {
     return (
@@ -35,9 +41,9 @@ export const MyActiveAccountsPage: React.FC = () => {
         </Typography>
         </Prompt>
         {assetRows}
-        <AssetAccountRow contractId={'demo'} isFungible isAirdroppable isShareable owner={'me'} issuer={'Digital Asset'} ticker={'DAMLCOIN'} quantity={800} isIssuer />
-        <AssetAccountRow contractId={'demo'} owner={'me'} issuer={'Alex'} ticker={'ATOKEN'} quantity={100000} />
-        <AssetAccountRow contractId={'demo'} owner={'me'} issuer={'THEWEEKEND'} ticker={'TICKET'} quantity={1} />
+        <AssetAccountRow reference={""} contractId={'demo'} isFungible isAirdroppable isShareable owner={'me'} issuer={'Digital Asset'} ticker={'DAMLCOIN'} quantity={800} isIssuer />
+        <AssetAccountRow reference={""}  contractId={'demo'} owner={'me'} issuer={'Alex'} ticker={'ATOKEN'} quantity={100000} />
+        <AssetAccountRow reference={""} contractId={'demo'} owner={'me'} issuer={'THEWEEKEND'} ticker={'TICKET'} quantity={1} />
 
       </Box>
     </Box>

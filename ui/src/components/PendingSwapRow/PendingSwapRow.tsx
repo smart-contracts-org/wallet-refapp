@@ -1,18 +1,16 @@
 import React from 'react';
 import Card from '@mui/material/Card';
-import Button from '@mui/material/Button';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { Link } from "react-router-dom";
 import { Avatar, CardActionArea, CardContent } from '@mui/material';
 import { PendingSwapRowContents } from '../PendingSwapRowContents/PendingSwapRowContents';
-import { isMobile } from '../../platform/platform';
 import {  useGetAssetInSwapContractByContractId, useGetTransferPreapprovalContractByContractId } from '../../ledgerHooks/ledgerHooks';
 import { ContractId } from '@daml/types';
 import { AssetInSwap, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
 import { createQueriesString } from '../../utils/createQueriesString';
-
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   card: {
     display: 'flex',
@@ -200,12 +198,7 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
               receiverAssetSymbol={receiverAssetSymbol}
               />
 
-            {!isMobile() && <div className={classes.actions}>
-              {isInbound && <Button className={classes.button} variant='outlined' size="small" onClick={onAccept}>Accept</Button>}
-              <Button onClick={isInbound ? onReject : onCancel} className={classes.button} variant='outlined' size="small">{isInbound ? 'Reject Request' : 'Cancel Request'}</Button>
-              <Button className={classes.button} variant='outlined' size="small"
-              >Details</Button>
-            </div>}
+          <ChevronRightIcon sx={{marginRight: 1, marginLeft: 'auto'}}/>
           </div>
         </CardActionArea>
       </Card>
