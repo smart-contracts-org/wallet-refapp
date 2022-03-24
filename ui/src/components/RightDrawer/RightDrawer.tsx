@@ -35,7 +35,7 @@ export const RightDrawer: React.FC<SideMenuMobileProps> = ({isOpen, handleDrawer
     handleDrawerClose();
   }
   return (
-    <>
+     
     <Drawer
       open={true}
       variant="permanent"
@@ -54,6 +54,5 @@ export const RightDrawer: React.FC<SideMenuMobileProps> = ({isOpen, handleDrawer
       </Box>
      
     </Drawer>
-    </>
   );
 }

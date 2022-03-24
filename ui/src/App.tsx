@@ -69,8 +69,10 @@ export const App: React.FC = () => {
                     <SideMenuMobile isOpen={isOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} /> :
                     <SideMenu />)
                   }
+
                   <Pages setCredentials={setCredentials} />
-                  <RightDrawer isOpen={true}/>
+
+                 {!isMobile() && <RightDrawer isOpen={true}/>}
                 </Box>
               </DamlLedger>
              : 

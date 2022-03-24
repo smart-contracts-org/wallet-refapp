@@ -26,8 +26,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginRight: theme.spacing(1)
   }, 
   button: {
-    marginLeft: theme.spacing(1)
+    marginLeft: theme.spacing(1),
+  },
+  buttonText: {
+    overflow: 'hidden',
+    whiteSpace:'nowrap',
+    textOverflow: 'ellipsis'
   }
+
 }))
 
 export interface AssetAccountRowProps {
@@ -79,7 +85,7 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({reference, cont
             >Send</Button>}
             {!isMobile() &&<Button sx={{marginRight:1}} component={Link} to={swapPath}  variant='outlined' size="small"
             >Swap</Button>}
-            {!isMobile() &&<Button sx={{marginRight:1}} variant='outlined' component={Link} to={assetInvitePath}  size="small"
+            {!isMobile() &&<Button className={classes.buttonText} sx={{marginRight:1}} variant='outlined' component={Link} to={assetInvitePath}  size="small"
             >Invite New Asset Owner</Button>}
           </Box>
           </CardContent>

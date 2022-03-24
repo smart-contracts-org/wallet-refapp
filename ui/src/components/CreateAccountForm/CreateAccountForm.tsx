@@ -72,7 +72,8 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
       if(result.isOk){
         console.log(result)
         onSubmitSuccess && onSubmitSuccess()
-        nav(`/asset?issuer=${party}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable ? 'true' : 'false'}&isAirdroppable=${isAirdroppable ? 'true': 'false'}&contractId=${undefined}`)
+        const contractId = result.payload.contractId
+        nav(`/asset?issuer=${party}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable ? 'true' : 'false'}&isAirdroppable=${isAirdroppable ? 'true': 'false'}&contractId=${contractId}`)
       } else {
       setError(true);
       setLoading(false);
