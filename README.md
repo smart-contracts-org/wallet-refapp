@@ -145,8 +145,42 @@ TBD
 
 // accont holding contract create pre-approve contract
 
-# Landing Page
-Welcome to the DA wallet refApp. The app illustrates how Daml smart contracts can interact together. 
+# Welcome Message 
+Welcome to the DA wallet refapp, an open-sourced, fully functional wallet powered by Daml smart contracts, ReactJs, and deployed onto Daml hub.
+The purpose of this app is to provide developers a working example of what they can acheive with Daml. 
+
+Continue reading, or start playing with the app
+
+Current set of features include 
+- creating an asset holding account
+- minting assets
+- inviting other users to become potential asset owners
+- sending assets (transfer ownership)
+- airdropping assets
+- swapping assets (atomic swap)
+
+Throughout the app, you can click on the 'i' icon and glance at the Daml contracts. 
+
+There are key concepts and workflows of rights and obligations to acheive asset transfers and this app will guide you through the process. 
+
+[dont show again]
+
+# My Active Accounts
+The asset accounts are shown here. Think of it as a currency account. You will have an account for USD, CAD, or AUD. The AssetHoldingAccount templates are rendered, along with the amount of assets (amount is extracted from the Asset template). Each AssetHoldingAccount is associated with an asset. 
+
+To get started, click "Create" in the left hand side menu. 
+
+# Create Page
+The AssetHoldingAccount template is created here. Once you create your account, you can mint it's associated assets. The purpose of the AssetHoldingAccount is also to allow the owner to perform additional actions such as creating a swap, transfering the associated asset. To see the full template, click here.  
+
+# Asset
+The asset template represents your tokenized asset.
+
+# Send Page
+
+# Swap Page
+
+# swap request
 
 # how the templates work together
 First start by creating an AssetHoldingAccount, the purpose of this template is to define the assetType it wil be associated with. Similar to a bank account. 
