@@ -5,11 +5,14 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { AssetAccountRow } from '../components/AssetAccountRow/AssetAccountRow';
 import { Prompt } from '../components/Prompts/Prompt';
-import { LinearProgress, Typography } from '@mui/material';
+import { Card, CardContent, LinearProgress, Typography } from '@mui/material';
 import { useGetAllAssetAccounts } from '../ledgerHooks/ledgerHooks';
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     padding: isMobile() ? theme.spacing(0, 0, 0, 0) : theme.spacing(3)
+  }, 
+  welcome: {
+    fontWeight: 'bold'
   }
 }))
 
@@ -35,6 +38,7 @@ export const MyActiveAccountsPage: React.FC = () => {
   return (
     <Box component="main" sx={{ flexGrow: 1, }} className={classes.root}>
       <Box sx={{ marginLeft: isMobile() ? 1 : 0, marginRight: isMobile() ? 1 : 0 }}>
+        
         <Prompt>
           <Typography color='text.primary' variant='body2'>
             Assets that you own are shown here. If there is an asset that you would like to own, contact an existing owner and request an invite to the asset account with you.

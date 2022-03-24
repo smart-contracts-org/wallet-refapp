@@ -16,6 +16,7 @@ import { httpBaseUrl } from './config';
 import { LoginPage } from './pages/LoginPage';
 import { partyFromToken } from './utils/getPartyFromToken';
 import { deleteCookie } from './utils/deleteCookie';
+import { RightDrawer } from './components/RightDrawer/RightDrawer';
 
 
 const theme = createTheme({
@@ -69,6 +70,7 @@ export const App: React.FC = () => {
                     <SideMenu />)
                   }
                   <Pages setCredentials={setCredentials} />
+                  <RightDrawer isOpen={true}/>
                 </Box>
               </DamlLedger>
              : 
