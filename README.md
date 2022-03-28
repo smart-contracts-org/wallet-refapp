@@ -145,25 +145,52 @@ TBD
 
 // accont holding contract create pre-approve contract
 
-# Welcome Message 
-Welcome to the DA wallet refapp, an open-sourced, fully functional wallet powered by Daml smart contracts, ReactJs, and deployed onto Daml hub.
-The purpose of this app is to provide developers a working example of what they can acheive with Daml. 
 
-Continue reading, or start playing with the app
+# Welcome To the DA Wallet Ref App
+an open-sourced, digital assets wallet powered by Daml smart contracts and deployed onto Daml hub.
+The purpose of this app is to provide developers a working example of how to acheive common workflows with regards to digital assets. These include Airdrops, atomic swaps, transfer of ownership (sending tokens)
 
 Current set of features include 
-- creating an asset holding account
-- minting assets
-- inviting other users to become potential asset owners
-- sending assets (transfer ownership)
-- airdropping assets
-- swapping assets (atomic swap)
+- Creating an asset holding account
+- Minting assets
+- Inviting other users to become potential asset owners
+- Sending assets (transfer ownership)
+- Airdropping assets
+- Swapping assets (atomic swap)
 
-Throughout the app, you can click on the 'i' icon and glance at the Daml contracts. 
+# Account Model
+The wallet uses UTXO (Unspent transaction ouput) where each `asset` template represents an amount you may hold.
 
 There are key concepts and workflows of rights and obligations to acheive asset transfers and this app will guide you through the process. 
 
-[dont show again]
+## 1. Getting Started
+Click "Create" in the left hand menu to create your AssetHoldingAccount. 
+
+## 2. Create AssetHoldingAccount
+The AssetHoldingAccount is responsible for sending / swapping / choices. Click here to see the full Daml template. Since you, the issuer, is creating this template, all subsequent choices will have your authorization. 
+
+## 3. Issue your assets
+You can either select Issue to self or Airdrop. 
+
+### Issue to self
+Issue to self creates the assets directly in your wallet. In other words, the assets minted will have an ownership assigned to you, and hence it is only visible to you at this point in time. 
+### Airdrop
+Airdropping assets means the assets are created with the owner = recipient that you designate. Essentially the assets are being created directly in the recipients wallet. 
+
+Before you can airdrop a token or send a token you will need to invite the recipient as a potential asset holder. 
+
+# Invite new asset holder
+
+
+# Sending Asset
+In order to send an asset, the following conditions must be met: 
+- sender has an AssetHoldingAccount
+- sender has issued tokens (amount can't be zero)
+- sender has invited a new user to be a new asset holder
+- recipient has accepted this, and now also has the same assetHoldingAccount
+
+1. sender exercises the create transfer choice with a list of all asset positions, the target amount to send, and the recipient ID. 
+
 
 # My Active Accounts
 The asset accounts are shown here. Think of it as a currency account. You will have an account for USD, CAD, or AUD. The AssetHoldingAccount templates are rendered, along with the amount of assets (amount is extracted from the Asset template). Each AssetHoldingAccount is associated with an asset. 

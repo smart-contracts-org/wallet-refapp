@@ -11,7 +11,7 @@ export const WelcomeMessage: React.FC = () => {
             </Typography>
             <Typography>
             an open-sourced, fully functional wallet powered by Daml smart contracts, ReactJs, and deployed onto Daml hub.
-The purpose of this app is to provide developers a working example of what they can acheive with Daml. 
+The purpose of this app is to provide developers a working example of how to acheive common workflows with regards to digital assets. These include Airdrops, atomic swaps, transfer of ownership (sending tokens)
             </Typography>
           </CardContent>
         </Card>
