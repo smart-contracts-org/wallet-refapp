@@ -7,6 +7,7 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { PendingActivities } from '../components/PendingActivities/PendingActivities';
 import { Link, useParams } from "react-router-dom";
+import { Typography } from '@mui/material';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {

@@ -30,33 +30,38 @@ export const SendPage: React.FC = () => {
   const demoDataQuantity = 100
   return (
     <div className={classes.root}>
-      {!isMobile() && <div className={classes.buttonContainer}>
-        <IconButton color='primary' onClick={onBack}>
-          <ArrowBackIosNewIcon />
-        </IconButton>
-      </div>}
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography sx={{ marginBottom: 0.5 }} color='primary' variant='h5'>
-          Send
+        <Box margin={1} width='100%' flexDirection='row' display='flex' alignItems='center' justifyContent='start'>
+          <Box position='absolute'>
+          <IconButton color='primary' onClick={onBack}>
+            <ArrowBackIosNewIcon />
+          </IconButton>
+          </Box>
+          <Box flexGrow='1' textAlign='center'>
+          <Typography color='primary' variant='h5' sx={{flexGrow: 1, marginLeft: 'auto'}}>
+            Send
           </Typography>
+          </Box>
+        </Box>
+
         <Card variant='outlined' >
           <CardContent className={classes.cardContent}>
             <Avatar className={classes.avatar}>
               {symbol?.[0] || 'undefined'}
             </Avatar>
             <SendForm
-            assetAccountCid={assetAccountCid}
-            issuer={issuer || ""}
-            isAirdroppable={isAirdroppable}
-            isFungible={isFungible}
-            isShareable={isShareable}
-            owner={owner || ""}
-            reference={""}
-            quantity={demoDataQuantity} ticker={symbol || 'NA'} />
+              assetAccountCid={assetAccountCid}
+              issuer={issuer || ""}
+              isAirdroppable={isAirdroppable}
+              isFungible={isFungible}
+              isShareable={isShareable}
+              owner={owner || ""}
+              reference={""}
+              quantity={demoDataQuantity} ticker={symbol || 'NA'} />
           </CardContent>
         </Card>
       </Box>
-      {enableFabBack &&  isMobile() && <FloatingBackButton/>}
+      {enableFabBack && isMobile() && <FloatingBackButton />}
     </div>
   )
 }

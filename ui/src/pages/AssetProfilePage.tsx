@@ -5,7 +5,7 @@ import { makeStyles } from '@mui/styles';
 import { Link } from "react-router-dom";
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { Avatar, Card, CardContent, IconButton, LinearProgress, Typography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, IconButton, LinearProgress, Typography } from '@mui/material';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
 import SendIcon from '@mui/icons-material/Send';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -28,8 +28,9 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: isMobile() ? undefined : 'center',
-    width: '100%',
-    flexDirection: isMobile() ? 'column' : 'row',
+    // width: '100%',
+    flexGrow: '1',
+    flexDirection: isMobile() ? 'column' : 'column',
     margin: theme.spacing(1),
   },
   cardContent: {
@@ -63,7 +64,7 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: isMobile() ? '90%' : '50%',
+    width: '100%',
     margin: theme.spacing(1)
   },
   tickerAmount: {
@@ -73,13 +74,14 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
   buttonContainer: {
     marginBottom: theme.spacing(0.5),
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    // marginRight: 'auto'
   },
   issueButton: {
     color: chipColors.issuer
   },
   issuerWarning: {
-    // backgroundColor: chipColors.issuer, 
+    backgroundColor: theme.palette.warning.dark, 
   }
 }))
 
@@ -118,12 +120,19 @@ export const AssetProfilePage: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.buttonContainer} onClick={onBack}>
-        <IconButton color='primary'>
-          <ArrowBackIosNewIcon />
-        </IconButton>
-        {isMobile() && <Typography color='primary'>Accounts / {symbol}</Typography>
-        }      </div>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Box margin={1} width='100%' flexDirection='row' display='flex' alignItems='center' justifyContent='start'>
+          <Box position='absolute'>
+          <IconButton color='primary' onClick={onBack}>
+            <ArrowBackIosNewIcon />
+          </IconButton>
+          </Box>
+          <Box flexGrow='1' textAlign='center'>
+          <Typography color='primary' variant='h5' sx={{flexGrow: 1, marginLeft: 'auto'}}>
+            {symbol}
+          </Typography>
+          </Box>
+        </Box>
       <Card variant='outlined' className={classes.card} >
         <CardContent className={classes.cardContent}>
           <Avatar className={classes.avatar}>
@@ -175,7 +184,7 @@ export const AssetProfilePage: React.FC = () => {
               </Typography>
             </div>
           </div>
-          {amount === 0 && issuer === party && <Card className={classes.issuerWarning} sx={{ width: '100%', marginBottom: 1 }} >
+          {amount === 0 && issuer === party && <Card color="theme.palette.warning.dark" className={classes.issuerWarning} sx={{ width: '100%', margin: 1, alignItems: 'center' }} >
             <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
               <WarningIcon sx={{ marginRight: 1 }} />
               <Typography variant='body2' sx={{ opacity: '100%' }}>
@@ -191,6 +200,7 @@ export const AssetProfilePage: React.FC = () => {
             isFungible={isFungible} quantity={formattedSum} ticker={symbol || 'Ticker'} />
         </CardContent>
       </Card>
+      </Box>
 
 
       {enableFabBack && isMobile() &&
