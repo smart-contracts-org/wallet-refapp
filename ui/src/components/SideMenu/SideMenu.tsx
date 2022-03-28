@@ -8,7 +8,7 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 
 import ListItemText from '@mui/material/ListItemText';
-import { Divider, ListItemButton, Typography } from '@mui/material';
+import { Divider, FormControlLabel, ListItemButton, Switch, Typography } from '@mui/material';
 import { menuItems } from '../../configs/sideMenu.config';
 
 const drawerWidth: number = 200;
@@ -22,8 +22,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }))
 
 
-
-export const SideMenu: React.FC<unknown> = () => {
+interface SideMenuProps {
+  isRightOpen: boolean;
+  toggleRightOpen: () => void;
+}
+export const SideMenu: React.FC<SideMenuProps> = (props) => {
+  const {isRightOpen, toggleRightOpen} = props;
   const [selected, setSelected] = React.useState<number>(0);
   const classes = useStyles()
   const onClick = (index: number) => {
@@ -39,7 +43,7 @@ export const SideMenu: React.FC<unknown> = () => {
       }}
     >
       <Toolbar />
-      <Box sx={{ overflow: 'auto' }}>
+      <Box sx={{ overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
         <List>
           {menuItems.map((item, index) => (
             <ListItemButton onClick={() => onClick(index)} selected={selected === index} key={index} component={Link} to={item.path}>
@@ -51,21 +55,30 @@ export const SideMenu: React.FC<unknown> = () => {
           ))}
 
         </List>
+        
       </Box>
       <Box marginTop={'auto'} marginBottom={3}>
         <Divider />
-        <Box padding={2} flexDirection='column' display='flex'>
-        <Typography variant='caption' color='text.secondary'>
-          Documentation
+        <Box marginTop={1}>
+            <Switch checked={isRightOpen} onChange={toggleRightOpen} />
+            <Typography variant='caption'>Show App Guide</Typography>
+          </Box>
+        <Box padding={2} flexDirection='column' display='flex' justifyContent='start'>
+          
+
+
+
+          <Typography variant='caption' color='text.secondary'>
+            Documentation
         </Typography>
-        <Typography variant='caption' color='text.secondary'>
-          Github
+          <Typography variant='caption' color='text.secondary'>
+            Github
         </Typography>
-        <Typography variant='caption' color='text.secondary'>
-          Feature Requests
+          <Typography variant='caption' color='text.secondary'>
+            Feature Requests
         </Typography>
-        <Typography variant='caption' color='text.secondary'>
-          Download Daml
+          <Typography variant='caption' color='text.secondary'>
+            Download Daml
         </Typography>
         </Box>
       </Box>
