@@ -27,6 +27,7 @@ const theme = createTheme({
 
 export const App: React.FC = () => {
   const [isOpen, setOpen] = React.useState(false);
+  const [isRightOpen, setRightOpen] = React.useState(true);
   const [rerender, setRerender] = React.useState(false);
   const [credentials, setCredentials] = React.useState<Credentials | undefined>(undefined);
   const tokenCookiePair = document.cookie.split('; ').find(row => row.startsWith('DAMLHUB_LEDGER_ACCESS_TOKEN')) || '';
@@ -37,6 +38,9 @@ export const App: React.FC = () => {
   const handleDrawerOpen = () => {
     setOpen(true);
   };
+  const toggleRightOpen = () => {
+    setRightOpen(!isRightOpen);
+  }
 
   const onLogout = () => {
     deleteCookie('DAMLHUB_LEDGER_ACCESS_TOKEN')
@@ -67,12 +71,12 @@ export const App: React.FC = () => {
                 <Box sx={{ display: 'flex' }}>
                   {(isMobile() ?
                     <SideMenuMobile isOpen={isOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} /> :
-                    <SideMenu />)
+                    <SideMenu isRightOpen={isRightOpen} toggleRightOpen={toggleRightOpen} />)
                   }
 
                   <Pages setCredentials={setCredentials} />
 
-                 {!isMobile() && <RightDrawer isOpen={true}/>}
+                 {!isMobile() && <RightDrawer isOpen={isRightOpen}/>}
                 </Box>
               </DamlLedger>
              : 

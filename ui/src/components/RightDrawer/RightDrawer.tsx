@@ -37,8 +37,8 @@ export const RightDrawer: React.FC<SideMenuMobileProps> = ({isOpen, handleDrawer
   return (
      
     <Drawer
-      open={true}
-      variant="permanent"
+      open={isOpen}
+      variant="persistent"
       anchor="right"
       sx={{
         width: drawerWidth,
