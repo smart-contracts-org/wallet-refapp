@@ -25,15 +25,20 @@ export const AccountInvitePage: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.buttonContainer}>
-        <IconButton color='primary' onClick={onBack}>
-          <ArrowBackIosNewIcon />
-        </IconButton>
-      </div>
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography sx={{ marginBottom: 0.5 }} color='primary' variant='h6'>
-          Invite
+       
+       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Box margin={1} width='100%' flexDirection='row' display='flex' alignItems='center' justifyContent='start'>
+          <Box position='absolute'>
+          <IconButton color='primary' onClick={onBack}>
+            <ArrowBackIosNewIcon />
+          </IconButton>
+          </Box>
+          <Box flexGrow='1' textAlign='center'>
+          <Typography color='primary' variant='h5' sx={{flexGrow: 1, marginLeft: 'auto'}}>
+            Invite
           </Typography>
+          </Box>
+        </Box>
         <Card variant='outlined' className={classes.card} >
           <CardContent className={classes.cardContent}>
             <Avatar className={classes.avatar}>

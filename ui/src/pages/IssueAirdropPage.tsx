@@ -43,16 +43,20 @@ export const IssueAirdropPage: React.FC = () => {
   // Fetch token quantity
   return (
     <div className={classes.root}>
-      <div className={classes.buttonContainer} onClick={onBack}>
-        <IconButton color='primary'>
-          <ArrowBackIosNewIcon />
-        </IconButton>
-        {isMobile() && <Typography color='primary'>Back</Typography>}
-      </div>
+      
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography sx={{ marginBottom: 0.5 }} color='primary' variant='h6'>
-          Issue / Airdrop
+        <Box margin={1} width='100%' flexDirection='row' display='flex' alignItems='center' justifyContent='start'>
+          <Box position='absolute'>
+          <IconButton color='primary' onClick={onBack}>
+            <ArrowBackIosNewIcon />
+          </IconButton>
+          </Box>
+          <Box flexGrow='1' textAlign='center'>
+          <Typography color='primary' variant='h5' sx={{flexGrow: 1, marginLeft: 'auto'}}>
+            Issue / Airdrop
           </Typography>
+          </Box>
+        </Box>
         <Card variant='outlined' className={classes.card} >
           <CardContent className={classes.cardContent}>
             <Avatar className={classes.avatar}>
