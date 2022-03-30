@@ -33,11 +33,12 @@ export interface AssetDetailsProps {
   // optional because template Asset won't have these attributes
   isShareable?: boolean;
   isAirdroppable?: boolean;
+  reference?: string;
 }
 
 const dataColor = 'primary'
 
-export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quantity, isShareable, isFungible, isAirdroppable, ticker }) => {
+export const AssetDetails: React.FC<AssetDetailsProps> = ({reference, issuer, owner, quantity, isShareable, isFungible, isAirdroppable, ticker }) => {
   const classes = useStyles();
 
   return (
@@ -51,6 +52,17 @@ export const AssetDetails: React.FC<AssetDetailsProps> = ({ issuer, owner, quant
         </Typography>
         <Divider />
       </div>
+      {reference && (
+        <div className={classes.row}>
+        <Typography className={classes.rowLabel} variant='caption'>
+          Reference
+        </Typography>
+        <Typography className={classes.data} color={dataColor} variant='caption'>
+          {reference}
+        </Typography>
+        <Divider />
+      </div>
+      )}
       <div className={classes.row}>
         <Typography className={classes.rowLabel} variant='caption'>
           Issuer

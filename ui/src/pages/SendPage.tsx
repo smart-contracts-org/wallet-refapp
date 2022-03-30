@@ -15,9 +15,10 @@ export const SendPage: React.FC = () => {
   const nav = useNavigate();
   const classes = usePageStyles();
   const query = useQuery();
-  const issuer = query.get('issuer')
-  const symbol = query.get('ticker');
+  const issuer = query.get('issuer') || ""
+  const symbol = query.get('ticker') || ""
   const owner = query.get('owner');
+  const reference = query.get('reference') || "";
   const assetAccountCid = query.get('contractId') as ContractId<AssetHoldingAccount>
   const isFungible = query.get('isFungible') === 'true'
   const isShareable = query.get('isShareable') === 'true'
@@ -25,9 +26,7 @@ export const SendPage: React.FC = () => {
   const onBack = () => {
     nav(-1)
   }
-  // TODO: 
-  // Fetch token quantity
-  const demoDataQuantity = 100
+ 
   return (
     <div className={classes.root}>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -56,8 +55,8 @@ export const SendPage: React.FC = () => {
               isFungible={isFungible}
               isShareable={isShareable}
               owner={owner || ""}
-              reference={""}
-              quantity={demoDataQuantity} ticker={symbol || 'NA'} />
+              reference={reference }
+              ticker={symbol || 'NA'} />
           </CardContent>
         </Card>
       </Box>

@@ -16,6 +16,8 @@ export const AccountInvitePage: React.FC = () => {
   const query = useQuery();
   const issuer = query.get('issuer') || ""
   const symbol = query.get('ticker') || ""
+  const reference = query.get('reference') || ""
+
   const owner = query.get('owner') || ""
   const isFungible = query.get('isFungible') === 'true'
 
@@ -25,7 +27,6 @@ export const AccountInvitePage: React.FC = () => {
 
   return (
     <div className={classes.root}>
-       
        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Box margin={1} width='100%' flexDirection='row' display='flex' alignItems='center' justifyContent='start'>
           <Box position='absolute'>
@@ -47,7 +48,7 @@ export const AccountInvitePage: React.FC = () => {
             <Typography>
               {symbol}
             </Typography>
-            <InviteNewAssetOwnerForm owner={owner} issuer={issuer} symbol={symbol} fungible={isFungible} reference={""} />
+            <InviteNewAssetOwnerForm owner={owner} issuer={issuer} symbol={symbol} fungible={isFungible} reference={reference} />
           </CardContent>
         </Card>
       </Box>

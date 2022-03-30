@@ -88,16 +88,16 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
 export const AssetProfilePage: React.FC = () => {
   const nav = useNavigate();
   const query = useQuery();
-  const reference = ""
+  const reference = query.get('reference') || ""
   const issuer = query.get('issuer') || ""
   const symbol = query.get('ticker') || ""
   const isFungible = query.get('isFungible') === 'true'
-  const { contract: assetAccountContract } = useGetAssetAccountByKey({ issuer, symbol, fungible: isFungible, reference: '' })
+  const { contract: assetAccountContract } = useGetAssetAccountByKey({ issuer, symbol, fungible: isFungible, reference })
   const contractId = query.get('contractId');
   const isShareable = assetAccountContract?.payload.resharable
   const isAirdroppable = assetAccountContract?.payload.airdroppable
   const party = useParty();
-  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
+  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({reference, issuer, symbol, isFungible, owner: party });
   const amount = getAssetSum(contracts);
   const formattedSum = numberWithCommas(amount)
   const classes = usePageStyles();
@@ -193,10 +193,11 @@ export const AssetProfilePage: React.FC = () => {
             </CardContent>
           </Card>}
           <AssetDetails
-            isShareable={!!isShareable}
-            isAirdroppable={!!isAirdroppable}
+            isShareable={isShareable}
+            isAirdroppable={isAirdroppable}
             owner={party}
             issuer={issuer || "issuer"}
+            reference={reference}
             isFungible={isFungible} quantity={formattedSum} ticker={symbol || 'Ticker'} />
         </CardContent>
       </Card>

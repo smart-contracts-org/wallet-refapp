@@ -104,6 +104,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
   const symbol = query.get('symbol');
   const amount = query.get('amount');
   const owner = query.get('owner');
+  const reference = query.get('reference') || ""
   
   
   // Specifically for swap
@@ -142,6 +143,7 @@ export const PendingActivityDetailsPage: React.FC = () => {
     isFungible={isFungible}
     issuer={issuer}
     owner={owner}
+    reference={reference}
     />
   }
   if(actionLabel ==='accountInvite' &&

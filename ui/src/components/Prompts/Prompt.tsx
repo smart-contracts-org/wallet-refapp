@@ -9,7 +9,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     // backgroundColor: theme.palette.grey[200],
     display: 'flex',
     alignItems: 'center',
-    marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1)
   },
   cardContent: {

@@ -25,9 +25,13 @@ export const MyActiveAccountsPage: React.FC = () => {
     key={contract.contractId}
     contractId={contract.contractId} 
     isFungible={contract.payload.assetType.fungible} 
-    owner={contract.payload.owner} issuer={contract.payload.assetType.issuer} 
+    owner={contract.payload.owner} 
+    issuer={contract.payload.assetType.issuer} 
     reference={contract.payload.assetType.reference || ""}
-    ticker={contract.payload.assetType.symbol} />)
+    ticker={contract.payload.assetType.symbol} 
+    isAirdroppable={contract.payload.airdroppable}
+    isShareable={contract.payload.resharable}
+    />)
 
   if (loading) {
     return (

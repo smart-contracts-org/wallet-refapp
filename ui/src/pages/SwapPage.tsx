@@ -16,15 +16,15 @@ export const SwapPage: React.FC = () => {
   const nav = useNavigate();
   const query = useQuery();
   
-  const reference = ""
+  const reference = query.get('reference') || ""
   const party = useParty();
   const issuer = query.get('issuer') || ""
   const symbol = query.get('ticker') || ""
   const isFungible = query.get('isFungible') === 'true'
   // get your owned asset account
-  const { loading: assetAccountContractLoading} = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference: ''})
+  const { loading: assetAccountContractLoading} = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference})
 
-  const { loading: assetContractsLoading} = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
+  const { loading: assetContractsLoading} = useGetMyOwnedAssetsByAssetType({ issuer, symbol, isFungible, owner: party, reference });
 
 
   const classes = usePageStyles();

@@ -19,6 +19,7 @@ export const PendingTransfers: React.FC<PendingTransfersProps> = (props) => {
     const sender = contract.payload.asset.owner
     // assetType info for retrieving asset account
     const {issuer, fungible, symbol, reference} = contract.payload.asset.assetType
+    console.log('ref', reference)
     const receiver = contract.payload.recipient
     const transferCid = contract.contractId
     const owner = contract.payload.asset.owner

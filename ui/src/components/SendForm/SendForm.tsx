@@ -15,7 +15,6 @@ import { numberWithCommas } from '../../utils/numberWithCommas';
 
 interface SendFormProps {
   ticker: string;
-  quantity: number;
   isAirdroppable: boolean;
   isShareable: boolean;
   isFungible: boolean;
@@ -43,11 +42,13 @@ export const useStyles = makeStyles((theme: Theme) => ({
   }
 }))
 
-export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isAirdroppable,isFungible,isShareable, quantity, ticker, owner }) => {
+export const SendForm: React.FC<SendFormProps> = (props) => {
+  const { reference,assetAccountCid, issuer,isFungible, ticker, owner } = props;
+  console.log('sendpage', { reference,assetAccountCid, issuer,isFungible, ticker, owner })
   const classes = useStyles();
   const nav = useNavigate();
+  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: isFungible, owner, reference});
   const ledgerHooks = useLedgerHooks();
-  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner});
   const assetCids = contracts.map((contract) => contract.contractId)
   const assetSum = getAssetSum(contracts);
   const formattedSum = numberWithCommas(assetSum)
@@ -61,7 +62,11 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
   const [hasError, setError] = React.useState<boolean>(false);
   
-
+  if(loading){
+    return (
+      <LinearProgress sx={{width: '100%'}}/>
+    )
+  }
   const onSubmit = async () => {
     setLoading(true);
     const result = await ledgerHooks.sendAsset({assetAccountCid, amount, recipient, assetCids })
@@ -81,11 +86,6 @@ export const SendForm: React.FC<SendFormProps> = ({ assetAccountCid, issuer, isA
     setRecipient("");
     setSuccessful(false);
     setError(false)
-  }
-  if(loading){
-    return (
-      <LinearProgress/>
-    )
   }
   
   return (
