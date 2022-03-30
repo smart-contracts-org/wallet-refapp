@@ -184,6 +184,7 @@ template AssetHoldingAccount with
               amount = tx._1
               observers = Set.empty
             recipient = tx._2
+            sender = owner
           )
         when (totAssetAmount > sum txAmounts) do 
           create Asset with

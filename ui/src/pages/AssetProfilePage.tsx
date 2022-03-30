@@ -50,6 +50,7 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
   },
   card: {
     margin: theme.spacing(1),
+    width: '100%'
   },
   avatar: {
     margin: theme.spacing(1)

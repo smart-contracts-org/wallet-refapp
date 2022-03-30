@@ -108,11 +108,11 @@ export const useGetSingleAssetSendRequest = (args: GetSingleAssetSendRequest) =>
   const singleAssetSendRequest = useStreamQueries(Asset.AssetTransfer, () => [{ recipient, asset: { amount, owner, assetType: { issuer, fungible: isFungible, symbol, reference } } }]);
   return singleAssetSendRequest
 }
-// TODO: rename to get all
-export const useGetAssetSendRequests = (isInbound?: boolean) => {
+
+export const useGetAssetTransfers = (isInbound?: boolean) => {
   const myPartyId = useParty();
-  const allAssetSendRequests = useStreamQueries(Asset.AssetTransfer, () => [{ recipient: isInbound ? myPartyId : undefined }]);
-  return allAssetSendRequests
+  const res = useStreamQueries(Asset.AssetTransfer, () => [{ recipient: isInbound ? myPartyId : undefined, sender: isInbound ? undefined : myPartyId }]);
+  return res
 }
 export const useGetAssetSwapRequests = (isInbound?: boolean) => {
   const myPartyId = useParty();
@@ -164,7 +164,7 @@ export const useLedgerHooks = () => {
 
   const sendAsset = async ({ assetAccountCid, amount, recipient, assetCids }: SendAsset) => {
     try {
-      // TODO: update documentation
+      // TODO: suggest react/daml documentation improvement.
       // needing to use _1:, _2:, not obvious enough.
       // how to parse error messages? not user friendly
       const result = await ledger.exercise(Account.AssetHoldingAccount.Create_Transfers, assetAccountCid, {

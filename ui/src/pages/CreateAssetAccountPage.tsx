@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import {  Card, CardContent } from '@mui/material';
 import React from 'react';
 import { CreateAssetAccountSteps } from '../components/CreateAssetAccountSteps/CreateAssetAccountSteps';
 import { usePageStyles } from './AssetProfilePage';

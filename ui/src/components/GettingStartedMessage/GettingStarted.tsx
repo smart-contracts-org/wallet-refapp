@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { Card, CardContent, Divider, Drawer, ListItemButton, Typography } from '@mui/material';
-import { menuItems } from '../../configs/sideMenu.config';
+import { Card, CardContent,  Typography } from '@mui/material';
 export const GettingStartedMessage: React.FC = () => {
   return (
     <>

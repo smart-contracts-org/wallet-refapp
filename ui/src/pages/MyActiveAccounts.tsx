@@ -42,7 +42,7 @@ export const MyActiveAccountsPage: React.FC = () => {
   }
   return (
     <Box component="main" sx={{ flexGrow: 1, }} className={classes.root}>
-      <Box sx={{ marginLeft: isMobile() ? 1 : 0, marginRight: isMobile() ? 1 : 0 }}>
+      <Box sx={{margin: isMobile() ? 1: 0}}>
         <Prompt>
           <Typography color='text.primary' variant='body2'>
             Assets that you own are shown here. If there is an asset that you would like to own, contact an existing owner and request an invite to the asset account with you.

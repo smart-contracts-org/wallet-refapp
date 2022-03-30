@@ -8,7 +8,7 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 
 import ListItemText from '@mui/material/ListItemText';
-import { Divider, FormControlLabel, ListItemButton, Switch, Typography } from '@mui/material';
+import { Divider,  ListItemButton, Switch, Typography } from '@mui/material';
 import { menuItems } from '../../configs/sideMenu.config';
 
 const drawerWidth: number = 200;

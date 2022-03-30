@@ -16,20 +16,10 @@ export const CreateAssetAccountSteps: React.FC = () => {
   const isStepFailed = (step: number) => {
     return false;
   };
-  const [activeStep, setActiveStep] = React.useState(0);
-
-  const [completed, setCompleted] = React.useState<{ [k: number]: boolean }>({});
-
-
-  const handleNext = () => {
-    const newActiveStep = activeStep + 1;
-    setActiveStep(newActiveStep);
-  };
-
 
   return (
     <Box sx={{ maxWidth: '600px' }}>
-      <Stepper alternativeLabel={isMobile()} activeStep={activeStep} sx={{ paddingTop: 2, paddingBottom: 2 }}>
+      <Stepper alternativeLabel={isMobile()} activeStep={0} sx={{ paddingTop: 2, paddingBottom: 2 }}>
         {steps.map((label, index) => {
 
           const labelProps: {
@@ -45,7 +35,7 @@ export const CreateAssetAccountSteps: React.FC = () => {
             labelProps.error = true;
           }
           return (
-            <Step key={label} completed={completed[index]}>
+            <Step key={label}>
               <StepLabel {...labelProps}>{label}</StepLabel>
             </Step>
           );
