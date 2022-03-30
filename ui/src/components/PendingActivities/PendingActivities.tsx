@@ -7,8 +7,8 @@ export interface PendingActivitiesPageProps {
   isInbound: boolean;
 }
 
-
-export const PendingActivities: React.FC<PendingActivitiesPageProps> = ({isInbound}) => { 
+export const PendingActivities: React.FC<PendingActivitiesPageProps> = (props) => { 
+  const {isInbound} = props;
   return (
     <>
     <PendingTransfers isInbound={isInbound}/>

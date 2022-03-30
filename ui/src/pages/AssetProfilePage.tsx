@@ -28,7 +28,7 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: isMobile() ? undefined : 'center',
-    // width: '100%',
+    width: '100%',
     flexGrow: '1',
     flexDirection: isMobile() ? 'column' : 'column',
     margin: theme.spacing(1),
@@ -50,6 +50,9 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
   },
   card: {
     margin: theme.spacing(1),
+    width: '100%',
+    justifyContent: 'center',
+    display: 'flex'
   },
   avatar: {
     margin: theme.spacing(1)
@@ -81,23 +84,23 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     color: chipColors.issuer
   },
   issuerWarning: {
-    backgroundColor: theme.palette.warning.dark, 
+    backgroundColor: theme.palette.warning.dark,
   }
 }))
 
 export const AssetProfilePage: React.FC = () => {
   const nav = useNavigate();
   const query = useQuery();
-  const reference = ""
+  const reference = query.get('reference') || ""
   const issuer = query.get('issuer') || ""
   const symbol = query.get('ticker') || ""
   const isFungible = query.get('isFungible') === 'true'
-  const { contract: assetAccountContract } = useGetAssetAccountByKey({ issuer, symbol, fungible: isFungible, reference: '' })
+  const { contract: assetAccountContract } = useGetAssetAccountByKey({ issuer, symbol, fungible: isFungible, reference })
   const contractId = query.get('contractId');
   const isShareable = assetAccountContract?.payload.resharable
   const isAirdroppable = assetAccountContract?.payload.airdroppable
   const party = useParty();
-  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
+  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ reference, issuer, symbol, isFungible, owner: party });
   const amount = getAssetSum(contracts);
   const formattedSum = numberWithCommas(amount)
   const classes = usePageStyles();
@@ -123,83 +126,82 @@ export const AssetProfilePage: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Box margin={1} width='100%' flexDirection='row' display='flex' alignItems='center' justifyContent='start'>
           <Box position='absolute'>
-          <IconButton color='primary' onClick={onBack}>
-            <ArrowBackIosNewIcon />
-          </IconButton>
+            <IconButton color='primary' onClick={onBack}>
+              <ArrowBackIosNewIcon />
+            </IconButton>
           </Box>
           <Box flexGrow='1' textAlign='center'>
-          <Typography color='primary' variant='h5' sx={{flexGrow: 1, marginLeft: 'auto'}}>
-            {symbol}
-          </Typography>
+            <Typography color='primary' variant='h5' sx={{ flexGrow: 1, marginLeft: 'auto' }}>
+              {symbol}
+            </Typography>
           </Box>
         </Box>
-      <Card variant='outlined' className={classes.card} >
-        <CardContent className={classes.cardContent}>
-          <Avatar className={classes.avatar}>
-            {symbol?.[0] || 'undefined'}
-          </Avatar>
-          <div className={classes.tickerAmount}>
-            <Typography sx={{ marginRight: 1 }} variant='h6'>
-              {formattedSum || 0}
-            </Typography>
-            <Typography variant='h6'>
-              {symbol || 'undefined'}
-            </Typography>
-          </div>
-          <div className={classes.actions}>
-            {issuer === party && <div className={classes.actionContainer}>
+        <Card variant='outlined' className={classes.card} >
+          <CardContent className={classes.cardContent}>
+            <Avatar className={classes.avatar}>
+              {symbol?.[0] || 'undefined'}
+            </Avatar>
+            <div className={classes.tickerAmount}>
+              <Typography sx={{ marginRight: 1 }} variant='h6'>
+                {formattedSum || 0}
+              </Typography>
+              <Typography variant='h6'>
+                {symbol || 'undefined'}
+              </Typography>
+            </div>
+            <div className={classes.actions}>
+              {issuer === party && <div className={classes.actionContainer}>
 
 
-              <IconButton className={classes.issueButton} component={Link} to={issueAirdropPath}>
-                <AddBoxIcon />
-              </IconButton>
-              <Typography variant='caption'>
-                issue / airdrop
+                <IconButton className={classes.issueButton} component={Link} to={issueAirdropPath}>
+                  <AddBoxIcon />
+                </IconButton>
+                <Typography variant='caption'>
+                  issue / airdrop
                 </Typography>
-            </div>}
-            <div className={classes.actionContainer}>
+              </div>}
+              <div className={classes.actionContainer}>
 
 
-              <IconButton color='primary' component={Link} to={sendPath}>
-                <SendIcon />
-              </IconButton>
-              <Typography variant='caption'>
-                Send
+                <IconButton color='primary' component={Link} to={sendPath}>
+                  <SendIcon />
+                </IconButton>
+                <Typography variant='caption'>
+                  Send
               </Typography>
-            </div>
-            <div className={classes.actionContainer}>
-              <IconButton color='primary' component={Link} to={swapPath}>
-                <SwapHorizontalCircleIcon />
-              </IconButton>
-              <Typography variant='caption'>
-                Swap
+              </div>
+              <div className={classes.actionContainer}>
+                <IconButton color='primary' component={Link} to={swapPath}>
+                  <SwapHorizontalCircleIcon />
+                </IconButton>
+                <Typography variant='caption'>
+                  Swap
               </Typography>
-            </div>
-            <div className={classes.actionContainer}>
-              <IconButton color='primary' component={Link} to={assetInvitePath}>
-                <AccountBalanceWalletIcon />
-              </IconButton>
-              <Typography variant='caption'>
-                Invite
+              </div>
+              <div className={classes.actionContainer}>
+                <IconButton color='primary' component={Link} to={assetInvitePath}>
+                  <AccountBalanceWalletIcon />
+                </IconButton>
+                <Typography variant='caption'>
+                  Invite
               </Typography>
+              </div>
             </div>
-          </div>
-          {amount === 0 && issuer === party && <Card color="theme.palette.warning.dark" className={classes.issuerWarning} sx={{ width: '100%', margin: 1, alignItems: 'center' }} >
-            <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
+            {amount === 0 && issuer === party && <Card color="theme.palette.warning.dark" className={classes.issuerWarning} sx={{ width: '100%', margin: 1, alignItems: 'center', padding: 1, display: 'flex' }} >
               <WarningIcon sx={{ marginRight: 1 }} />
-              <Typography variant='body2' sx={{ opacity: '100%' }}>
+              <Typography variant='body2'>
                 You have {amount} amount. Click "issue / airdrop" to issue assets.
               </Typography>
-            </CardContent>
-          </Card>}
-          <AssetDetails
-            isShareable={!!isShareable}
-            isAirdroppable={!!isAirdroppable}
-            owner={party}
-            issuer={issuer || "issuer"}
-            isFungible={isFungible} quantity={formattedSum} ticker={symbol || 'Ticker'} />
-        </CardContent>
-      </Card>
+            </Card>}
+            <AssetDetails
+              isShareable={isShareable}
+              isAirdroppable={isAirdroppable}
+              owner={party}
+              issuer={issuer || "issuer"}
+              reference={reference}
+              isFungible={isFungible} quantity={formattedSum} ticker={symbol || 'Ticker'} />
+          </CardContent>
+        </Card>
       </Box>
 
 

@@ -51,9 +51,9 @@ export interface AssetAccountRowProps {
 
 export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({reference, contractId,isFungible, issuer, ticker, owner, isShareable, isAirdroppable }) => {
   const classes = useStyles()
-  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner});
-  const path = `/asset?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable ? 'true' : 'false'}&isAirdroppable=${isAirdroppable ? 'true': 'false'}&contractId=${contractId}`
-  const attributesPath = `?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable}&isAirdroppable=${isAirdroppable}&owner=${owner}&contractId=${contractId}&reference=${reference || ""}`
+  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner, reference});
+  const attributesPath = `?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable}&isAirdroppable=${isAirdroppable}&owner=${owner}&contractId=${contractId}&reference=${reference}`
+  const assetPath = `/asset${attributesPath}`
   const sendPath = `/send${attributesPath}`
   const swapPath = `/swap${attributesPath}`
   const assetInvitePath = `/invite${attributesPath}`
@@ -63,7 +63,7 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({reference, cont
   return (
     <>
       <Card sx={{marginBottom: 1}} >
-        <CardActionArea component={Link} to={path}
+        <CardActionArea component={Link} to={assetPath}
         >
           <CardContent className={classes.root}  >
             <Avatar sx={{ marginRight: 1 }}>

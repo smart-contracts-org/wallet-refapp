@@ -87,7 +87,7 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
   const { loading: loadingOwnedAssetAccounts, contracts: ownedAssetAccounts } = useGetAllAssetAccounts();
 
 
-  const { loading: loadingAssetContracts, contracts: assetContracts } = useGetMyOwnedAssetsByAssetType({ issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
+  const { loading: loadingAssetContracts, contracts: assetContracts } = useGetMyOwnedAssetsByAssetType({reference, issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
   const outAssetCids = assetContracts.map((contract) => contract.contractId)
   const totalBalance = getAssetSum(assetContracts);
   

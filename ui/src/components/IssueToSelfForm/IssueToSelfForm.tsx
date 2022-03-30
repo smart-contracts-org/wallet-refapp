@@ -21,9 +21,12 @@ interface IssueToSelfFormProps {
   onDoneClick?: () => void;
   issueLater?: () => void;
   cancelText?: string;
+  reference: string;
+  isFungible: boolean;
 }
 
-export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ cancelText, issueLater, onDoneClick, onNext, ticker, handleClose }) => {
+export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
+  const { isFungible, reference, cancelText, issueLater, onDoneClick, onNext, ticker, handleClose } = props;
   const classes = useStyles()
   const ledgerHooks = useLedgerHooks();
   const nav = useNavigate();
@@ -34,11 +37,10 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = ({ cancelText, is
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [amount, setAmount] = React.useState<string>('0');
   const [isIssueToSelfSuccess, setIsIssueToSelfSuccess] = React.useState(false);
-  const isFungible = true;
 
   const onIssue = async () => {
     setLoading(true);
-    const result = await ledgerHooks.issueAsset({ ticker, amount: amount, isFungible })
+    const result = await ledgerHooks.issueAsset({ ticker, amount: amount, isFungible, reference })
 
     if (result.isOk) {
       setLoading(false);

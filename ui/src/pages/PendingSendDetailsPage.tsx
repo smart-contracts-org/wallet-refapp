@@ -43,6 +43,7 @@ interface PendingSendDetailsPageProps {
   issuer: string;
   owner: string;
   isFungible: boolean;
+  reference: string;
 }
 
 export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (props) => {
@@ -55,6 +56,7 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
     isFungible,
     issuer,
     owner, 
+    reference
   } = props;
 
   //TODO grab contract details
@@ -66,7 +68,7 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
   //TODO: can we use something else besdies contract
   const assetTransferResponse = useGetAssetTransferByContractId({contractId: contractId as ContractId<AssetTransfer>});
   const assetTransferCid = assetTransferResponse.contract?.contractId
-  const assetAccountResponse = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference: ''})
+  const assetAccountResponse = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference})
   const assetAccountCid = assetAccountResponse.contract?.contractId
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();

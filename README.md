@@ -212,6 +212,18 @@ The asset template represents your tokenized asset.
 # how the templates work together
 First start by creating an AssetHoldingAccount, the purpose of this template is to define the assetType it wil be associated with. Similar to a bank account. 
 
+
+# notes
 Once created, you can issue
 
 To get started, you can create your first AssetAccount template by going to "Create" 
+
+# Getting started might be first, requesting access to Daml Coin
+What are you creating? what are you issuing
+Faucet, send me 1000 Daml coin, 
+Why are you needing a Asset, specifying the action , you are the issuer
+
+Start participating in someone
+Getting started, faucet, 
+
+Next step, define, steps with faucet

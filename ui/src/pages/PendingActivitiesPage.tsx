@@ -7,11 +7,10 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { PendingActivities } from '../components/PendingActivities/PendingActivities';
 import { Link, useParams } from "react-router-dom";
-import { Typography } from '@mui/material';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    padding: isMobile() ? theme.spacing(0,0, 0, 0) : theme.spacing(3)
+    padding: isMobile() ? theme.spacing(0,0, 0, 0) : theme.spacing(1)
   }
 }))
 interface TabPanelProps {

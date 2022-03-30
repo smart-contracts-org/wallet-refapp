@@ -38,9 +38,12 @@ interface UseGetMyOwnedAssetsByAssetType {
 }
 
 // Get all Asset owned templates based on fields
-export const useGetMyOwnedAssetsByAssetType = ({ issuer, symbol, isFungible, owner, reference }: UseGetMyOwnedAssetsByAssetType) => {
-  const assetContracts = useStreamQueries(Asset.Asset, () => [{ owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
-  return assetContracts
+export const useGetMyOwnedAssetsByAssetType = (args: UseGetMyOwnedAssetsByAssetType) => {
+  const { issuer, symbol, isFungible, owner, reference } = args  
+  console.log('useGetMyOwnedAssetsByAssetType', args)
+  const res = useStreamQueries(Asset.Asset, () => [{ owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
+  console.log(res)
+  return res
 }
 export const useGetAssetHoldingAccount = ({ isAirdroppable, isShareable, issuer, symbol, isFungible, owner, reference }: UseGetMyOwnedAssetsByAssetType) => {
   const assetHoldingAccount = useStreamQueries(Account.AssetHoldingAccount, () => [{ airdroppable: isAirdroppable, reshareable: isShareable, owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
@@ -105,11 +108,11 @@ export const useGetSingleAssetSendRequest = (args: GetSingleAssetSendRequest) =>
   const singleAssetSendRequest = useStreamQueries(Asset.AssetTransfer, () => [{ recipient, asset: { amount, owner, assetType: { issuer, fungible: isFungible, symbol, reference } } }]);
   return singleAssetSendRequest
 }
-// TODO: rename to get all
-export const useGetAssetSendRequests = (isInbound?: boolean) => {
+
+export const useGetAssetTransfers = (isInbound?: boolean) => {
   const myPartyId = useParty();
-  const allAssetSendRequests = useStreamQueries(Asset.AssetTransfer, () => [{ recipient: isInbound ? myPartyId : undefined }]);
-  return allAssetSendRequests
+  const res = useStreamQueries(Asset.AssetTransfer, () => [{ recipient: isInbound ? myPartyId : undefined, sender: isInbound ? undefined : myPartyId }]);
+  return res
 }
 export const useGetAssetSwapRequests = (isInbound?: boolean) => {
   const myPartyId = useParty();
@@ -161,7 +164,7 @@ export const useLedgerHooks = () => {
 
   const sendAsset = async ({ assetAccountCid, amount, recipient, assetCids }: SendAsset) => {
     try {
-      // TODO: update documentation
+      // TODO: suggest react/daml documentation improvement.
       // needing to use _1:, _2:, not obvious enough.
       // how to parse error messages? not user friendly
       const result = await ledger.exercise(Account.AssetHoldingAccount.Create_Transfers, assetAccountCid, {
@@ -476,10 +479,10 @@ export const useLedgerHooks = () => {
     }
   }
 
-  const issueAsset = async ({ amount, ticker, isFungible }: { amount: string, ticker: string, isFungible: boolean }) => {
+  const issueAsset = async ({ amount, ticker, isFungible, reference }: {reference: string, amount: string, ticker: string, isFungible: boolean }) => {
     try {
       const asset = await ledger.create(Asset.Asset, {
-        assetType: { issuer: party, symbol: ticker, fungible: isFungible, reference: '' },
+        assetType: { issuer: party, symbol: ticker, fungible: isFungible, reference },
         owner: party,
         amount,
         observers: makeDamlSet<string>([party])
@@ -491,10 +494,10 @@ export const useLedgerHooks = () => {
   }
 
 
-  const createAssetAccount = async ({ ticker, isAirdroppable, isFungible, isShareable }: { ticker: string, isFungible: boolean; reference: string, isAirdroppable: boolean, isShareable: boolean }) => {
+  const createAssetAccount = async ({ ticker, isAirdroppable, isFungible, isShareable, reference }: { ticker: string, isFungible: boolean; reference: string, isAirdroppable: boolean, isShareable: boolean }) => {
     try {
       const assetAccount = await ledger.create(Account.AssetHoldingAccount, {
-        assetType: { issuer: party, symbol: ticker, fungible: isFungible, reference: '' },
+        assetType: { issuer: party, symbol: ticker, fungible: isFungible, reference },
         owner: party,
         airdroppable: isAirdroppable,
         resharable: isShareable
