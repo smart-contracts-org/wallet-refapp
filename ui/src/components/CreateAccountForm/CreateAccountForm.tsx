@@ -2,7 +2,7 @@ import TextField from '@mui/material/TextField';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { Card, Divider, FormControl, Typography } from '@mui/material';
+import { Card, CardContent, FormControl, Typography } from '@mui/material';
 import React from 'react';
 import WarningIcon from '@mui/icons-material/Warning';
 import { LoadingButton } from '@mui/lab';
@@ -85,7 +85,9 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
   }
   return (
     <div className={classes.formContainer}>
-      <Card elevation={0} variant='outlined' className={classes.root}>
+      <Card>
+        <CardContent>
+        <Card elevation={0} variant='outlined' className={classes.root}>
         <Typography color='text.secondary' variant='body2' p={1}>
           You must create an Asset Account first before you can mint your assets. Once you create the asset account, you will be able to mint tokens to yourself, or airdrop to other users.
         </Typography>
@@ -116,7 +118,6 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
         <Typography variant='caption' color='text.secondary' mb={1}>
           The symbol used to identify the token that this asset account will hold.
           </Typography>
-          <Divider sx={{marginBottom:1}}/>
         <TextField
           margin="none"
           id="reference"
@@ -132,9 +133,8 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
           sx={{marginBottom: 1}}
         />
         <Typography variant='caption' color='text.secondary' mb={1}>
-          The symbol used to identify the token that this asset account will hold.
+          Optional. The reference is a unique text associated with the asset. It could be an image link or serial number.
           </Typography>
-          <Divider/>
 
         <FormGroup>
           <FormControlLabel control={<Switch onChange={(e) => { setShareable(e.target.checked) }} defaultChecked />} label="Reshareable" />
@@ -151,14 +151,9 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
           </Typography>
         </FormGroup>
       </FormControl>
-      {/* <Card elevation={0} variant='outlined' className={classes.root}>
-        <Typography color='text.secondary' variant='body2' p={1}>
-          You must create an Asset Account first before you can mint your assets. Once you create the asset account, you will be able to mint tokens to yourself, or airdrop to other users.
-        </Typography>
-      </Card> */}
       <Card elevation={0} variant='outlined' className={classes.root}>
         <Typography className={classes.warningText} color='text.secondary' variant='body2' p={1}>
-          <WarningIcon />
+          <WarningIcon sx={{marginRight: 1}}/>
           Once created, you will not be able to edit the attributes.
         </Typography>
       </Card>
@@ -173,6 +168,12 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
       >
         Create
       </LoadingButton>
+
+        </CardContent>
+      
+
+      </Card>
+     
     </div>
 
   );
