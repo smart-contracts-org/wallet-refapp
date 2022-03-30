@@ -9,8 +9,6 @@ export const CreateAssetAccountPage: React.FC = () => {
   const classes = usePageStyles();
   
   return (
-      
-    
       <Card variant='outlined' className={classes.root}>
         <CardContent className={classes.cardContent}>
           <CreateAssetAccountSteps />
