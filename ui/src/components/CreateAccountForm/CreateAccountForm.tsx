@@ -2,7 +2,7 @@ import TextField from '@mui/material/TextField';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { Card, FormControl, Typography } from '@mui/material';
+import { Card, Divider, FormControl, Typography } from '@mui/material';
 import React from 'react';
 import WarningIcon from '@mui/icons-material/Warning';
 import { LoadingButton } from '@mui/lab';
@@ -111,24 +111,31 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
           size='small'
           error={hasError}
           onChange={(e) => onTextChange(e)}
+          sx={{marginBottom: 1}}
         />
         <Typography variant='caption' color='text.secondary' mb={1}>
           The symbol used to identify the token that this asset account will hold.
           </Typography>
+          <Divider sx={{marginBottom:1}}/>
         <TextField
           margin="none"
           id="reference"
-          label="reference"
+          label="Reference"
           type="text"
           fullWidth
+          maxRows={4}
+          multiline
           variant="outlined"
           size='small'
           error={hasError}
           onChange={(e) => onRefChange(e)}
+          sx={{marginBottom: 1}}
         />
         <Typography variant='caption' color='text.secondary' mb={1}>
           The symbol used to identify the token that this asset account will hold.
           </Typography>
+          <Divider/>
+
         <FormGroup>
           <FormControlLabel control={<Switch onChange={(e) => { setShareable(e.target.checked) }} defaultChecked />} label="Reshareable" />
           <Typography variant='caption' color='text.secondary' mb={1}>
