@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 
@@ -28,11 +28,27 @@ interface SideMenuProps {
 }
 export const SideMenu: React.FC<SideMenuProps> = (props) => {
   const {isRightOpen, toggleRightOpen} = props;
-  const [selected, setSelected] = React.useState<number>(0);
-  const classes = useStyles()
-  const onClick = (index: number) => {
-    setSelected(index)
+  const location = useLocation();
+  const [selected, setSelected] = React.useState<string | undefined>(location.pathname);
+
+  React.useEffect(() => {
+    if(localStorage.getItem("lastPath") !== selected){
+      setSelected(location.pathname)
+    }
+    
+  }, [location.pathname, selected])
+
+  const setLastPath = (path:string) => {
+    localStorage.setItem("lastPath", path)
+  } 
+
+  const onClick = (path: string) => {
+    setLastPath(path)
+    setSelected(path)
+    
   }
+
+  const classes = useStyles()
   return (
     <Drawer
       variant="permanent"
@@ -46,7 +62,7 @@ export const SideMenu: React.FC<SideMenuProps> = (props) => {
       <Box sx={{ overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
         <List>
           {menuItems.map((item, index) => (
-            <ListItemButton onClick={() => onClick(index)} selected={selected === index} key={index} component={Link} to={item.path}>
+            <ListItemButton onClick={() => onClick(item.path)} selected={selected === item.path } key={index} component={Link} to={item.path}>
               <ListItemText className={classes.root}>
                 {item.label}
               </ListItemText>

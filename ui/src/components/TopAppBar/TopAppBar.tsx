@@ -4,11 +4,12 @@ import Toolbar from '@mui/material/Toolbar';
 import MenuIcon from '@mui/icons-material/Menu';
 import Typography from '@mui/material/Typography';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
-import { Avatar, Box, Card, CardContent, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
+import {  Box, Card, CardContent, Chip, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
 import { isMobile } from '../../platform/platform';
 import { SvgIcon } from '../SvgIcon/SvgIcon';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 export const demoPartyId = 'DEMO-ledger-party-03568cfb-dc57-4c54-90d6-7db79f0e3dc2'
 interface TopAppBarProps {
   handleDrawerOpen: () => void;
@@ -36,7 +37,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, h
     onLogout && onLogout()
   }
   const copy = () => {
-    if(!party){
+    if (!party) {
       return;
     }
     navigator.clipboard.writeText(party);
@@ -53,14 +54,18 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, h
           {isOpen ? <MenuOpenIcon /> : <MenuIcon />}
         </IconButton>}
         {isMobile() && <SvgIcon />}
-        <Typography variant="h6" noWrap component="div">
+        {!isMobile() && <Typography variant="h6" noWrap component="div">
           Wallet RefApp
-      </Typography>
+      </Typography>}
         {party && (<Box sx={{ flexGrow: 0, marginLeft: 'auto' }}>
-          <Tooltip title="Open settings" >
-            <IconButton size='small' onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar sx={{ marginLeft: 'auto' }} alt="profile" ></Avatar>
-            </IconButton>
+          <Tooltip title="Open settings"  >
+            <>
+              <Chip icon={<AccountCircleIcon />} onClick={handleOpenUserMenu} label={party.length < 10 ? party + demoPartyId : party}
+                sx={{ maxWidth: '230px' }} deleteIcon={<AccountCircleIcon />} />
+              <IconButton size='small' onClick={handleOpenUserMenu}>
+                <KeyboardArrowDownIcon />
+              </IconButton>
+            </>
           </Tooltip>
           <Menu
             sx={{ mt: '45px' }}
@@ -78,21 +83,29 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, h
             open={Boolean(anchorElUser)}
             onClose={handleCloseUserMenu}
           >
-            <Card sx={{ width: '300px' }}>
+            <Card sx={{ width: '300px', display: 'flex', flexDirection: 'column' }}>
               <CardContent>
                 <Typography variant='caption'>
-                  Party ID:
+                  Ledger ID:
                 </Typography>
-                <Typography variant='caption'>
-                  {party || demoPartyId}
-                </Typography>
-                <IconButton size='small' onClick={copy}>
-                  <ContentCopyIcon />
-                </IconButton>
+                <Box display='flex' flexDirection='row' sx={{ paddingBottom: 1 }}>
+                  <Typography variant='caption' color='primary'>
+                    {party.length < 10 ? party + demoPartyId : party}
+                  </Typography>
+                  <IconButton size='small' onClick={copy}>
+                    <ContentCopyIcon sx={{ marginLeft: 1 }} />
+                  </IconButton>
+                </Box>
+                <Card variant='outlined' sx={{ padding: 1 }}>
+                  <Typography color='text.secondary' variant='caption'>
+                    Your unique ledgerID is associated with this wallet. It is required to receive transfers / swaps / asset holding invites, or any other activity that requires your unique Ledger ID as a counter party.
+                  </Typography>
+                </Card >
+
               </CardContent>
             </Card>
             <MenuItem key={'Logout'} onClick={onLogout && onLogoutClick}>
-              <Typography textAlign="center">{'Logout'}</Typography>
+              <Typography color='error' textAlign="center">{'Logout'}</Typography>
             </MenuItem>
           </Menu>
         </Box>

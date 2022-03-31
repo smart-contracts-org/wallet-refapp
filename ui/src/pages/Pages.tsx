@@ -20,7 +20,7 @@ export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
     <Routes>
       <Route path='/asset' element={<AssetProfilePage />
       } />
-      <Route path='/pending/:direction' element={<PendingActivitiesPage />
+      <Route path='/pending/' element={<PendingActivitiesPage />
       } />
       <Route path='/pending-activity' element={<PendingActivityDetailsPage />
       } />

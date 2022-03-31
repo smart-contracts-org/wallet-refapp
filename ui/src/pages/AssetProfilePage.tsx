@@ -84,7 +84,7 @@ export const usePageStyles = makeStyles((theme: Theme) => ({
     color: chipColors.issuer
   },
   issuerWarning: {
-    backgroundColor: theme.palette.warning.dark,
+    backgroundColor: theme.palette.info.dark,
   }
 }))
 
@@ -136,7 +136,7 @@ export const AssetProfilePage: React.FC = () => {
             </Typography>
           </Box>
         </Box>
-        <Card variant='outlined' className={classes.card} >
+        <Card  className={classes.card} >
           <CardContent className={classes.cardContent}>
             <Avatar className={classes.avatar}>
               {symbol?.[0] || 'undefined'}
@@ -187,7 +187,7 @@ export const AssetProfilePage: React.FC = () => {
               </Typography>
               </div>
             </div>
-            {amount === 0 && issuer === party && <Card color="theme.palette.warning.dark" className={classes.issuerWarning} sx={{ width: '100%', margin: 1, alignItems: 'center', padding: 1, display: 'flex' }} >
+            {amount === 0 && issuer === party && <Card variant='outlined' sx={{ width: '100%', margin: 1, alignItems: 'center', padding: 1, display: 'flex' }} >
               <WarningIcon sx={{ marginRight: 1 }} />
               <Typography variant='body2'>
                 You have {amount} amount. Click "issue / airdrop" to issue assets.

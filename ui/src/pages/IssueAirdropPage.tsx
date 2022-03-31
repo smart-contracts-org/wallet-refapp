@@ -19,7 +19,6 @@ export const IssueAirdropPage: React.FC = () => {
   const issuer = query.get('issuer') || ""
   const symbol = query.get('ticker') || ""
   const owner = query.get('owner') || ""
-  const reference = query.get('reference') || ""
   const isFungible = query.get('isFungible') === 'true'
   
   const classes = usePageStyles();
@@ -67,8 +66,9 @@ export const IssueAirdropPage: React.FC = () => {
               <Button sx={{ marginRight: 0.5 }} onClick={() => { onButtonClick(1) }} fullWidth variant={index === 1 ? 'contained' : 'outlined'} >Issue to Self</Button>
               <Button sx={{ marginLeft: 0.5 }} onClick={() => { onButtonClick(2) }} fullWidth variant={index === 2 ? 'contained' : 'outlined'}>Airdrop</Button>
             </Box>
-            {index === 1 && <IssueToSelfForm handleClose={() => {}} isFungible={isFungible} ticker={symbol} reference={reference}/>}
-            {index === 2 && <AirdropForm issuer={issuer} owner={owner} symbol={symbol} isFungible={isFungible} reference={reference} />}
+            {index === 1 && <IssueToSelfForm handleClose={() => {}}  ticker={symbol} />}
+            {/* TODO, add reference to URL, so we can pass it down */}
+            {index === 2 && <AirdropForm issuer={issuer} owner={owner} symbol={symbol} isFungible={isFungible} reference={""} />}
           </CardContent>
         </Card>
       </Box>
