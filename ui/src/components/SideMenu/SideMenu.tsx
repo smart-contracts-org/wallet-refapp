@@ -64,10 +64,6 @@ export const SideMenu: React.FC<SideMenuProps> = (props) => {
             <Typography variant='caption'>Show App Guide</Typography>
           </Box>
         <Box padding={2} flexDirection='column' display='flex' justifyContent='start'>
-          
-
-
-
           <Typography variant='caption' color='text.secondary'>
             Documentation
         </Typography>
