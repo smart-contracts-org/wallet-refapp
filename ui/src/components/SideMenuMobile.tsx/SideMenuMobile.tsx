@@ -27,17 +27,22 @@ interface SideMenuMobileProps {
 export const SideMenuMobile: React.FC<SideMenuMobileProps> = ({isOpen, handleDrawerOpen, handleDrawerClose}) => {
   const location = useLocation();
   const [selected, setSelected] = React.useState<string | undefined>(location.pathname);
-
+  
   React.useEffect(() => {
-    if(location.pathname !== selected){
+    if(localStorage.getItem("lastPath") !== selected){
       setSelected(location.pathname)
     }
-  }, [selected, location.pathname])
- 
+    
+  }, [location.pathname, selected])
+
+  const setLastPath = (path:string) => {
+    localStorage.setItem("lastPath", path)
+  } 
 
   const classes = useStyles()
   const onClick = (path: string) => {
     setSelected(path)
+    setLastPath(path)
     handleDrawerClose();
   }
   return (
