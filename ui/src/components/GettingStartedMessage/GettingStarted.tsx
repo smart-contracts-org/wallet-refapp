@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Card, CardContent, Typography, Divider } from '@mui/material';
+import { Card, CardContent, Typography } from '@mui/material';
 export const GettingStartedMessage: React.FC = () => {
   return (
     <>
