@@ -9,13 +9,12 @@ import { Archive } from '@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476
 import { makeDamlSet } from '../utils/common';
 import { AssetInSwap, Trade, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
 
-export const useGetAllAssetAccounts = () => {
+export const useGetAllAssetHoldingAccounts = () => {
   const myPartyId = useParty();
-  const assetHoldingAccounts = useStreamQueries(Account.AssetHoldingAccount, () => [{ owner: myPartyId }]);
-  return assetHoldingAccounts
+  const res = useStreamQueries(Account.AssetHoldingAccount, () => [{ owner: myPartyId }]);
+  return res
 }
 
-// used to get all of user's issued assets
 interface UseGetMyIssuedAssetAccounts {
   symbol: string;
   reference: string;
@@ -37,38 +36,26 @@ interface UseGetMyOwnedAssetsByAssetType {
   isAirdroppable?: boolean;
 }
 
-// Get all Asset owned templates based on fields
 export const useGetMyOwnedAssetsByAssetType = (args: UseGetMyOwnedAssetsByAssetType) => {
   const { issuer, symbol, isFungible, owner, reference } = args  
-  console.log('useGetMyOwnedAssetsByAssetType', args)
   const res = useStreamQueries(Asset.Asset, () => [{ owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
-  console.log(res)
   return res
 }
+
 export const useGetAssetHoldingAccount = ({ isAirdroppable, isShareable, issuer, symbol, isFungible, owner, reference }: UseGetMyOwnedAssetsByAssetType) => {
   const assetHoldingAccount = useStreamQueries(Account.AssetHoldingAccount, () => [{ airdroppable: isAirdroppable, reshareable: isShareable, owner, assetType: { issuer, symbol, fungible: isFungible, reference } }]);
   return assetHoldingAccount
-}
-
-interface GetSingleAssetSendRequest {
-  recipient: string;
-  symbol: string;
-  isFungible: boolean;
-  reference: string;
-  amount: string;
-  owner: string;
-  issuer: string;
 }
 
 interface useGetAssetTransferByContractIdArgs {
   contractId: ContractId<AssetTransfer>;
 }
 
-
 export const useGetAssetTransferByContractId = (arg: useGetAssetTransferByContractIdArgs) => {
   const contract = useFetch(Asset.AssetTransfer, arg.contractId)
   return contract
 }
+
 export const useGetAssetContractByContractId = (contractId: ContractId<Asset.Asset>) => {
   const contract = useFetch(Asset.Asset, contractId)
   return contract
@@ -102,13 +89,6 @@ export const useGetAssetHoldingInviteByContractId = (arg: ContractId<AssetHoldin
   return contract
 }
 
-
-export const useGetSingleAssetSendRequest = (args: GetSingleAssetSendRequest) => {
-  const { recipient, symbol, isFungible, reference, amount, owner, issuer } = args;
-  const singleAssetSendRequest = useStreamQueries(Asset.AssetTransfer, () => [{ recipient, asset: { amount, owner, assetType: { issuer, fungible: isFungible, symbol, reference } } }]);
-  return singleAssetSendRequest
-}
-
 export const useGetAssetTransfers = (isInbound?: boolean) => {
   const myPartyId = useParty();
   const res = useStreamQueries(Asset.AssetTransfer, () => [{ recipient: isInbound ? myPartyId : undefined, sender: isInbound ? undefined : myPartyId }]);
@@ -127,8 +107,6 @@ export const useGetAssetInviteRequests = (isInbound?: boolean) => {
   return allAssetSendRequests
 }
 // Used to get all propsals for an assetType
-
-
 export const useGetAccountInvitesByAssetType = (args: Omit<AssetType, "issuer">) => {
   const myPartyId = useParty();
 
@@ -147,8 +125,6 @@ export const useGetAssetAccountInvites = () => {
   const assetHoldingAccount = useStreamQueries(Account.AssetHoldingAccountCloseProposal);
   return assetHoldingAccount
 }
-
-
 
 interface SendAsset {
   assetAccountCid: ContractId<Account.AssetHoldingAccount>;
@@ -178,8 +154,6 @@ export const useLedgerHooks = () => {
 
     }
   }
-
-
   interface InviteNewAssetHolder {
     assetType: {
       issuer: string,

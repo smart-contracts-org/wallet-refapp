@@ -11,7 +11,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
 import { getAssetSum } from '../../utils/getAssetSum';
 import { useParty } from '@daml/react';
-import { useGetAllAssetAccounts, useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
+import { useGetAllAssetHoldingAccounts, useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { AssetType } from '@daml.js/wallet-refapp/lib/Asset';
 
 
@@ -84,7 +84,7 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
 
 
   // get a list of available asset accounts you own:
-  const { loading: loadingOwnedAssetAccounts, contracts: ownedAssetAccounts } = useGetAllAssetAccounts();
+  const { loading: loadingOwnedAssetAccounts, contracts: ownedAssetAccounts } = useGetAllAssetHoldingAccounts();
 
 
   const { loading: loadingAssetContracts, contracts: assetContracts } = useGetMyOwnedAssetsByAssetType({reference, issuer: issuer, symbol: symbol, isFungible: isFungible, owner: party });
