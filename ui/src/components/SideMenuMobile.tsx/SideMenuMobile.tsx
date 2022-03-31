@@ -2,7 +2,7 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
@@ -25,11 +25,24 @@ interface SideMenuMobileProps {
   handleDrawerClose: () => void;
 }
 export const SideMenuMobile: React.FC<SideMenuMobileProps> = ({isOpen, handleDrawerOpen, handleDrawerClose}) => {
+  const location = useLocation();
+  const [selected, setSelected] = React.useState<string | undefined>(location.pathname);
   
-  const [selected, setSelected] = React.useState<number>(0);
+  React.useEffect(() => {
+    if(localStorage.getItem("lastPath") !== selected){
+      setSelected(location.pathname)
+    }
+    
+  }, [location.pathname, selected])
+
+  const setLastPath = (path:string) => {
+    localStorage.setItem("lastPath", path)
+  } 
+
   const classes = useStyles()
-  const onClick = (index: number) => {
-    setSelected(index)
+  const onClick = (path: string) => {
+    setSelected(path)
+    setLastPath(path)
     handleDrawerClose();
   }
   return (
@@ -48,7 +61,7 @@ export const SideMenuMobile: React.FC<SideMenuMobileProps> = ({isOpen, handleDra
       <Box >
         <List>
           {menuItems.map((item, index) => (
-            <ListItemButton onClick={() => onClick(index)} selected={selected === index} key={index} component={Link} to={item.path}>
+            <ListItemButton onClick={() => onClick(item.path)} selected={selected === item.path} key={index} component={Link} to={item.path}>
               <ListItemText className={classes.root}>
                 {item.label}
               </ListItemText>

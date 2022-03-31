@@ -6,7 +6,8 @@ import { isMobile } from '../platform/platform';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { PendingActivities } from '../components/PendingActivities/PendingActivities';
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -46,10 +47,14 @@ function a11yProps(index: number) {
 }
 
 export const BasicTabs: React.FC<unknown> =() => {
-  const {direction} = useParams();
+  const query = useQuery()
+  const direction = query.get('direction') || ""
   const [value, setValue] = React.useState(direction === 'inbound'? 0 : 1);
- 
   React.useEffect(() => {
+    if(direction === ""){
+      setValue(0);
+      return;
+    }
     if(direction === 'inbound'){
       setValue(0)
     } else {
@@ -64,8 +69,8 @@ export const BasicTabs: React.FC<unknown> =() => {
     <>
       <Box sx={{ marginBottom:1, borderBottom: 1, borderColor: 'divider' }}>
         <Tabs variant={isMobile() ? 'fullWidth': undefined} value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Inbound" {...a11yProps(0)} component={Link} to={'/pending/inbound'} />
-          <Tab component={Link} to={'/pending/outbound'} label="Outbound" {...a11yProps(1)} />
+          <Tab label="Inbound" {...a11yProps(0)} component={Link} to={'/pending?direction=inbound'} />
+          <Tab component={Link} to={'/pending?direction=outbound'} label="Outbound" {...a11yProps(1)} />
 
         </Tabs>
       </Box>
