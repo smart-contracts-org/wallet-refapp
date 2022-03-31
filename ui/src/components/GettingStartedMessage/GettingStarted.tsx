@@ -184,7 +184,16 @@ export const GettingStartedMessage: React.FC = () => {
             </Typography>
           <br />
           <Typography>
-            Specify the user, specify the amount of your token that you want to swap out.
+            Specify the user's ledger ID. For this example, we will the issuer of DamlToken,
+            
+            <br/>
+            <br/>
+
+            <i><b>ledger-party-68815041-ad16-4d9a-8177-9f9b20d8fb3f</b></i>
+            <br/>
+            <br/>
+
+            specify the amount of your token that you want to swap out.
             </Typography>
           <br />
           <Typography>
