@@ -70,15 +70,27 @@ export const GettingStartedMessage: React.FC = () => {
             </Typography>
           <Typography>
             Click "Create" on the left menu drawer.
-            You are essentially acting as an issuer of the asset, defining the asset attributes. You can then issue the account's associated assets
+            By creating an AssetHoldingAccount, you are acting as the issuer (as well as the owner) of this account.
             </Typography>
           <br />
           <Typography>
-            The purpose of the AssetHoldingAccount is also to allow the owner to perform additional actions such as creating a swap, or transfering the associated asset to another user.
+            As the issuer, you are able to define the token symbol (ticker / name), whether it is fungible, reshareable, or airdroppable.
+          </Typography>
+          <br/>
+          <Typography>
+            The purpose of the AssetHoldingAccount is to allow the owner to perform additional actions such as creating a swap, or transfering the associated asset to another user.
             </Typography>
           <br />
           <Typography>
-            Once you have defined the characteristics, click "Create" to create this asset account.
+          Once you’ve created an AssetHoldingAccount, you can mint the asset into your account. 
+          </Typography>
+          <br/>
+          <Typography>
+            After you have defined the characteristics, click "Create" to create this asset account.
+            </Typography>
+            <br/>
+            <Typography>
+              <i>Note, Assets and AssetHoldingAccounts are linked by common properties: issuer, symbol, resharable, airdroppable, fungible.</i>
             </Typography>
         </CardContent>
       </Card>
@@ -135,7 +147,7 @@ export const GettingStartedMessage: React.FC = () => {
              </Typography>
           <br />
           <Typography>
-            Note, if the asset account was not shareable, then only the issuer is able to share the account, and not subsequent owners.
+Note, if the account is resharable, any account owner can invite other users to create AssetHoldingAccounts for this asset. If the account is not resharable, only the issuer can invite other users to create AssetHoldingAccounts for this asset.
              </Typography>
           <br />
           <Typography>
@@ -184,7 +196,16 @@ export const GettingStartedMessage: React.FC = () => {
             </Typography>
           <br />
           <Typography>
-            Specify the user, specify the amount of your token that you want to swap out.
+            Specify the user's ledger ID. For this example, we will the issuer of DamlToken,
+            
+            <br/>
+            <br/>
+
+            <i><b>ledger-party-68815041-ad16-4d9a-8177-9f9b20d8fb3f</b></i>
+            <br/>
+            <br/>
+
+            specify the amount of your token that you want to swap out.
             </Typography>
           <br />
           <Typography>
