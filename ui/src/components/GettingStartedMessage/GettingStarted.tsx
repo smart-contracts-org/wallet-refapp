@@ -147,7 +147,7 @@ export const GettingStartedMessage: React.FC = () => {
              </Typography>
           <br />
           <Typography>
-            Note, if the asset account was not shareable, then only the issuer is able to share the account, and not subsequent owners.
+Note, if the account is resharable, any account owner can invite other users to create AssetHoldingAccounts for this asset. If the account is not resharable, only the issuer can invite other users to create AssetHoldingAccounts for this asset.
              </Typography>
           <br />
           <Typography>
