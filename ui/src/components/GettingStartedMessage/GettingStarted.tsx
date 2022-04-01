@@ -14,7 +14,7 @@ export const GettingStartedMessage: React.FC = () => {
             </Typography>
           <br />
           <Typography>
-            <b>1.</b> Requesting to be a DamlToken asset holder. <i>This will be necessary for the swap workflow later on.</i>
+            <b>1.</b> Requesting to be an ExampleToken asset holder. <i>This will be necessary for the swap workflow later on.</i>
           </Typography>
           <Typography>
             <b>2.</b> Creating a new asset class via creating a new AssetHoldingAccount
@@ -39,7 +39,7 @@ export const GettingStartedMessage: React.FC = () => {
             1. Requesting Daml Token
             </Typography>
           <Typography>
-            To receive DamlTokens via airdrop, you will need to tweet to <b>@DamlDriven</b> with your ledger ID and the hashtag #DamlTokenPlz.
+            To receive ExampleTokens via airdrop, you will need to tweet to <b>@DamlDriven</b> with your ledger ID and the hashtag #ExampleTokensPlz.
           </Typography>
           <br />
           <Typography>
@@ -55,11 +55,11 @@ export const GettingStartedMessage: React.FC = () => {
           </Typography>
           <br />
           <Typography>
-            By accepting the invitation, you are opening a DamlToken AssetHoldingAccount, and giving permission to the issuer the right to airdrop (create the asset directly in your wallet) you the tokens.
+            By accepting the invitation, you are opening an ExampleToken AssetHoldingAccount, and giving permission to the issuer the right to airdrop (create the asset directly in your wallet) you the tokens.
           </Typography>
           <br />
           <Typography>
-            While you wait for the DamlTokens to be airdropped to you, you can continue the steps below.
+            While you wait for the ExampleTokens to be airdropped to you, you can continue the steps below.
             </Typography>
         </CardContent>
       </Card>
@@ -184,7 +184,7 @@ Note, if the account is resharable, any account owner can invite other users to 
             5. Swap
             </Typography>
           <Typography>
-            Let's try and swap your newly issued asset with some DamlTokens. What you'll be creating here is a swap request. The assets are not swapped immediately, but rather a request to swap is created.
+            Let's try and swap your newly issued asset with some ExampleTokens. What you'll be creating here is a swap request. The assets are not swapped immediately, but rather a request to swap is created.
             </Typography>
           <br />
           <Typography>
@@ -196,7 +196,7 @@ Note, if the account is resharable, any account owner can invite other users to 
             </Typography>
           <br />
           <Typography>
-            Specify the user's ledger ID. For this example, we will the issuer of DamlToken,
+            Specify the user's ledger ID. For this example, we will the issuer of ExampleTokens,
             
             <br/>
             <br/>
@@ -212,7 +212,7 @@ Note, if the account is resharable, any account owner can invite other users to 
             And specify the asset Type you want to receive, and the quantity.
             </Typography>
           <Typography>
-            Perhaps you believe your asset is worth 1 DamlToken, or 100 DamlTokens.
+            Perhaps you believe your asset is worth 1 ExampleToken, or 100 ExampleTokens.
             </Typography>
           <br />
           <Typography>
