@@ -97,7 +97,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, h
                   </IconButton>
                 </Box>
                 <Card variant='outlined' sx={{ padding: 1 }}>
-                  <Typography color='text.secondary' variant='caption'>
+                  <Typography color='text.primary' variant='caption'>
                     Your unique ledgerID is associated with this wallet. It is required to receive transfers / swaps / asset holding invites, or any other activity that requires your unique Ledger ID as a counter party.
                   </Typography>
                 </Card >
