@@ -15,7 +15,7 @@ import { enableFabBack } from './IssueAirdropPage';
 import { chipColors } from '../components/RowChip/RowChip';
 import { useParty } from '@daml/react';
 import { numberWithCommas } from '../utils/numberWithCommas';
-import { useGetAssetAccountByKey, useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
+import { useGetMyAssetAccountByKey, useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
 import { getAssetSum } from '../utils/getAssetSum';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
@@ -95,7 +95,7 @@ export const AssetProfilePage: React.FC = () => {
   const issuer = query.get('issuer') || ""
   const symbol = query.get('ticker') || ""
   const isFungible = query.get('isFungible') === 'true'
-  const { contract: assetAccountContract } = useGetAssetAccountByKey({ issuer, symbol, fungible: isFungible, reference })
+  const { contract: assetAccountContract } = useGetMyAssetAccountByKey({ issuer, symbol, fungible: isFungible, reference })
   const contractId = query.get('contractId');
   const isShareable = assetAccountContract?.payload.resharable
   const isAirdroppable = assetAccountContract?.payload.airdroppable

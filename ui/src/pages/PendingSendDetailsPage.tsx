@@ -2,7 +2,7 @@ import React from 'react';
 import {  useNavigate } from 'react-router-dom'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Avatar, Box, Button, Card, CardContent, IconButton, Typography } from '@mui/material';
-import { useGetAssetAccountByKey, useGetAssetTransferByContractId, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
+import { useGetMyAssetAccountByKey, useGetAssetTransferByContractId, useLedgerHooks } from '../ledgerHooks/ledgerHooks';
 import { usePageStyles } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { AssetDetails } from '../components/AssetDetails/AssetDetails';
 import { isMobile } from '../platform/platform';
@@ -68,13 +68,14 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
   //TODO: can we use something else besdies contract
   const assetTransferResponse = useGetAssetTransferByContractId({contractId: contractId as ContractId<AssetTransfer>});
   const assetTransferCid = assetTransferResponse.contract?.contractId
-  const assetAccountResponse = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference})
+  const assetAccountResponse = useGetMyAssetAccountByKey({issuer, symbol, fungible: isFungible, reference})
   const assetAccountCid = assetAccountResponse.contract?.contractId
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();
   const onBack = () => {
     nav(-1)
   }
+  
   if(!assetTransferCid){
     return (
       <Card sx={{width: '100%', margin: 1}}>
@@ -158,7 +159,7 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
                 { symbol || '[TickerName]'}
               </Typography>
             </div>
-             <AssetDetails issuer={issuer} owner={owner} isFungible={isFungible}  quantity={amount} ticker={symbol || '[Ticker]'} />
+             <AssetDetails reference={reference} issuer={issuer} owner={owner} isFungible={isFungible}  quantity={amount} ticker={symbol || '[Ticker]'} />
           </CardContent>
           {
             success && !!successMessage[success] && <Card sx={{margin: 1}}><CardContent>{successMessage[success]}</CardContent></Card>
@@ -166,11 +167,14 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
           {
             error && !!errors[error] && <Card sx={{margin: 1}}><CardContent>{errors[error]}</CardContent></Card>
           }
+          {
+            !assetAccountCid && <Card sx={{margin: 1, maxWidth: '500px'}}><CardContent>You do not have an Asset Holding Account for this asset. Please ask the sender of this asset to invite you as an asset holder.</CardContent></Card>
+          }
           {success === undefined && <div className={classes.actions}>
-            {isInbound === 'true' && <LoadingButton loadingPosition='end' loading={isLoading === 'accept'} onClick={onAccept} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
+            {isInbound === 'true' && <LoadingButton disabled={!assetAccountCid} loadingPosition='end' loading={isLoading === 'accept'} onClick={onAccept} fullWidth sx={{marginLeft: 1, marginRight: 1 }} variant='outlined'  >
               Accept Request
             </LoadingButton>}
-            {isInbound === 'true' && <LoadingButton loadingPosition='end' loading={isLoading === 'reject'} fullWidth onClick={() => onClick('reject')} sx={{ marginRight: 1 }} variant='outlined'>
+            {isInbound === 'true' && <LoadingButton disabled={!assetAccountCid} loadingPosition='end' loading={isLoading === 'reject'} fullWidth onClick={() => onClick('reject')} sx={{ marginRight: 1 }} variant='outlined'>
               Reject Request
           </LoadingButton>}
           {isInbound === 'false' && success !== 'cancel' && <LoadingButton  loadingPosition='end' loading={isLoading === 'cancel'} onClick={() => {onClick('cancel')}} fullWidth sx={{ margin: 1 }} variant='outlined'>
