@@ -12,7 +12,7 @@ import { ContractId } from '@daml/types';
 import { AssetHoldingAccount } from '@daml.js/wallet-refapp/lib/Account';
 import { getAssetSum } from '../../utils/getAssetSum';
 import { numberWithCommas } from '../../utils/numberWithCommas';
-
+import InfoIcon from '@mui/icons-material/Info';
 interface SendFormProps {
   ticker: string;
   isAirdroppable: boolean;
@@ -106,11 +106,10 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
           </Typography>
         </Box>
         <TextField
-          
           disabled={isLoading || isSuccessful}
           margin="normal"
           id="recipient"
-          label="Recipient"
+          label="Recipient's LedgerID"
           type="text"
           value={recipient}
           fullWidth
@@ -118,6 +117,8 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
           size='small'
           onChange={(e) => setRecipient(e.currentTarget.value)}
         />
+          
+        
         <TextField
           disabled={isLoading || isSuccessful}
           margin="none"
@@ -137,10 +138,15 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
           }}
         />
         <Card elevation={0} variant='outlined' className={classes.helpMessage}>
+          <Box display='flex' alignItems='center' margin={1}>
+          <InfoIcon color='primary' sx={{marginRight:1}}/> <Typography variant='body2'><i>Please note</i></Typography>
+            </Box>
+        <Typography color='text.primary' variant='body2' p={1}>
+          If you have not invited this user as an owner for the AssetHoldingAccount {ticker}, please do so first by going "back" and clicking "Invite". Otherwise the recipient will not be able to accept this asset.
+        </Typography>
           <Typography color='text.primary' variant='body2' p={1}>
-            This is a one-off send. This means when you send to the specified user,
-            they must accept it first in order for the ownership of the asset to be transferred.
-            This uses the 'propose and accept' pattern. Learn more about this pattern <Link target="_blank" href="https://docs.daml.com/daml/patterns/initaccept.html">here</Link>.
+            An assetTransferProposal template is created upon clicking send. The recipient will need to accept this request first before the ownership of the asset is transferred.
+             <Link target="_blank" href="https://docs.daml.com/daml/patterns/initaccept.html">here</Link>.
         </Typography>
         </Card>
         <LoadingButton

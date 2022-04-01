@@ -8,7 +8,7 @@ import { isMobile } from '../platform/platform';
 import { enableFabBack } from './IssueAirdropPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
-import { useGetAssetAccountByKey, useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
+import { useGetMyAssetAccountByKey, useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
 import { useParty } from '@daml/react';
 
 
@@ -22,7 +22,7 @@ export const SwapPage: React.FC = () => {
   const symbol = query.get('ticker') || ""
   const isFungible = query.get('isFungible') === 'true'
   // get your owned asset account
-  const { loading: assetAccountContractLoading} = useGetAssetAccountByKey({issuer, symbol, fungible: isFungible, reference})
+  const { loading: assetAccountContractLoading} = useGetMyAssetAccountByKey({issuer, symbol, fungible: isFungible, reference})
 
   const { loading: assetContractsLoading} = useGetMyOwnedAssetsByAssetType({ issuer, symbol, isFungible, owner: party, reference });
 

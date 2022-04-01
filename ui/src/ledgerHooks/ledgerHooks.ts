@@ -78,7 +78,7 @@ export interface AssetType {
   fungible: boolean;
   reference: string;
 }
-export const useGetAssetAccountByKey = (assetType: AssetType) => {
+export const useGetMyAssetAccountByKey = (assetType: AssetType) => {
   const myPartyId = useParty();
   const contract = useFetchByKey(Account.AssetHoldingAccount, () => ({ _1: assetType, _2: myPartyId }), []);
   return contract
