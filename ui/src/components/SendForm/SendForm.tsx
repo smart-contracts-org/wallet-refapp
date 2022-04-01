@@ -44,7 +44,6 @@ export const useStyles = makeStyles((theme: Theme) => ({
 
 export const SendForm: React.FC<SendFormProps> = (props) => {
   const { reference,assetAccountCid, issuer,isFungible, ticker, owner } = props;
-  console.log('sendpage', { reference,assetAccountCid, issuer,isFungible, ticker, owner })
   const classes = useStyles();
   const nav = useNavigate();
   const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: isFungible, owner, reference});
