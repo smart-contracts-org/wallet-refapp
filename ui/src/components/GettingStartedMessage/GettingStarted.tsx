@@ -29,14 +29,14 @@ export const GettingStartedMessage: React.FC = () => {
             <b>5.</b>  Sending assets to other users.
            </Typography>
           <Typography>
-            <b>6.</b>  Swapping your newly created asset with the Daml Token.
+            <b>6.</b>  Swapping your newly created asset with the ExampleToken.
            </Typography>
         </CardContent>
       </Card>
       <Card sx={{ margin: 1 }}>
         <CardContent>
           <Typography color='primary' sx={{ fontWeight: 'bold' }} variant='h6'>
-            1. Requesting Daml Token
+            1. Requesting ExampleToken
             </Typography>
           <Typography>
             To receive ExampleTokens via airdrop, you will need to tweet to <b>@DamlDriven</b> with your ledger ID and the hashtag #ExampleTokensPlz.
