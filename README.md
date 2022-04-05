@@ -5,6 +5,9 @@
 
 # Welcome to the Wallet Ref App, created with Create Daml App
 
+![Screenshot 2022-04-05 at 9 25 55 AM](https://user-images.githubusercontent.com/97971317/161801302-4baba014-bbe6-4b2a-a0a5-90c3cfdeb7c5.png)
+
+
 This repository contains a template to get started with developing full-stack
 [Daml](https://daml.com/) applications. The demo application covers the following aspects:
 
