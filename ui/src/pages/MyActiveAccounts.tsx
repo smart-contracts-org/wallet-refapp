@@ -50,10 +50,6 @@ export const MyActiveAccountsPage: React.FC = () => {
         </Typography>
         </Prompt>
         {assetRows}
-        {/* <AssetAccountRow reference={""} contractId={'demo'} isFungible isAirdroppable isShareable owner={'me'} issuer={'Digital Asset'} ticker={'DAMLCOIN'} quantity={800} isIssuer />
-        <AssetAccountRow reference={""}  contractId={'demo'} owner={'me'} issuer={'Alex'} ticker={'ATOKEN'} quantity={100000} />
-        <AssetAccountRow reference={""} contractId={'demo'} owner={'me'} issuer={'THEWEEKEND'} ticker={'TICKET'} quantity={1} /> */}
-
       </Box>
     </Box>
   )

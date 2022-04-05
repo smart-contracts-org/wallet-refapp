@@ -3,14 +3,12 @@
 [![Download](https://img.shields.io/github/release/digital-asset/daml.svg?label=Download)](https://docs.daml.com/getting-started/installation.html)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/digital-asset/daml/blob/main/LICENSE)
 
-# Wallet Ref App
-
-# Welcome to _Create Daml App_
+# Welcome to the Wallet Ref App, created with Create Daml App
 
 This repository contains a template to get started with developing full-stack
 [Daml](https://daml.com/) applications. The demo application covers the following aspects:
 
-1. A [Daml](https://docs.daml.com/index.html) model of a simple social network
+1. [Daml](https://docs.daml.com/index.html) templates
 2. A UI written in [TypeScript](https://www.typescriptlang.org/) and [React](https://reactjs.org/)
 
 The UI is developed using [React](https://reactjs.org/),
@@ -22,7 +20,7 @@ written in plain TypeScript and the UI framework should hence be easily
 replaceable.
 
 
-## Getting started
+## Getting started (Setting up the dev environment)
 
 Before you can run the application, you need to install the
 [Node](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) package manager for JavaScript.
@@ -59,16 +57,29 @@ This should open a browser window with a login screen.
 If it doesn't, you can manually point your browser to http://localhost:3000.
 
 
-## A quick tour
+## How to Use the Wallet Refapp
 
-You can log into the app by providing a user name, say `Alice`. For simplicity
-of this app, there is no password or sign-up required. You will be greeted by
-a screen indicating that you're not following anyone and that you don't have
-any followers yet. You can change this by following someone in the upper box,
-say `Bob`. After that, let's log out in the top right corner and log in as `Bob`.
+Once you have the app running locally, you can log into the app by providing any user name, say `Alice`. For simplicity
+of this app, there is no password or sign-up required. 
 
-As `Bob`, we can see that we are not following anyone and that `Alice` is follwing
-us. We can follow `Alice` by clicking the plus symbol to the right of here name.
+The below steps will walk you through how to create an asset, and send that asset to another user. 
+
+1. Once logged in, you will land on the "My Asset Accounts" page. 
+2. Click "Create" on the right hand side to get to the Asset Holding Account creationg page
+3. Specify a ticker / symbol for the asset account. Specify if it should be fungible / shareable / airdroppable.
+4. Click "Create" and this account will be created. Note that the balance will be 0. 
+5. Click "Issue/Airdrop" assets, and you will be able to issue an amount for this asset. 
+6. Before you can send the asset to someone, you need to invite the recipient to be an asset owner, so click "Invite" and specifiy the recipient Ledger ID. For simplicity you can just input `bob`. 
+7. Logout by clicking on the avatar icon on the top right corner, and login with `bob`
+8. Click "Pending Activities" on the right handside, and you should see an asset invite request, accept it. 
+9. Logout of `bob` and log back in using "Alice"
+10. Go to the asset that you wanted to send, and now you can click "send" and specify the recipient as `bob` and specify an amount to send. We are essentially creating a send request which needs to be accepted by `bob` in order for the ownership to transfer.
+11. Login with `bob` and accept the transfer in "Pending Activities"
+
+You have successfully transfered ownership of your asset to `bob`
+
+# Contributing 
+If you would like to make any changes, simply create a pull request and include the description and goal of your PR. 
 
 
 ## Deploying to Daml Hub
@@ -112,38 +123,32 @@ interesting ones to familiarize yourself with:
   a React component using the HTTP Ledger API and rendering the main features
 
 
-## Useful resources
 
-TBD
+# Everything Below Here is Work-In-Progress Notes
+## swap workflow [Todo]
+Workflow for sender: 
+1. Get Sender Asset Holding Contract
+ 2. Exercise create_trade on asset holding contract, 
+ 3. with the list of assets for that account
+ with amount
+ inbound asset details
 
+ Receiver
+ aobve creates trade contract
+ 1. grab Trade contract
+ 2. Grab asset account of what you need send
+ call merge split, with all assets, with amount
+ get account for what you want to receive
+ call Preparove transfer_in, get from Trade
 
-## How to get help
+ 1. exercise create_trade on asset account of proposer
+ creates a Trade contract, belongs to reciever
 
-TBD
-## swap workflow
-// Workflow for sender: 
-//1. Get Sender Asset Holding Contract
-// 2. Exercise create_trade on asset holding contract, 
-// 3. with the list of assets for that account
-// with amount
-// inbound asset details
+2. grab all the asset contracts of the
+ 3. pass all assets to merge_split choice
+ ouputs target amoutn for swap
 
-// Receiver
-// aobve creates trade contract
-// 1. grab Trade contract
-// 2. Grab asset account of what you need send
-// call merge split, with all assets, with amount
-// get account for what you want to receive
-// call Preparove transfer_in, get from Trade
-
-// 1. exercise create_trade on asset account of proposer
-// creates a Trade contract, belongs to reciever
-
-//2. grab all the asset contracts of the
-// 3. pass all assets to merge_split choice
-// ouputs target amoutn for swap
-
-// accont holding contract create pre-approve contract
+ accont holding contract create pre-approve contract
 
 
 # Welcome To the DA Wallet Ref App
@@ -218,13 +223,4 @@ Once created, you can issue
 
 To get started, you can create your first AssetAccount template by going to "Create" 
 
-# Getting started might be first, requesting access to Daml Coin
-What are you creating? what are you issuing
-Faucet, send me 1000 Daml coin, 
-Why are you needing a Asset, specifying the action , you are the issuer
-
-Start participating in someone
-Getting started, faucet, 
-
-Next step, define, steps with faucet
 
