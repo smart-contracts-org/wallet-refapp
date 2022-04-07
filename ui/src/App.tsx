@@ -17,6 +17,7 @@ import { LoginPage } from './pages/LoginPage';
 import { partyFromToken } from './utils/getPartyFromToken';
 import { deleteCookie } from './utils/deleteCookie';
 import { RightDrawer } from './components/RightDrawer/RightDrawer';
+import { DamlHubLogin } from '@daml/hub-react';
 
 
 const theme = createTheme({
@@ -80,7 +81,15 @@ export const App: React.FC = () => {
                 </Box>
               </DamlLedger>
              : 
+             <>
              <LoginPage onLogin={setCredentials}/>
+             <DamlHubLogin withToken onLogin={(credential, error) => {
+              console.log(credential)
+              if(credential){
+                setCredentials({token: credential.token, ledgerId: credential.ledgerId, party: credential.party})
+              }
+            }}/>
+            </>
 
           }
           <Box paddingBottom={10}/>
