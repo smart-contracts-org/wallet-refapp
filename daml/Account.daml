@@ -16,7 +16,6 @@ import DA.Foldable (forA_)
 import DA.Optional (whenSome)
 import Asset
 import Trade
-
 -- AssetHoldingAccount represents an account, where Asset contracts can be held
 -- Assets held in the account are all Asset contracts from Active Contract Set,
 -- where assetType and owner match between Asset and AssetHoldingAccount.
