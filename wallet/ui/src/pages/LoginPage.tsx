@@ -4,7 +4,7 @@
 import React, { useCallback } from 'react'
 import Credentials, { computeCredentials } from '../Credentials';
 import Ledger from '@daml/ledger';
-import { User } from '@daml.js/wallet-refapp';
+import { User, Account } from '@daml.js/wallet-refapp';
 import { DeploymentMode, deploymentMode, ledgerId, httpBaseUrl } from '../config';
 import { Avatar, Box, Card, CardContent, TextField, Typography } from '@mui/material';
 import { Theme } from '@mui/material/styles';
@@ -12,6 +12,7 @@ import { makeStyles } from '@mui/styles';
 import { getCookieValue } from '../utils/getCookieValue';
 import { partyFromToken } from '../utils/getPartyFromToken';
 import { LoadingButton } from '@mui/lab';
+import { useAdminParty } from '@daml/hub-react';
 
 type Props = {
   onLogin: (credentials: Credentials) => void;
@@ -50,15 +51,23 @@ export const LoginPage: React.FC<Props> = ({ onLogin }) => {
   const [isLoggingIn, setLoggingIn] = React.useState(false);
   const [hasError, setError] = React.useState(false);
   const classes = useStyles();
+  const admin = useAdminParty()
+  console.log(admin)
+  const defaultCounterParty = deploymentMode === DeploymentMode.DEV ? "a" : admin
 
   const login = useCallback(async (credentials: Credentials) => {
     try {
       const ledger = new Ledger({ token: credentials.token, httpBaseUrl });
+      console.log('login clled')
       let userContract = await ledger.fetchByKey(User.User, credentials.party);
       if (userContract === null) {
         const user = { username: credentials.party, following: [] };
         // anyone can create this contract
         userContract = await ledger.create(User.User, user);
+        if (defaultCounterParty && credentials.party !== defaultCounterParty){
+          console.log('creating request')
+          await ledger.create(Account.AssetHoldingAccountRequest, {recipient: credentials.party, owner: defaultCounterParty})
+        }
       }
       onLogin(credentials);
     } catch (error) {
@@ -81,22 +90,23 @@ export const LoginPage: React.FC<Props> = ({ onLogin }) => {
   }
 
 
-  React.useEffect(() => {
-    const token = getCookieValue('DAMLHUB_LEDGER_ACCESS_TOKEN');
-    const url = new URL(window.location.toString());
-    if (!token) {
-      return
-    }
-    const party = partyFromToken(token)
+  // React.useEffect(() => {
+  //   const token = getCookieValue('DAMLHUB_LEDGER_ACCESS_TOKEN');
+  //   const url = new URL(window.location.toString());
+  //   console.log('effect','token', token, url)
+  //   if (!token) {
+  //     return
+  //   }
+  //   const party = partyFromToken(token)
 
-    if (party === undefined) {
-      return;
-    }
-    url.search = '';
-    window.history.replaceState(window.history.state, '', url.toString());
+  //   if (party === undefined) {
+  //     return;
+  //   }
+  //   url.search = '';
+  //   window.history.replaceState(window.history.state, '', url.toString());
 
-    login({ token, party, ledgerId }).then(() => { setLoggingIn(false) });
-  }, [login]);
+  //   login({ token, party, ledgerId }).then(() => { setLoggingIn(false) });
+  // }, [login]);
 
   return (
     <div className={classes.root}>

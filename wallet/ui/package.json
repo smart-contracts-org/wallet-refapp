@@ -28,7 +28,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --testURL='http://localhost:7575'",
     "eject": "react-scripts eject",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx src/"
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src/",
+    "zip": "npm run-script build && zip -r ../wallet-refapp-ui.zip build"
   },
   "eslintConfig": {
     "extends": "react-app"
