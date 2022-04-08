@@ -3,8 +3,8 @@
 *.daml
 
 wallet/*.daml
-
 triggers/*.daml
+*.dar
 
 build
 node_modules

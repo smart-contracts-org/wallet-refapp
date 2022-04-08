@@ -19,8 +19,7 @@ import { LoginPage } from './pages/LoginPage';
 import { partyFromToken } from './utils/getPartyFromToken';
 import { deleteCookie } from './utils/deleteCookie';
 import { RightDrawer } from './components/RightDrawer/RightDrawer';
-import { DamlHubLogin } from '@daml/hub-react';
-const defaultCounterParty = deploymentMode === DeploymentMode.DEV ? "a" : 'ledger-party-68815041-ad16-4d9a-8177-9f9b20d8fb3f'
+import { DamlHubLogin, useAdminParty } from '@daml/hub-react';
 
 
 const theme = createTheme({
@@ -38,6 +37,8 @@ export const App: React.FC = () => {
   const tokenCookieSecret = tokenCookiePair.slice(tokenCookiePair.indexOf('=') + 1);
   const token = tokenCookieSecret || localStorage.getItem('party.token');
   const partyId = partyFromToken(token || "");
+  const admin = useAdminParty()
+  const defaultCounterParty = deploymentMode === DeploymentMode.DEV ? "a" : admin
 
   const handleDrawerOpen = () => {
     setOpen(true);

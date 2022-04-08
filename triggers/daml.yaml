@@ -4,7 +4,6 @@
 sdk-version: 1.18.1
 name: triggers
 source: daml
-init-script: Main:setup
 parties:
   - Alice
   - Bob

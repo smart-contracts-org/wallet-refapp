@@ -236,3 +236,13 @@ https://discuss.daml.com/t/importing-templates-into-new-modules/1310
 
 Import choices from a template to another module
 https://discuss.daml.com/t/is-it-possible-to-import-a-specific-template-from-a-module/222
+
+# Trigger
+locally
+```
+daml trigger --dar .daml/dist/triggers-0.0.1.dar \
+             --trigger-name Trigger:autoSendExampleAssetAccountProposal \
+             --ledger-host localhost \
+             --ledger-port 6865 \
+             --ledger-party "a"
+```
