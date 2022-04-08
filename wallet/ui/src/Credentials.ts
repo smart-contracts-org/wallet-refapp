@@ -14,7 +14,6 @@ export const SECRET_KEY: string = 'secret';
 export type Credentials = {
   party: string;
   token: string;
-  ledgerId: string;
 }
 
 function computeToken(party: string): string {
@@ -32,7 +31,7 @@ function computeToken(party: string): string {
 export const computeCredentials = (party: string): Credentials => {
   const token = computeToken(party);
   console.log('token', token)
-  return {party, token, ledgerId};
+  return {party, token};
 }
 
 export default Credentials;

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@auth0/auth0-react": "^1.9.0",
     "@daml.js/wallet-refapp": "file:daml.js/wallet-refapp-0.1.0",
     "@daml/hub-react": "^1.1.0",
     "@daml/ledger": "1.16.0",
