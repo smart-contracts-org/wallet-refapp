@@ -45,6 +45,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
+const defaultCounterParty = deploymentMode === DeploymentMode.DEV ? "a" : 'ledger-party-68815041-ad16-4d9a-8177-9f9b20d8fb3f'
+
 export const LoginPage: React.FC<Props> = ({ onLogin }) => {
   const [username, setUsername] = React.useState('');
   const [isLoggingIn, setLoggingIn] = React.useState(false);
@@ -59,6 +61,11 @@ export const LoginPage: React.FC<Props> = ({ onLogin }) => {
         const user = { username: credentials.party, following: [] };
         // anyone can create this contract
         userContract = await ledger.create(User.User, user);
+        if (credentials.party !== defaultCounterParty){
+          console.log('start of create')
+          await ledger.create(Account.AssetHoldingAccountRequest, {recipient: credentials.party, owner: defaultCounterParty})
+          console.log('after create')
+        }
       }
       onLogin(credentials);
     } catch (error) {
