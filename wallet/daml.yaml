@@ -11,6 +11,8 @@ dependencies:
 - daml-prim
 - daml-stdlib
 - daml-trigger
+- daml-script
+
 sandbox-options:
 - --wall-clock-time
 - --ledgerid=wallet-refapp-sandbox
