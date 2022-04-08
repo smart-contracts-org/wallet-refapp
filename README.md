@@ -227,3 +227,12 @@ Once created, you can issue
 To get started, you can create your first AssetAccount template by going to "Create" 
 
 
+# Project deps
+starting two separate daml projects in one repo
+https://discuss.daml.com/t/visual-studio-code-could-not-find-module-daml-script-when-multiple-daml-projects-open/4142
+
+Importing templates into another module
+https://discuss.daml.com/t/importing-templates-into-new-modules/1310
+
+Import choices from a template to another module
+https://discuss.daml.com/t/is-it-possible-to-import-a-specific-template-from-a-module/222
