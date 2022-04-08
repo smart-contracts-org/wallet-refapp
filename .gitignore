@@ -3,6 +3,7 @@
 *.daml
 
 wallet/*.daml
+wallet/ui/daml.js
 triggers/*.daml
 *.dar
 
