@@ -1,0 +1,411 @@
+-- Copyright (c) 2021 Digital Asset (Switzerland) GmbH and/or its affiliates. All rights reserved.
+-- SPDX-License-Identifier: Apache-2.0
+module Test where
+
+import Asset
+import Account
+import Trade
+
+import DA.Assert
+import DA.List
+import DA.Set as Set
+import Daml.Script
+import DA.Optional
+
+accountAssets : AssetHoldingAccount -> Script [ContractId Asset] 
+accountAssets account = do
+  assets <- queryFilter @Asset account.owner
+    (\asset -> asset.owner==account.owner && asset.assetType==account.assetType)
+  return (unzip assets)._1
+
+accountBalance : AssetHoldingAccount -> Script Decimal 
+accountBalance account = do
+  assets <- queryFilter @Asset account.owner
+    (\asset -> (asset.owner==account.owner) && (asset.assetType==account.assetType))
+  case assets of
+    [] -> return 0.0
+    _ -> return (sum . map (\x -> x.amount) $ (unzip assets)._2)
+
+data TestParties = TestParties with
+  alice: Party
+  bob: Party
+  chris: Party
+  dianne: Party
+
+setupParties: Script TestParties
+setupParties = do
+  alice <- allocateParty "Alice"
+  bob <- allocateParty "Bob"
+  chris <- allocateParty "Chris"
+  dianne <- allocateParty "Dianne"
+  return $ TestParties with ..
+
+test = do
+
+  tP@TestParties{..} <- setupParties
+
+  let 
+    alice_tkn = AssetType with
+      issuer = tP.alice
+      symbol = "ALC"
+      fungible = True
+      reference = None 
+  let 
+    bob_tkn = AssetType with
+      issuer = bob
+      symbol = "BOB"
+      fungible = True
+      reference = None
+  let 
+    chris_nft = AssetType with
+      issuer = chris
+      symbol = "NFT"
+      fungible = False
+      reference = Some "http://google.com"
+
+  -- Cannot mint asset with zero amount
+  submitMustFail alice do
+    createCmd Asset with
+      assetType = alice_tkn
+      owner = alice
+      amount = 0.0
+      observers = Set.empty
+
+  -- Cannot mint asset with zero amount
+  submitMustFail alice do
+    createCmd Asset with
+      assetType = alice_tkn
+      owner = alice
+      amount = 0.0
+      observers = Set.empty  
+
+  -- Alice creates own account as issuer
+  aliceALCAccCid <- submit alice do
+    createCmd AssetHoldingAccount with 
+      assetType = alice_tkn
+      owner = alice
+      airdroppable = False
+      resharable = True
+
+  -- Owner cannot have more than one account for the same asset type
+  submitMustFail alice do
+    createCmd AssetHoldingAccount with 
+      assetType = alice_tkn
+      owner = alice
+      airdroppable = True
+      resharable = True 
+
+  -- Alice mints 10 ALC into own account
+  aliceALCCid <- submit alice do
+    createCmd Asset with
+      assetType = alice_tkn
+      owner = alice
+      amount = 10.0
+      observers = Set.empty
+  -- Alice mints another 5 ALC into own account
+  aliceALCCid <- submit alice do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Airdrop with
+      amount = 5.0
+  optAliceALCAcc <- queryContractId alice aliceALCAccCid
+  let aliceALCAcc = fromSome optAliceALCAcc
+  aliceACLbalance <- accountBalance aliceALCAcc
+  aliceACLbalance === 15.0
+
+  -- Alice doubles account balance
+  -- This is a unit test for accountBalance function defined at the top of this script
+  optAliceALCAcc <- queryContractId alice aliceALCAccCid
+  let aliceALCAcc = fromSome optAliceALCAcc
+  aliceACLbalance <- accountBalance aliceALCAcc
+  submit alice do
+        exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Airdrop with
+          amount = aliceACLbalance
+  newAliceALCbalance <- accountBalance aliceALCAcc
+  newAliceALCbalance === 2.0 *  aliceACLbalance
+
+  -- Cannot create asset transfer with non positive amount
+  let 
+    a = Asset with
+      assetType = alice_tkn
+      owner = alice
+      amount = -1.0
+      observers = Set.empty
+  submitMustFail alice do
+    createCmd AssetTransfer with
+      asset = a
+      recipient = bob
+      sender = alice
+  let 
+    a = Asset with
+      assetType = alice_tkn
+      owner = alice
+      amount = 0.0
+      observers = Set.empty
+  submitMustFail alice do
+    createCmd AssetTransfer with
+      asset = a
+      recipient = bob
+      sender = alice
+
+  -- Alice invites Bob to have asset holding account for ALC
+  bobALCAccountHolderProposalCid <- submit alice do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Invite_New_Asset_Holder with
+      recipient = bob
+
+  -- Bob accepts Alice's invite to have asset holding account for ALC
+  bobALCAccCid <- submit bob do
+    exerciseCmd bobALCAccountHolderProposalCid AssetHoldingAccountProposal_Accept
+
+  -- Alice cannot airdrop into Bob's account because the account is not airdroppable
+  submitMustFail alice do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, bob) Airdrop with
+      amount = 5.0
+
+  -- Alice transfers 5 ALC to Bob
+  aliceALCCids <- accountAssets aliceALCAcc
+  submit alice do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Create_Transfers with
+      assetCids = aliceALCCids
+      transfers = [(5.0, bob)]
+
+  bobTransfers <- queryFilter @AssetTransfer bob (\tx -> tx.recipient==bob)
+  let bobTransferCid = (head bobTransfers)._1
+
+  aliceACLbalance <- accountBalance aliceALCAcc
+  aliceACLbalance === 25.0
+
+  -- Asset issuer or owner cannot accept transfer by calling Accept_Transfer choice on Asset contract
+  submitMustFail alice do
+    exerciseCmd bobTransferCid Accept_Transfer
+
+  -- Test mismatch between transfer recipient party and account owner
+  submitMustFail alice do
+    exerciseCmd aliceALCAccCid $ Deposit_Transfer_Into_Account bobTransferCid 
+
+  -- Bob accepts transfer of 5 ALC from Alice
+  submit bob do
+    exerciseCmd bobALCAccCid Deposit_Transfer_Into_Account with transferCid = bobTransferCid
+
+  -- Bob cannot accept that same transfer of 5 ALC from Alice twice
+  submitMustFail bob do
+    exerciseCmd bobALCAccCid Deposit_Transfer_Into_Account with transferCid = bobTransferCid
+
+  -- Alice transfers 5 ALC to Chris, who doesn't have corresponding AssetHoldingAccount
+  aliceAssetCids <- accountAssets aliceALCAcc
+  chrisTransferCid <- submit alice do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Create_Transfers with
+      assetCids = aliceAssetCids
+      transfers = [(5.0, chris)]
+  chrisTransfers <- queryFilter @AssetTransfer chris (\tx -> tx.recipient==chris)
+  let chrisTransferCid = (head chrisTransfers)._1
+  -- Chris cannot accept the transfer because Chris doesn't have corresponding AssetHoldingAccount
+  submitMustFail chris do
+    exerciseCmd chrisTransferCid Accept_Transfer
+
+  -- Alice cancels transfer to Chris
+  submit alice do
+    exerciseCmd chrisTransferCid Cancel_Transfer
+
+  -- Cannot create transfer with negative amount
+  aliceAssetCids <- accountAssets aliceALCAcc
+  submitMustFail alice do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Create_Transfers with
+      assetCids = aliceAssetCids
+      transfers = [(5.0, chris), (-1.0, bob)]
+
+  -- Alice invites Chris to have asset holding account for ALC
+  chrisAssetAccountHolderProposalCid <- submit alice do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Invite_New_Asset_Holder with
+      recipient = chris
+
+  -- Chris accepts Alice's invite to have asset holding account for ALC
+  chrisALCAccCid <- submit chris do
+    exerciseCmd chrisAssetAccountHolderProposalCid AssetHoldingAccountProposal_Accept
+
+  -- Bob transfers 3 ALC to Chris
+  optBobALCAccTuple <- queryContractKey bob (alice_tkn, bob)
+  let bobALCAcc = (fromSome optBobALCAccTuple)._2
+  bobAssetCids <- accountAssets bobALCAcc
+  chrisTransferCid <- submit bob do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, bob) Create_Transfers with
+      assetCids = bobAssetCids
+      transfers = [(5.0, chris)]
+
+  chrisTransfers <- queryFilter @AssetTransfer chris (\tx -> tx.recipient==chris)
+  let chrisTransferCid = (head chrisTransfers)._1
+
+  -- Chris rejects the transfer
+  bobTransferCid <- submit chris do
+    exerciseCmd chrisTransferCid Reject_Transfer
+
+  -- Bob creates own account as issuer
+  bobBOBAccCid <- submit bob do
+    createCmd AssetHoldingAccount with 
+      assetType = bob_tkn
+      owner = bob
+      airdroppable = True
+      resharable = True
+
+  -- Bob invites Dianne to have asset holding account for BOB
+  dianneBOBAccountHolderProposalCid <- submit bob do
+    exerciseByKeyCmd @AssetHoldingAccount (bob_tkn, bob) Invite_New_Asset_Holder with
+      recipient = dianne
+
+  -- Dianne accepts Bob's invite to have asset holding account for BOB
+  dianneBOBAccCid <- submit dianne do
+    exerciseCmd dianneBOBAccountHolderProposalCid AssetHoldingAccountProposal_Accept
+
+  -- Bob airdrops 20 BOB into Dianne's account
+  dianneBOBCid <- submit bob do
+    exerciseByKeyCmd @AssetHoldingAccount (bob_tkn, dianne) Airdrop with
+      amount = 20.0
+
+  -- Chris creates own NFT account as issuer
+  chrisNFTAccCid <- submit chris do
+    createCmd AssetHoldingAccount with 
+      assetType = chris_nft
+      owner = chris
+      airdroppable = True
+      resharable = True
+
+  -- Chris invites Dianne to have asset holding account for NFT
+  dianneNFTAccountHolderProposalCid <- submit chris do
+    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, chris) Invite_New_Asset_Holder with
+      recipient = dianne
+
+  -- Dianne accepts Chris's invite to have asset holding account for NFT
+  dianneNFTAccCid <- submit dianne $
+    exerciseCmd dianneNFTAccountHolderProposalCid AssetHoldingAccountProposal_Accept
+
+  -- Chris cannot airdrop 20 NFT into Dianne's account because NFT is non fungible
+  submitMustFail chris do
+    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, dianne) Airdrop with
+      amount = 20.0
+
+  -- Chris airdrops 1 NFT into Dianne's account
+  dianneNFTCid <- submit chris do
+    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, dianne) Airdrop with
+      amount = 1.0
+
+    -- Dianne invites Alice to have asset holding account for NFT
+  aliceAssetAccountHolderProposalCid <- submit dianne do
+    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, dianne) Invite_New_Asset_Holder with
+      recipient = alice
+
+  -- Alice accepts Dianne's invite to have asset holding account for NFT
+  aliceNFTAccCid <- submit alice $
+    exerciseCmd aliceAssetAccountHolderProposalCid AssetHoldingAccountProposal_Accept
+
+  -- Dianne transfers 1 NFT to Alice 
+  optDianneNFTAcc <- queryContractId dianne dianneNFTAccCid
+  let dianneNFTAcc = fromSome optDianneNFTAcc
+  dianneNFTCids <- accountAssets dianneNFTAcc
+  aliceTransferCid <- submit dianne do
+    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, dianne) Create_Transfers with
+      assetCids = dianneNFTCids
+      transfers = [(1.0, alice)]
+
+  aliceTransfers <- queryFilter @AssetTransfer alice (\tx -> tx.recipient==alice)
+  let aliceTransferCid = (head aliceTransfers)._1
+
+  -- Alice accepts transfer of 1 NFT from Dianne
+  aliceNFTCid <- submit alice $
+    exerciseCmd aliceNFTAccCid Deposit_Transfer_Into_Account with transferCid = aliceTransferCid
+
+  -- This tests whether transfer from Alice to Chris is divulged to Dianne
+  -- Alice transfers 1 NFT to Chris and Chris accepts the transfer
+  optAliceNFTAcc <- queryContractId alice aliceNFTAccCid
+  let aliceNFTAcc = fromSome optAliceNFTAcc
+  aliceAssetCids <- accountAssets aliceNFTAcc
+  chrisTransfers <- submit alice do
+    exerciseByKeyCmd @AssetHoldingAccount (chris_nft, alice) Create_Transfers with
+      assetCids = aliceAssetCids
+      transfers = [(1.0, chris)]
+
+  chrisTransfers <- queryFilter @AssetTransfer chris (\tx -> tx.recipient==chris)
+  let chrisTransferCid = (head chrisTransfers)._1
+  chrisNFTCid <- submit chris $
+    exerciseCmd chrisNFTAccCid Deposit_Transfer_Into_Account with transferCid = chrisTransferCid
+  x <- queryContractId dianne chrisNFTCid
+  x === None
+
+  -- Bob closes ALC account by creating account close proposal
+  optBobALCAccTuple <- queryContractKey bob (alice_tkn, bob)
+  let bobALCAcc = (fromSome optBobALCAccTuple)._2
+  bobALCCids <- accountAssets bobALCAcc
+  bobALCAccCloseProposalCid <- submit bob do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, bob) Close_Account
+  -- Alice accepts Bob's account close proposal and burns assets in Bob's account
+  submit alice do
+    exerciseCmd bobALCAccCloseProposalCid AssetHoldingAccountCloseProposal_Accept with
+      assetCids = bobALCCids
+  bobALCAccBalance <- accountBalance bobALCAcc 
+  bobALCAccBalance === 0.0
+  --optBobALCAccTuple <- queryContractKey bob (alice_tkn, bob)
+  --assert $ isNone optBobALCAccTuple
+
+  -- Test Trade
+
+  -- Trade workflows
+  optDianneBOBAcc <- queryContractId dianne dianneBOBAccCid
+  let dianneBOBAcc = fromSome optDianneBOBAcc
+  dianneBOBCids <- accountAssets dianneBOBAcc
+  -- Can't create trade because Dianne does not have ALC account
+  submitMustFail dianne do
+    exerciseCmd dianneBOBAccCid Create_Trade with
+      assetCids = dianneBOBCids
+      offeredAssetAmount = 10.0
+      requestedAsset = Asset with
+        assetType = alice_tkn
+        owner = alice
+        amount = 15.0
+        observers = Set.empty
+  -- Alice invites Dianne to have asset holding account for ALC, Dianne acepts
+  dianneALCAccountHolderProposalCid <- submit alice do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Invite_New_Asset_Holder with
+      recipient = dianne
+  dianneALCAccCid <- submit dianne do
+    exerciseCmd dianneALCAccountHolderProposalCid AssetHoldingAccountProposal_Accept
+  -- Dianne proposes to sell 10 BOBs to Alice for 15 ALCs
+  submit dianne do
+    exerciseCmd dianneBOBAccCid Create_Trade with
+      assetCids = dianneBOBCids
+      offeredAssetAmount = 10.0
+      requestedAsset = Asset with
+        assetType = alice_tkn
+        owner = alice
+        amount = 15.0
+        observers = Set.empty
+  -- Alice queries the ledger for all incoming trade proposals
+  aliceIncomingTrades <- queryFilter @Trade alice
+    (\trade -> trade.receiver==alice)
+  let (tradeCid, trade) = head aliceIncomingTrades
+  -- Alice consolidates ALC assets and creates ALC contract required to accept Dianne's trade proposal
+  optAliceALCAccTuple <- queryContractKey alice (alice_tkn, alice)
+  let aliceALCAcc = (fromSome optAliceALCAccTuple)._2
+  aliceALCCids <- accountAssets aliceALCAcc
+  aliceALCCids <- submit alice do
+    exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Merge_Split with
+      assetCids = aliceALCCids
+      outputAmounts = [15.0]
+  optOfferedAsset <- queryContractId alice trade.offeredAssetCid
+  let offeredAsset = (fromSome optOfferedAsset).asset
+  -- Alice can't pre-approve transfer of BOBs because Alice does not have BOB account
+  submitMustFail alice do
+    exerciseByKeyCmd @AssetHoldingAccount (offeredAsset.assetType, alice) Preapprove_Transfer_In with 
+      asset = offeredAsset
+  -- Dianne invites Alice to have asset holding account for BOB, Alice acepts
+  aliceBOBAccountHolderProposalCid <- submit dianne do
+    exerciseByKeyCmd @AssetHoldingAccount (bob_tkn, dianne) Invite_New_Asset_Holder with
+      recipient = alice
+  aliceBOBAccCid <- submit alice do
+    exerciseCmd aliceBOBAccountHolderProposalCid AssetHoldingAccountProposal_Accept
+  -- Alice pre-approves transfer of BOBs from Dianne and settles the trade
+  aliceTxApprovalCid <- submit alice do
+    exerciseByKeyCmd @AssetHoldingAccount (offeredAsset.assetType, alice) Preapprove_Transfer_In with 
+      asset = offeredAsset
+  submit alice do
+    exerciseCmd tradeCid Trade_Settle with
+      requestedAssetCid = last aliceALCCids
+      offeredTxPreApprovalCid = aliceTxApprovalCid
+
+  pure()
