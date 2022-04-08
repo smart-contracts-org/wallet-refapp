@@ -59,10 +59,10 @@ export const LoginPage: React.FC<Props> = ({onLogin}) => {
         const user = {username: credentials.party, following: []};
         userContract = await ledger.create(User.User, user);
         
-        if (credentials.party){
-          console.log('creating AssetHoldingAccountRequest')
-          await ledger.create(Account.AssetHoldingAccountRequest, {recipient: credentials.party, owner: defaultCounterParty})
-        }
+        // if (credentials.party){
+        //   console.log('creating AssetHoldingAccountRequest')
+        //   await ledger.create(Account.AssetHoldingAccountRequest, {recipient: credentials.party, owner: defaultCounterParty})
+        // }
       }
       onLogin(credentials);
     } catch(error) {
