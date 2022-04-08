@@ -51,7 +51,7 @@ export declare interface AssetInSwapInterface {
   Archive: damlTypes.Choice<AssetInSwap, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662.DA.Internal.Template.Archive, {}, undefined>;
 }
 export declare const AssetInSwap:
-  damlTypes.Template<AssetInSwap, undefined, '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Trade:AssetInSwap'> & AssetInSwapInterface;
+  damlTypes.Template<AssetInSwap, undefined, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Trade:AssetInSwap'> & AssetInSwapInterface;
 
 export declare namespace AssetInSwap {
   export type CreateEvent = damlLedger.CreateEvent<AssetInSwap, undefined, typeof AssetInSwap.templateId>
@@ -113,7 +113,7 @@ export declare interface TransferPreApprovalInterface {
   Archive: damlTypes.Choice<TransferPreApproval, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662.DA.Internal.Template.Archive, {}, undefined>;
 }
 export declare const TransferPreApproval:
-  damlTypes.Template<TransferPreApproval, undefined, '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Trade:TransferPreApproval'> & TransferPreApprovalInterface;
+  damlTypes.Template<TransferPreApproval, undefined, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Trade:TransferPreApproval'> & TransferPreApprovalInterface;
 
 export declare namespace TransferPreApproval {
   export type CreateEvent = damlLedger.CreateEvent<TransferPreApproval, undefined, typeof TransferPreApproval.templateId>
@@ -167,7 +167,7 @@ export declare interface TradeInterface {
   Archive: damlTypes.Choice<Trade, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662.DA.Internal.Template.Archive, {}, undefined>;
 }
 export declare const Trade:
-  damlTypes.Template<Trade, undefined, '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Trade:Trade'> & TradeInterface;
+  damlTypes.Template<Trade, undefined, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Trade:Trade'> & TradeInterface;
 
 export declare namespace Trade {
   export type CreateEvent = damlLedger.CreateEvent<Trade, undefined, typeof Trade.templateId>

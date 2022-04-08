@@ -50,7 +50,7 @@ export declare interface AssetTransferInterface {
   Archive: damlTypes.Choice<AssetTransfer, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662.DA.Internal.Template.Archive, {}, undefined>;
 }
 export declare const AssetTransfer:
-  damlTypes.Template<AssetTransfer, undefined, '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Asset:AssetTransfer'> & AssetTransferInterface;
+  damlTypes.Template<AssetTransfer, undefined, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Asset:AssetTransfer'> & AssetTransferInterface;
 
 export declare namespace AssetTransfer {
   export type CreateEvent = damlLedger.CreateEvent<AssetTransfer, undefined, typeof AssetTransfer.templateId>
@@ -72,7 +72,7 @@ export declare interface AssetInterface {
   Archive: damlTypes.Choice<Asset, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662.DA.Internal.Template.Archive, {}, undefined>;
 }
 export declare const Asset:
-  damlTypes.Template<Asset, undefined, '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Asset:Asset'> & AssetInterface;
+  damlTypes.Template<Asset, undefined, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Asset:Asset'> & AssetInterface;
 
 export declare namespace Asset {
   export type CreateEvent = damlLedger.CreateEvent<Asset, undefined, typeof Asset.templateId>

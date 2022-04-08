@@ -43,7 +43,7 @@ exports.AssetHoldingAccountCloseProposal_Accept = {
 
 
 exports.AssetHoldingAccountCloseProposal = {
-  templateId: '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Account:AssetHoldingAccountCloseProposal',
+  templateId: '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccountCloseProposal',
   keyDecoder: damlTypes.lazyMemo(function () { return jtv.constant(undefined); }),
   keyEncode: function () { throw 'EncodeError'; },
   decoder: damlTypes.lazyMemo(function () { return jtv.object({account: exports.AssetHoldingAccount.decoder, }); }),
@@ -107,7 +107,7 @@ exports.AssetHoldingAccountProposal_Accept = {
 
 
 exports.AssetHoldingAccountProposal = {
-  templateId: '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Account:AssetHoldingAccountProposal',
+  templateId: '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccountProposal',
   keyDecoder: damlTypes.lazyMemo(function () { return jtv.constant(undefined); }),
   keyEncode: function () { throw 'EncodeError'; },
   decoder: damlTypes.lazyMemo(function () { return jtv.object({account: exports.AssetHoldingAccount.decoder, recipient: damlTypes.Party.decoder, }); }),
@@ -249,7 +249,7 @@ exports.Invite_New_Asset_Holder = {
 
 
 exports.AssetHoldingAccount = {
-  templateId: '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Account:AssetHoldingAccount',
+  templateId: '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccount',
   keyDecoder: damlTypes.lazyMemo(function () { return damlTypes.lazyMemo(function () { return pkg40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7.DA.Types.Tuple2(Asset.AssetType, damlTypes.Party).decoder; }); }),
   keyEncode: function (__typed__) { return pkg40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7.DA.Types.Tuple2(Asset.AssetType, damlTypes.Party).encode(__typed__); },
   decoder: damlTypes.lazyMemo(function () { return jtv.object({assetType: Asset.AssetType.decoder, owner: damlTypes.Party.decoder, airdroppable: damlTypes.Bool.decoder, resharable: damlTypes.Bool.decoder, }); }),
@@ -354,7 +354,7 @@ exports.Accept = {
 
 
 exports.AssetHoldingAccountRequest = {
-  templateId: '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Account:AssetHoldingAccountRequest',
+  templateId: '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccountRequest',
   keyDecoder: damlTypes.lazyMemo(function () { return jtv.constant(undefined); }),
   keyEncode: function () { throw 'EncodeError'; },
   decoder: damlTypes.lazyMemo(function () { return jtv.object({recipient: damlTypes.Party.decoder, owner: damlTypes.Party.decoder, }); }),

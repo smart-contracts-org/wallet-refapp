@@ -16,6 +16,21 @@ import DA.Foldable (forA_)
 import DA.Optional (whenSome)
 import Asset
 import Trade
+
+template AssetHoldingAccountRequest with
+    recipient: Party
+    owner: Party
+  where 
+    signatory recipient
+    observer owner
+    choice Accept: ContractId AssetHoldingAccountProposal
+      with assetHoldingAccount: ContractId AssetHoldingAccount
+      controller owner
+      do
+         exercise assetHoldingAccount Invite_New_Asset_Holder with 
+          recipient = recipient
+
+
 -- AssetHoldingAccount represents an account, where Asset contracts can be held
 -- Assets held in the account are all Asset contracts from Active Contract Set,
 -- where assetType and owner match between Asset and AssetHoldingAccount.

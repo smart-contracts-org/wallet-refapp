@@ -42,7 +42,7 @@ export declare interface AssetHoldingAccountCloseProposalInterface {
   AssetHoldingAccountCloseProposal_Reject: damlTypes.Choice<AssetHoldingAccountCloseProposal, AssetHoldingAccountCloseProposal_Reject, {}, undefined>;
 }
 export declare const AssetHoldingAccountCloseProposal:
-  damlTypes.Template<AssetHoldingAccountCloseProposal, undefined, '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Account:AssetHoldingAccountCloseProposal'> & AssetHoldingAccountCloseProposalInterface;
+  damlTypes.Template<AssetHoldingAccountCloseProposal, undefined, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccountCloseProposal'> & AssetHoldingAccountCloseProposalInterface;
 
 export declare namespace AssetHoldingAccountCloseProposal {
   export type CreateEvent = damlLedger.CreateEvent<AssetHoldingAccountCloseProposal, undefined, typeof AssetHoldingAccountCloseProposal.templateId>
@@ -82,7 +82,7 @@ export declare interface AssetHoldingAccountProposalInterface {
   AssetHoldingAccountProposal_Reject: damlTypes.Choice<AssetHoldingAccountProposal, AssetHoldingAccountProposal_Reject, {}, undefined>;
 }
 export declare const AssetHoldingAccountProposal:
-  damlTypes.Template<AssetHoldingAccountProposal, undefined, '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Account:AssetHoldingAccountProposal'> & AssetHoldingAccountProposalInterface;
+  damlTypes.Template<AssetHoldingAccountProposal, undefined, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccountProposal'> & AssetHoldingAccountProposalInterface;
 
 export declare namespace AssetHoldingAccountProposal {
   export type CreateEvent = damlLedger.CreateEvent<AssetHoldingAccountProposal, undefined, typeof AssetHoldingAccountProposal.templateId>
@@ -195,7 +195,7 @@ export declare interface AssetHoldingAccountInterface {
   Archive: damlTypes.Choice<AssetHoldingAccount, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662.DA.Internal.Template.Archive, {}, AssetHoldingAccount.Key>;
 }
 export declare const AssetHoldingAccount:
-  damlTypes.Template<AssetHoldingAccount, AssetHoldingAccount.Key, '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Account:AssetHoldingAccount'> & AssetHoldingAccountInterface;
+  damlTypes.Template<AssetHoldingAccount, AssetHoldingAccount.Key, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccount'> & AssetHoldingAccountInterface;
 
 export declare namespace AssetHoldingAccount {
   export type Key = pkg40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7.DA.Types.Tuple2<Asset.AssetType, damlTypes.Party>
@@ -227,7 +227,7 @@ export declare interface AssetHoldingAccountRequestInterface {
   Archive: damlTypes.Choice<AssetHoldingAccountRequest, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662.DA.Internal.Template.Archive, {}, undefined>;
 }
 export declare const AssetHoldingAccountRequest:
-  damlTypes.Template<AssetHoldingAccountRequest, undefined, '0ff683f651366364576eb4bb10823fdd10329a7575e95e82aaff366aaa8e7b63:Account:AssetHoldingAccountRequest'> & AssetHoldingAccountRequestInterface;
+  damlTypes.Template<AssetHoldingAccountRequest, undefined, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccountRequest'> & AssetHoldingAccountRequestInterface;
 
 export declare namespace AssetHoldingAccountRequest {
   export type CreateEvent = damlLedger.CreateEvent<AssetHoldingAccountRequest, undefined, typeof AssetHoldingAccountRequest.templateId>
