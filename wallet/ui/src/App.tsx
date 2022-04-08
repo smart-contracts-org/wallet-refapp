@@ -18,8 +18,8 @@ import { DeploymentMode, deploymentMode, httpBaseUrl } from './config';
 import { LoginPage } from './pages/LoginPage';
 import { partyFromToken } from './utils/getPartyFromToken';
 import { deleteCookie } from './utils/deleteCookie';
+import DamlHub, { DamlHubLogin, useAdminParty } from '@daml/hub-react';
 import { RightDrawer } from './components/RightDrawer/RightDrawer';
-import { DamlHubLogin, useAdminParty } from '@daml/hub-react';
 
 
 const theme = createTheme({
@@ -38,6 +38,7 @@ export const App: React.FC = () => {
   const token = tokenCookieSecret || localStorage.getItem('party.token');
   const partyId = partyFromToken(token || "");
   const admin = useAdminParty()
+  console.log(admin)
   const defaultCounterParty = deploymentMode === DeploymentMode.DEV ? "a" : admin
 
   const handleDrawerOpen = () => {
@@ -66,7 +67,7 @@ export const App: React.FC = () => {
         const user = { username: credentials.party, following: [] };
         // anyone can create this contract
         userContract = await ledger.create(User.User, user);
-        if (credentials.party !== defaultCounterParty){
+        if (defaultCounterParty && credentials.party !== defaultCounterParty){
           await ledger.create(Account.AssetHoldingAccountRequest, {recipient: credentials.party, owner: defaultCounterParty})
         }
       }
