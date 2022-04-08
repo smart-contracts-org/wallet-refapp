@@ -1,0 +1,36 @@
+module Trigger where
+
+import Account (AssetHoldingAccountRequest(..), Accept(..))
+-- https://discuss.daml.com/t/is-it-possible-to-import-a-specific-template-from-a-module/222
+import qualified Daml.Trigger as T
+import DA.Foldable
+import DA.Action
+import DA.List (head)
+
+autoSendExampleAssetAccountProposal: T.Trigger ()
+autoSendExampleAssetAccountProposal = T.Trigger 
+ { initialize = pure (),
+  updateState = \_  -> pure (),
+  registeredTemplates = T.RegisteredTemplates [T.registeredTemplate @Account.AssetHoldingAccountRequest, T.registeredTemplate @Account.AssetHoldingAccount],
+  rule = \p -> do
+    asset_holding_account_requests <- T.query @Account.AssetHoldingAccountRequest
+    let isNotMe = (\requests -> requests.recipient /= p)
+    let notMeList = filter (\(_, contract) -> isNotMe contract) asset_holding_account_requests
+    let requests = map fst notMeList
+
+    debug ("requests",requests)
+    assetAccounts <- T.query @Account.AssetHoldingAccount
+    debug ("assetAccounts", assetAccounts)
+    let isET = (\account -> account.assetType.symbol == "ET" && account.assetType.issuer == p)
+    let etAccounts = filter (\(_, contract) -> isET contract) assetAccounts
+    let cids = map fst etAccounts
+    
+    
+    unless ( DA.Foldable.null requests && DA.Foldable.null cids ) do
+      let (cid, c) = head etAccounts
+
+      mapA_(\request -> T.dedupExercise request Accept with assetHoldingAccount = cid)  requests
+      pure()
+    debug $ "TRIGGERED",
+  heartbeat = None
+}
