@@ -1,10 +1,12 @@
 import { Box, CssBaseline, Toolbar } from '@mui/material';
-import React from 'react';
+import React, { useCallback } from 'react'
 import { SideMenu } from './components/SideMenu/SideMenu';
 import { TopAppBar } from './components/TopAppBar/TopAppBar';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {  HashRouter } from "react-router-dom";
 import { Pages } from './pages/Pages';
+import Ledger from '@daml/ledger';
+import { User, Account } from '@daml.js/wallet-refapp';
 
 
 import { ContractsProvider } from './providers/ContractsProvider';
@@ -12,12 +14,13 @@ import { isMobile } from './platform/platform';
 import { SideMenuMobile } from './components/SideMenuMobile.tsx/SideMenuMobile';
 import DamlLedger from '@daml/react';
 import Credentials from './Credentials';
-import { httpBaseUrl } from './config';
+import { DeploymentMode, deploymentMode, httpBaseUrl } from './config';
 import { LoginPage } from './pages/LoginPage';
 import { partyFromToken } from './utils/getPartyFromToken';
 import { deleteCookie } from './utils/deleteCookie';
 import { RightDrawer } from './components/RightDrawer/RightDrawer';
 import { DamlHubLogin } from '@daml/hub-react';
+const defaultCounterParty = deploymentMode === DeploymentMode.DEV ? "a" : 'ledger-party-68815041-ad16-4d9a-8177-9f9b20d8fb3f'
 
 
 const theme = createTheme({
@@ -52,7 +55,23 @@ export const App: React.FC = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  
+  const login = async (credentials: Credentials) => {
+    setCredentials(credentials);
+    try {
+      const ledger = new Ledger({ token: credentials.token, httpBaseUrl });
+      let userContract = await ledger.fetchByKey(User.User, credentials.party);
+      if (userContract === null) {
+        const user = { username: credentials.party, following: [] };
+        // anyone can create this contract
+        userContract = await ledger.create(User.User, user);
+        if (credentials.party !== defaultCounterParty){
+          await ledger.create(Account.AssetHoldingAccountRequest, {recipient: credentials.party, owner: defaultCounterParty})
+        }
+      }
+    } catch (error) {
+    }
+  }
   
   return (
     <HashRouter>
@@ -82,11 +101,12 @@ export const App: React.FC = () => {
               </DamlLedger>
              : 
              <>
-             <LoginPage onLogin={setCredentials}/>
+             <LoginPage onLogin={setCredentials} />
              <DamlHubLogin withToken onLogin={(credential, error) => {
               console.log(credential)
+             
               if(credential){
-                setCredentials({token: credential.token, ledgerId: credential.ledgerId, party: credential.party})
+                login({token: credential.token, ledgerId: credential.ledgerId, party: credential.party})
               }
             }}/>
             </>

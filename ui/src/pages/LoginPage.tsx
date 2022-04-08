@@ -4,7 +4,7 @@
 import React, { useCallback } from 'react'
 import Credentials, { computeCredentials } from '../Credentials';
 import Ledger from '@daml/ledger';
-import { User } from '@daml.js/wallet-refapp';
+import { User, Account } from '@daml.js/wallet-refapp';
 import { DeploymentMode, deploymentMode, ledgerId, httpBaseUrl } from '../config';
 import { Avatar, Box, Card, CardContent, TextField, Typography } from '@mui/material';
 import { Theme } from '@mui/material/styles';
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const defaultCounterParty = deploymentMode === DeploymentMode.DEV ? "a" : 'ledger-party-68815041-ad16-4d9a-8177-9f9b20d8fb3f'
 
-export const LoginPage: React.FC<Props> = ({ onLogin }) => {
+export const LoginPage: React.FC<Props> = ({ onLogin, credentials }) => {
   const [username, setUsername] = React.useState('');
   const [isLoggingIn, setLoggingIn] = React.useState(false);
   const [hasError, setError] = React.useState(false);
