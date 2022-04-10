@@ -2,25 +2,26 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import React, { useCallback } from 'react'
-import Credentials, { computeCredentials } from '../Credentials';
+import Credentials from '../Credentials';
 import Ledger from '@daml/ledger';
-import { User } from '@daml.js/wallet-refapp';
-import { DeploymentMode, deploymentMode, ledgerId, httpBaseUrl } from '../config';
-import { Avatar, Box, Card, CardContent, TextField, Typography } from '@mui/material';
+import { DamlHubLogin as DamlHubLoginBtn } from '@daml/hub-react';
+import { authConfig, DeploymentMode, deploymentMode, Insecure } from '../config';
+import { useAuth0 } from "@auth0/auth0-react";
+import { User, Account } from '@daml.js/wallet-refapp';
+import { LoadingButton } from '@mui/lab';
+import { useAdminParty } from '@daml/hub-react';
+import { Avatar, Box, Card, CardContent, TextField, Typography, Button, LinearProgress } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import { getCookieValue } from '../utils/getCookieValue';
-import { partyFromToken } from '../utils/getPartyFromToken';
-import { LoadingButton } from '@mui/lab';
 
 type Props = {
   onLogin: (credentials: Credentials) => void;
-  token?: string;
-  party?: string;
 }
 
-
-const useStyles = makeStyles((theme: Theme) => ({
+/**
+ * React component for the login screen of the `App`.
+ */
+ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
@@ -45,103 +46,134 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }))
 
-export const LoginPage: React.FC<Props> = ({ onLogin }) => {
-  const [username, setUsername] = React.useState('');
-  const [isLoggingIn, setLoggingIn] = React.useState(false);
-  const [hasError, setError] = React.useState(false);
+export const LoginPage: React.FC<Props> = ({onLogin}) => {
+  console.log('LOGIN PAGE Rendered')
   const classes = useStyles();
-
-  const login = useCallback(async (credentials: Credentials) => {
+  const prodAdminParty = useAdminParty();
+  const admin = deploymentMode === DeploymentMode.DEV ? 'a' :  prodAdminParty;
+  console.log('admin party', admin)
+  
+  
+  const login = useCallback(async (credentials: Credentials, admin?: string) => {
+    console.log('LOGIN CALLED', 'admin', admin)
     try {
-      const ledger = new Ledger({ token: credentials.token, httpBaseUrl });
+      const ledger = new Ledger({token: credentials.token});
       let userContract = await ledger.fetchByKey(User.User, credentials.party);
+      console.log('user contract', userContract, 'default', admin)
       if (userContract === null) {
-        const user = { username: credentials.party, following: [] };
-        // anyone can create this contract
+        const user = {username: credentials.party, following: []};
         userContract = await ledger.create(User.User, user);
+        
+        if (admin && admin !== credentials.party){
+          console.log('creating AssetHoldingAccountRequest')
+          await ledger.create(Account.AssetHoldingAccountRequest, {recipient: credentials.party, owner: admin})
+        }
       }
+      console.log('CREDENTIAL SET')
       onLogin(credentials);
-    } catch (error) {
-      setError(true)
+    } catch(error) {
+      alert(`Unknown error:\n${JSON.stringify(error)}`);
     }
   }, [onLogin]);
 
-  // LOCAL Used in local dev env
-  const handleLogin = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setLoggingIn(true)
-    const credentials = computeCredentials(username);
-    await login(credentials);
+  if(!admin){
+    return <LinearProgress sx={{width:'100%'}}/>
   }
 
-  // PROD used in prod
-  const handleDamlHubLogin = () => {
-    setLoggingIn(true)
-    window.location.assign('.hub/v1/auth/login')
-  }
+  const wrap: (c: JSX.Element) => JSX.Element = (component) =>
+  <div className={classes.root}>
+  <div className={classes.localLogin}>
+    <Avatar className={classes.avatar} />
+    <Box sx={{'marginBottom': 1}}/>
+    {component}
+    <Card variant='outlined'>
+      <CardContent>
+        <Typography variant='caption'>
+          Welcome to the DA Wallet Ref app.
+          </Typography>
+      </CardContent>
+    </Card>
+  </div>
+</div>
 
-
-  React.useEffect(() => {
-    const token = getCookieValue('DAMLHUB_LEDGER_ACCESS_TOKEN');
-    const url = new URL(window.location.toString());
-    if (!token) {
-      return
+  const InsecureLogin: React.FC<{auth: Insecure}> = ({auth}) => {
+    const [username, setUsername] = React.useState('');
+    const handleLogin = async (event: React.FormEvent) => {
+      event.preventDefault();
+      await login({party: username,
+                   token: auth.makeToken(username)} as Credentials, admin);
     }
-    const party = partyFromToken(token)
+    return wrap(<>
+      {/* FORM_BEGIN */}
+      <TextField fullWidth
+                  placeholder='Username'
+                  value={username}
+                 size='small'
+                  onChange={e => setUsername(e.currentTarget.value)} sx={{marginBottom: 1}} />
+      <Button fullWidth variant='contained' 
+              onClick={handleLogin}>
+        Log in to wallet
+      </Button>
+      {/* FORM_END */}
+    </>);
+  };
 
-    if (party === undefined) {
-      return;
-    }
-    url.search = '';
-    window.history.replaceState(window.history.state, '', url.toString());
+  const DamlHubLogin: React.FC = () => (
+    wrap(
+      <DamlHubLoginBtn
+        withButton
+        withToken
+        onLogin={creds => {
+          
 
-    login({ token, party, ledgerId }).then(() => { setLoggingIn(false) });
-  }, [login]);
-
-  return (
-    <div className={classes.root}>
-      <div className={classes.localLogin}>
-        <Avatar className={classes.avatar} />
-        <Box sx={{'marginBottom': 1}}/>
-        {deploymentMode !== DeploymentMode.PROD_DAML_HUB ?
-          <><TextField
-            fullWidth
-            size='small'
-            variant='outlined'
-            placeholder='Username'
-            error={hasError}
-            value={username}
-            className={classes.usernameTextField}
-            onChange={e => setUsername(e.currentTarget.value)}
-          />
-            <LoadingButton
-              size='small'
-              loading={!hasError && isLoggingIn}
-              variant='contained' fullWidth
-              onClick={handleLogin}
-              className={classes.loginButton}>
-              Log in
-            </LoadingButton>
-          </> :
-          <LoadingButton
-            variant='contained'
-            fullWidth
-            loading={isLoggingIn}
-            disabled={isLoggingIn}
-            className={classes.loginButton}
-            onClick={handleDamlHubLogin}>
-
-            Login to wallet
-          </LoadingButton>}
-        <Card variant='outlined'>
-          <CardContent>
-            <Typography variant='caption'>
-              Welcome to the DA Wallet Ref app.
-              </Typography>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+          console.log('DAML HUB LOGIN CALLBACK FIRED', creds, 'admin', admin)
+          if (creds) {
+            login(creds, admin);
+          }
+        }}
+        options={{
+          method: {
+            button: {
+              render: () => <Button variant='contained' fullWidth></Button>,
+            },
+          },
+        }}
+        />
+    )
   );
-};
 
+  const Auth0Login: React.FC = () => {
+    const { user, isAuthenticated, isLoading, loginWithRedirect, getAccessTokenSilently } = useAuth0();
+    (async function () {
+      if (isLoading === false && isAuthenticated === true) {
+        if (user !== undefined) {
+          const creds: Credentials = {
+            party: user["https://daml.com/ledger-api"],
+            token: (await getAccessTokenSilently({
+                     audience: "https://daml.com/ledger-api"}))};
+          login(creds );
+        }
+      }
+    })();
+    return wrap(<LoadingButton 
+                       
+                        disabled={isLoading || isAuthenticated}
+                        loading={isLoading || isAuthenticated}
+                        onClick={loginWithRedirect}>
+                  Log in
+                </LoadingButton>);
+  };
+
+  if (authConfig.provider === "none") {
+  } else if (authConfig.provider === "daml-hub") {
+  } else if (authConfig.provider === "auth0") {
+  }
+ 
+  return authConfig.provider === "none"
+       ? <InsecureLogin auth={authConfig} />
+       : authConfig.provider === "daml-hub"
+       ? <DamlHubLogin />
+       : authConfig.provider === "auth0"
+       ? <Auth0Login />
+       : <div>Invalid configuation.</div>;
+};

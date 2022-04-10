@@ -20,16 +20,17 @@ autoSendExampleAssetAccountProposal = T.Trigger
     debug ("requests",requests)
     assetAccounts <- T.query @AssetHoldingAccount
     debug ("assetAccounts", assetAccounts)
-    let isET = (\account -> account.assetType.symbol == "ET" && account.assetType.issuer == p)
+    let isET = (\account -> account.assetType.symbol == "ET" && account.assetType.issuer == p && account.owner == p)
     let etAccounts = filter (\(_, contract) -> isET contract) assetAccounts
     let cids = map fst etAccounts
-    
+    debug ("etAccounts", cids)
+
     
     unless ( DA.Foldable.null requests && DA.Foldable.null cids ) do
-      let (cid, c) = head etAccounts
-
-      mapA_(\request -> T.dedupExercise request Accept with assetHoldingAccount = cid)  requests
-      pure()
+      case etAccounts of 
+        [] -> pure ()
+        (cid, c) :: _ -> mapA_(\request -> T.dedupExercise request Accept with assetHoldingAccount = cid)  requests
+      
     debug $ "TRIGGERED",
   heartbeat = None
 }
