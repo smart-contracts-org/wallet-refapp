@@ -30,6 +30,22 @@ template AssetHoldingAccountRequest with
          exercise assetHoldingAccount Invite_New_Asset_Holder with 
           recipient = recipient
 
+template AirdropRequest with
+    amount: Decimal
+    requester: Party
+    assetHoldingAccountIssuer: Party
+    assetHoldingAccountCid: ContractId AssetHoldingAccount
+  where
+    signatory requester
+    observer assetHoldingAccountIssuer
+    choice Accept_Airdrop: ContractId Asset
+    
+      controller assetHoldingAccountIssuer
+      do
+        exercise assetHoldingAccountCid Airdrop with
+          amount = amount
+
+
 
 -- AssetHoldingAccount represents an account, where Asset contracts can be held
 -- Assets held in the account are all Asset contracts from Active Contract Set,
@@ -99,6 +115,9 @@ template AssetHoldingAccount with
           owner
           amount
           observers = Set.empty
+
+
+
 
     -- This choice consolidates the input set of assets in the account and from the total amount
     -- creates new set of Asset contracts in the desired input amounts plus one more Asset with the remaining amount

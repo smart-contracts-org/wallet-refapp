@@ -11,6 +11,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import CheckIcon from '@mui/icons-material/Check';
 import InfoIcon from '@mui/icons-material/Info';
+import { useNavigate } from 'react-router';
 
 export const demoPartyId = 'DEMO-ledger-party-03568cfb-dc57-4c54-90d6-7db79f0e3dc2'
 interface TopAppBarProps {
@@ -23,6 +24,7 @@ interface TopAppBarProps {
 
 export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, handleDrawerOpen, handleDrawerClose }) => {
   console.log('top rendered')
+  const navigate = useNavigate()
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [isCopied, setCopy] = React.useState(false);
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -37,6 +39,8 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, h
   const onLogoutClick = () => {
     handleCloseUserMenu();
     onLogout && onLogout()
+    navigate('/', {replace: true})
+
   }
   const copy = () => {
     if (!party) {

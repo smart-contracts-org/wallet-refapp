@@ -241,9 +241,14 @@ https://discuss.daml.com/t/is-it-possible-to-import-a-specific-template-from-a-m
 locally
 
 1. from parent directory, `cd wallet` into the wallet directory
+
+Creating the main Daml templates and business logic
 2. run `daml build`, this will create the `.dist` file, with the `dependencies` directory
 3. run `daml build -o wallet-refapp.dar` this will create the wallet-refapp.dar file. This is necessary because the `/trigers/daml.yaml` file requires this as a dependency
 4. `cd ..` back out to parent directory, `cd triggers`, while in the triggers directory, run `daml build` to create the `.daml` file. 
+When uploading triggers to Daml, even if there are multiple triggers in one daml project, running `daml build -o triggers.dar` will create one dar file, with the multiple triggers, which you can then manage in the daml hub console. 
+
+
 5. go back to the triggers directory, and run `daml start`, this starts the ledger, you must do this before running the final command to start the trigger
 6. run the command below, take note that the different version number will have a different command, eg `ledger-party` vs `ledger user`. 
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate,} from 'react-router-dom';
 import Credentials from '../Credentials';
 import { AccountInvitePage } from './AccountInvitePage';
+import { AirdropRequestPage } from './AirdropRequestPage';
 import { AssetProfilePage } from './AssetProfilePage';
 import { CreateAssetAccountPage } from './CreateAssetAccountPage';
 import { IssueAirdropPage } from './IssueAirdropPage';
@@ -25,6 +26,8 @@ export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
       <Route path='/pending-activity' element={<PendingActivityDetailsPage />
       } />
       <Route path='/send' element={<SendPage />
+      } />
+       <Route path='/airdrop-request' element={<AirdropRequestPage />
       } />
       <Route path='/swap' element={<SwapPage />
       } />

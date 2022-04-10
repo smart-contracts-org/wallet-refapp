@@ -20,7 +20,8 @@ import { getAssetSum } from '../utils/getAssetSum';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 import WarningIcon from '@mui/icons-material/Warning';
-
+import { useAdminParty } from '@daml/hub-react';
+import { DeploymentMode, deploymentMode } from '../config';
 export const usePageStyles = makeStyles((theme: Theme) => ({
 
 
@@ -109,6 +110,9 @@ export const AssetProfilePage: React.FC = () => {
   const swapPath = `/swap${attributesPath}`
   const assetInvitePath = `/invite${attributesPath}`
   const issueAirdropPath = `/issue${attributesPath}`
+  const airdropRequestPath = `/airdrop-request${attributesPath}`
+  const prodAdminParty = useAdminParty();
+  const admin = deploymentMode === DeploymentMode.DEV ? 'a' : prodAdminParty;
 
 
   const onBack = () => {
@@ -136,7 +140,7 @@ export const AssetProfilePage: React.FC = () => {
             </Typography>
           </Box>
         </Box>
-        <Card  className={classes.card} >
+        <Card className={classes.card} >
           <CardContent className={classes.cardContent}>
             <Avatar className={classes.avatar}>
               {symbol?.[0] || 'undefined'}
@@ -150,6 +154,16 @@ export const AssetProfilePage: React.FC = () => {
               </Typography>
             </div>
             <div className={classes.actions}>
+              {issuer === admin && symbol === 'ET' && issuer !== party && <div className={classes.actionContainer}>
+
+
+                <IconButton className={classes.issueButton} component={Link} to={airdropRequestPath}>
+                  <AddBoxIcon />
+                </IconButton>
+                <Typography variant='caption'>
+                  Request Airdrop
+</Typography>
+              </div>}
               {issuer === party && <div className={classes.actionContainer}>
 
 
