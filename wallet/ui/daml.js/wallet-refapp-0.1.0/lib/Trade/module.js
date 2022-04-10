@@ -52,7 +52,7 @@ exports.Cancel_Swap = {
 
 
 exports.AssetInSwap = {
-  templateId: '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Trade:AssetInSwap',
+  templateId: '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Trade:AssetInSwap',
   keyDecoder: damlTypes.lazyMemo(function () { return jtv.constant(undefined); }),
   keyEncode: function () { throw 'EncodeError'; },
   decoder: damlTypes.lazyMemo(function () { return jtv.object({asset: Asset.Asset.decoder, receiver: damlTypes.Party.decoder, }); }),
@@ -149,7 +149,7 @@ exports.TransferPreApproval_Cancel = {
 
 
 exports.TransferPreApproval = {
-  templateId: '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Trade:TransferPreApproval',
+  templateId: '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Trade:TransferPreApproval',
   keyDecoder: damlTypes.lazyMemo(function () { return jtv.constant(undefined); }),
   keyEncode: function () { throw 'EncodeError'; },
   decoder: damlTypes.lazyMemo(function () { return jtv.object({asset: Asset.Asset.decoder, newOwner: damlTypes.Party.decoder, }); }),
@@ -243,7 +243,7 @@ exports.Trade_Cancel = {
 
 
 exports.Trade = {
-  templateId: '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Trade:Trade',
+  templateId: '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Trade:Trade',
   keyDecoder: damlTypes.lazyMemo(function () { return jtv.constant(undefined); }),
   keyEncode: function () { throw 'EncodeError'; },
   decoder: damlTypes.lazyMemo(function () { return jtv.object({proposer: damlTypes.Party.decoder, receiver: damlTypes.Party.decoder, offeredAssetCid: damlTypes.ContractId(exports.AssetInSwap).decoder, requestedAssetsTxPreApprovalCid: damlTypes.ContractId(exports.TransferPreApproval).decoder, }); }),

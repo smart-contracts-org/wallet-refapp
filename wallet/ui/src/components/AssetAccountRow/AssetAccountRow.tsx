@@ -12,6 +12,8 @@ import { isMobile } from '../../platform/platform';
 import { useGetMyOwnedAssetsByAssetType } from '../../ledgerHooks/ledgerHooks';
 import { numberWithCommas } from '../../utils/numberWithCommas';
 import { getAssetSum } from '../../utils/getAssetSum';
+import { useAdminParty } from '@daml/hub-react';
+import { DeploymentMode, deploymentMode } from '../../config';
 
 //TODO: issuer and owner currently hardcoded as 'me'
 
@@ -51,11 +53,14 @@ export interface AssetAccountRowProps {
 
 export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({reference, contractId,isFungible, issuer, ticker, owner, isShareable, isAirdroppable }) => {
   const classes = useStyles()
+  const prodAdminParty = useAdminParty();
+  const admin = deploymentMode === DeploymentMode.DEV ? 'a' :  prodAdminParty;
   const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: !!isFungible, owner, reference});
   const attributesPath = `?issuer=${issuer}&ticker=${ticker}&isFungible=${isFungible}&isShareable=${isShareable}&isAirdroppable=${isAirdroppable}&owner=${owner}&contractId=${contractId}&reference=${reference}`
   const assetPath = `/asset${attributesPath}`
   const sendPath = `/send${attributesPath}`
   const swapPath = `/swap${attributesPath}`
+  const airdropRequestPath =`/airdrop-request${attributesPath}`
   const assetInvitePath = `/invite${attributesPath}`
   const issueAirdropPath = `/issue${attributesPath}`
   const assetSum = getAssetSum(contracts);
@@ -78,8 +83,11 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({reference, cont
               </Typography>}
             </div>
             <Box marginLeft={'auto'} display='flex' alignItems='center'>
+              
             {issuer === owner && <RowChip requestType={'issuer'} label='Issuer' />}
             {!isMobile() && issuer === owner && <Button sx={{marginRight:1}} variant='outlined' size="small" component={Link} to={issueAirdropPath}>Issue / Airdrop</Button>
+            }
+             {!isMobile() && issuer === admin && ticker === 'ET' && <Button sx={{marginRight:1}} variant='outlined' size="small" component={Link} to={airdropRequestPath}>Request Airdrop</Button>
             }
             {!isMobile() &&<Button sx={{marginRight:1}} component={Link} to={sendPath}  variant='outlined' size="small"
             >Send</Button>}

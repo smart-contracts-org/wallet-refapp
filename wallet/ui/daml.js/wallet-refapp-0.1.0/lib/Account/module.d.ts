@@ -42,7 +42,7 @@ export declare interface AssetHoldingAccountCloseProposalInterface {
   AssetHoldingAccountCloseProposal_Reject: damlTypes.Choice<AssetHoldingAccountCloseProposal, AssetHoldingAccountCloseProposal_Reject, {}, undefined>;
 }
 export declare const AssetHoldingAccountCloseProposal:
-  damlTypes.Template<AssetHoldingAccountCloseProposal, undefined, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccountCloseProposal'> & AssetHoldingAccountCloseProposalInterface;
+  damlTypes.Template<AssetHoldingAccountCloseProposal, undefined, '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Account:AssetHoldingAccountCloseProposal'> & AssetHoldingAccountCloseProposalInterface;
 
 export declare namespace AssetHoldingAccountCloseProposal {
   export type CreateEvent = damlLedger.CreateEvent<AssetHoldingAccountCloseProposal, undefined, typeof AssetHoldingAccountCloseProposal.templateId>
@@ -82,7 +82,7 @@ export declare interface AssetHoldingAccountProposalInterface {
   AssetHoldingAccountProposal_Reject: damlTypes.Choice<AssetHoldingAccountProposal, AssetHoldingAccountProposal_Reject, {}, undefined>;
 }
 export declare const AssetHoldingAccountProposal:
-  damlTypes.Template<AssetHoldingAccountProposal, undefined, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccountProposal'> & AssetHoldingAccountProposalInterface;
+  damlTypes.Template<AssetHoldingAccountProposal, undefined, '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Account:AssetHoldingAccountProposal'> & AssetHoldingAccountProposalInterface;
 
 export declare namespace AssetHoldingAccountProposal {
   export type CreateEvent = damlLedger.CreateEvent<AssetHoldingAccountProposal, undefined, typeof AssetHoldingAccountProposal.templateId>
@@ -195,7 +195,7 @@ export declare interface AssetHoldingAccountInterface {
   Archive: damlTypes.Choice<AssetHoldingAccount, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662.DA.Internal.Template.Archive, {}, AssetHoldingAccount.Key>;
 }
 export declare const AssetHoldingAccount:
-  damlTypes.Template<AssetHoldingAccount, AssetHoldingAccount.Key, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccount'> & AssetHoldingAccountInterface;
+  damlTypes.Template<AssetHoldingAccount, AssetHoldingAccount.Key, '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Account:AssetHoldingAccount'> & AssetHoldingAccountInterface;
 
 export declare namespace AssetHoldingAccount {
   export type Key = pkg40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7.DA.Types.Tuple2<Asset.AssetType, damlTypes.Party>
@@ -203,6 +203,38 @@ export declare namespace AssetHoldingAccount {
   export type ArchiveEvent = damlLedger.ArchiveEvent<AssetHoldingAccount, typeof AssetHoldingAccount.templateId>
   export type Event = damlLedger.Event<AssetHoldingAccount, AssetHoldingAccount.Key, typeof AssetHoldingAccount.templateId>
   export type QueryResult = damlLedger.QueryResult<AssetHoldingAccount, AssetHoldingAccount.Key, typeof AssetHoldingAccount.templateId>
+}
+
+
+
+export declare type Accept_Airdrop = {
+};
+
+export declare const Accept_Airdrop:
+  damlTypes.Serializable<Accept_Airdrop> & {
+  }
+;
+
+
+export declare type AirdropRequest = {
+  amount: damlTypes.Numeric;
+  requester: damlTypes.Party;
+  assetHoldingAccountIssuer: damlTypes.Party;
+  assetHoldingAccountCid: damlTypes.ContractId<AssetHoldingAccount>;
+};
+
+export declare interface AirdropRequestInterface {
+  Accept_Airdrop: damlTypes.Choice<AirdropRequest, Accept_Airdrop, damlTypes.ContractId<Asset.Asset>, undefined>;
+  Archive: damlTypes.Choice<AirdropRequest, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662.DA.Internal.Template.Archive, {}, undefined>;
+}
+export declare const AirdropRequest:
+  damlTypes.Template<AirdropRequest, undefined, '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Account:AirdropRequest'> & AirdropRequestInterface;
+
+export declare namespace AirdropRequest {
+  export type CreateEvent = damlLedger.CreateEvent<AirdropRequest, undefined, typeof AirdropRequest.templateId>
+  export type ArchiveEvent = damlLedger.ArchiveEvent<AirdropRequest, typeof AirdropRequest.templateId>
+  export type Event = damlLedger.Event<AirdropRequest, undefined, typeof AirdropRequest.templateId>
+  export type QueryResult = damlLedger.QueryResult<AirdropRequest, undefined, typeof AirdropRequest.templateId>
 }
 
 
@@ -227,7 +259,7 @@ export declare interface AssetHoldingAccountRequestInterface {
   Archive: damlTypes.Choice<AssetHoldingAccountRequest, pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662.DA.Internal.Template.Archive, {}, undefined>;
 }
 export declare const AssetHoldingAccountRequest:
-  damlTypes.Template<AssetHoldingAccountRequest, undefined, '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccountRequest'> & AssetHoldingAccountRequestInterface;
+  damlTypes.Template<AssetHoldingAccountRequest, undefined, '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Account:AssetHoldingAccountRequest'> & AssetHoldingAccountRequestInterface;
 
 export declare namespace AssetHoldingAccountRequest {
   export type CreateEvent = damlLedger.CreateEvent<AssetHoldingAccountRequest, undefined, typeof AssetHoldingAccountRequest.templateId>

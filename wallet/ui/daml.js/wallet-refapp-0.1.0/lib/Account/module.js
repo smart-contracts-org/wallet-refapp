@@ -43,7 +43,7 @@ exports.AssetHoldingAccountCloseProposal_Accept = {
 
 
 exports.AssetHoldingAccountCloseProposal = {
-  templateId: '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccountCloseProposal',
+  templateId: '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Account:AssetHoldingAccountCloseProposal',
   keyDecoder: damlTypes.lazyMemo(function () { return jtv.constant(undefined); }),
   keyEncode: function () { throw 'EncodeError'; },
   decoder: damlTypes.lazyMemo(function () { return jtv.object({account: exports.AssetHoldingAccount.decoder, }); }),
@@ -107,7 +107,7 @@ exports.AssetHoldingAccountProposal_Accept = {
 
 
 exports.AssetHoldingAccountProposal = {
-  templateId: '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccountProposal',
+  templateId: '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Account:AssetHoldingAccountProposal',
   keyDecoder: damlTypes.lazyMemo(function () { return jtv.constant(undefined); }),
   keyEncode: function () { throw 'EncodeError'; },
   decoder: damlTypes.lazyMemo(function () { return jtv.object({account: exports.AssetHoldingAccount.decoder, recipient: damlTypes.Party.decoder, }); }),
@@ -249,7 +249,7 @@ exports.Invite_New_Asset_Holder = {
 
 
 exports.AssetHoldingAccount = {
-  templateId: '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccount',
+  templateId: '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Account:AssetHoldingAccount',
   keyDecoder: damlTypes.lazyMemo(function () { return damlTypes.lazyMemo(function () { return pkg40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7.DA.Types.Tuple2(Asset.AssetType, damlTypes.Party).decoder; }); }),
   keyEncode: function (__typed__) { return pkg40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7.DA.Types.Tuple2(Asset.AssetType, damlTypes.Party).encode(__typed__); },
   decoder: damlTypes.lazyMemo(function () { return jtv.object({assetType: Asset.AssetType.decoder, owner: damlTypes.Party.decoder, airdroppable: damlTypes.Bool.decoder, resharable: damlTypes.Bool.decoder, }); }),
@@ -341,6 +341,54 @@ damlTypes.registerTemplate(exports.AssetHoldingAccount);
 
 
 
+exports.Accept_Airdrop = {
+  decoder: damlTypes.lazyMemo(function () { return jtv.object({}); }),
+  encode: function (__typed__) {
+  return {
+  };
+}
+,
+};
+
+
+
+exports.AirdropRequest = {
+  templateId: '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Account:AirdropRequest',
+  keyDecoder: damlTypes.lazyMemo(function () { return jtv.constant(undefined); }),
+  keyEncode: function () { throw 'EncodeError'; },
+  decoder: damlTypes.lazyMemo(function () { return jtv.object({amount: damlTypes.Numeric(10).decoder, requester: damlTypes.Party.decoder, assetHoldingAccountIssuer: damlTypes.Party.decoder, assetHoldingAccountCid: damlTypes.ContractId(exports.AssetHoldingAccount).decoder, }); }),
+  encode: function (__typed__) {
+  return {
+    amount: damlTypes.Numeric(10).encode(__typed__.amount),
+    requester: damlTypes.Party.encode(__typed__.requester),
+    assetHoldingAccountIssuer: damlTypes.Party.encode(__typed__.assetHoldingAccountIssuer),
+    assetHoldingAccountCid: damlTypes.ContractId(exports.AssetHoldingAccount).encode(__typed__.assetHoldingAccountCid),
+  };
+}
+,
+  Accept_Airdrop: {
+    template: function () { return exports.AirdropRequest; },
+    choiceName: 'Accept_Airdrop',
+    argumentDecoder: damlTypes.lazyMemo(function () { return exports.Accept_Airdrop.decoder; }),
+    argumentEncode: function (__typed__) { return exports.Accept_Airdrop.encode(__typed__); },
+    resultDecoder: damlTypes.lazyMemo(function () { return damlTypes.ContractId(Asset.Asset).decoder; }),
+    resultEncode: function (__typed__) { return damlTypes.ContractId(Asset.Asset).encode(__typed__); },
+  },
+  Archive: {
+    template: function () { return exports.AirdropRequest; },
+    choiceName: 'Archive',
+    argumentDecoder: damlTypes.lazyMemo(function () { return pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662.DA.Internal.Template.Archive.decoder; }),
+    argumentEncode: function (__typed__) { return pkgd14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662.DA.Internal.Template.Archive.encode(__typed__); },
+    resultDecoder: damlTypes.lazyMemo(function () { return damlTypes.Unit.decoder; }),
+    resultEncode: function (__typed__) { return damlTypes.Unit.encode(__typed__); },
+  },
+};
+
+
+damlTypes.registerTemplate(exports.AirdropRequest);
+
+
+
 exports.Accept = {
   decoder: damlTypes.lazyMemo(function () { return jtv.object({assetHoldingAccount: damlTypes.ContractId(exports.AssetHoldingAccount).decoder, }); }),
   encode: function (__typed__) {
@@ -354,7 +402,7 @@ exports.Accept = {
 
 
 exports.AssetHoldingAccountRequest = {
-  templateId: '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096:Account:AssetHoldingAccountRequest',
+  templateId: '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89:Account:AssetHoldingAccountRequest',
   keyDecoder: damlTypes.lazyMemo(function () { return jtv.constant(undefined); }),
   keyEncode: function () { throw 'EncodeError'; },
   decoder: damlTypes.lazyMemo(function () { return jtv.object({recipient: damlTypes.Party.decoder, owner: damlTypes.Party.decoder, }); }),

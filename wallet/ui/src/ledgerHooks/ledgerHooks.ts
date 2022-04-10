@@ -3,7 +3,7 @@ import { Account, Asset } from '@daml.js/wallet-refapp';
 import { useStreamQueries } from '@daml/react';
 import { Choice, ContractId } from '@daml/types';
 import { Accept_Transfer, AssetTransfer, Cancel_Transfer, Reject_Transfer } from '@daml.js/wallet-refapp/lib/Asset';
-import { AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
+import { AssetHoldingAccount, AssetHoldingAccountProposal } from '@daml.js/wallet-refapp/lib/Account';
 import { ActionType } from '../pages/PendingAssetInviteDetailsPage';
 import { Archive } from '@daml.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662/lib/DA/Internal/Template';
 import { makeDamlSet } from '../utils/common';
@@ -467,6 +467,20 @@ export const useLedgerHooks = () => {
     }
   }
 
+  const createAirdropRequest = async ({ amount, requester, assetHoldingAccountIssuer, assetHoldingAccountCid }: {requester: string, amount: string, assetHoldingAccountIssuer: string, assetHoldingAccountCid: ContractId<AssetHoldingAccount> }) => {
+    try {
+      const asset = await ledger.create(Account.AirdropRequest, {
+        requester: party,
+        amount,
+        assetHoldingAccountIssuer, 
+        assetHoldingAccountCid
+      })
+      return { isOk: true, payload: asset }
+    } catch (e) {
+      return { isOk: false, payload: e }
+    }
+  }
+
 
   const createAssetAccount = async ({ ticker, isAirdroppable, isFungible, isShareable, reference }: { ticker: string, isFungible: boolean; reference: string, isAirdroppable: boolean, isShareable: boolean }) => {
     try {
@@ -482,6 +496,6 @@ export const useLedgerHooks = () => {
     }
   }
 
-  return { exercisePreApprove, exerciseTradeReject, exerciseTradeCancel, exerciseTradeSettle, exerciseMergeSplit, proposeSwap, exerciseAirdrop, exerciseAssetTransferChoice, exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
+  return {createAirdropRequest, exercisePreApprove, exerciseTradeReject, exerciseTradeCancel, exerciseTradeSettle, exerciseMergeSplit, proposeSwap, exerciseAirdrop, exerciseAssetTransferChoice, exerciseAssetHolderInvite, inviteNewAssetHolder, acceptAssetTransfer, cancelAssetTransfer, sendAsset, createAssetAccount, issueAsset }
 
 }

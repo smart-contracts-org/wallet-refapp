@@ -15,4 +15,4 @@ var Trade = require('./Trade');
 exports.Trade = Trade;
 var User = require('./User');
 exports.User = User;
-exports.packageId = '9149c86559dd0db03b1e6ab41a1fb09962a53e54b412bb55e79843d1a1fdb096';
+exports.packageId = '5294563cf71d3cd0a7dd41495be721be50fa9db4f8d8c00ac6cab92ded518a89';
