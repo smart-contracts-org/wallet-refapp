@@ -47,11 +47,15 @@ type Props = {
 }))
 
 export const LoginPage: React.FC<Props> = ({onLogin}) => {
+  console.log('LOGIN PAGE Rendered')
   const classes = useStyles();
-  const admin = useAdminParty();
+  const prodAdminParty = useAdminParty();
+  const admin = deploymentMode === DeploymentMode.DEV ? 'a' :  prodAdminParty;
   console.log('admin party', admin)
   
-  const login = useCallback(async (credentials: Credentials) => {
+  
+  const login = useCallback(async (credentials: Credentials, admin?: string) => {
+    console.log('LOGIN CALLED', 'admin', admin)
     try {
       const ledger = new Ledger({token: credentials.token});
       let userContract = await ledger.fetchByKey(User.User, credentials.party);
@@ -60,18 +64,21 @@ export const LoginPage: React.FC<Props> = ({onLogin}) => {
         const user = {username: credentials.party, following: []};
         userContract = await ledger.create(User.User, user);
         
-        // if (credentials.party){
-        //   console.log('creating AssetHoldingAccountRequest')
-        //   await ledger.create(Account.AssetHoldingAccountRequest, {recipient: credentials.party, owner: defaultCounterParty})
-        // }
+        if (admin && admin !== credentials.party){
+          console.log('creating AssetHoldingAccountRequest')
+          await ledger.create(Account.AssetHoldingAccountRequest, {recipient: credentials.party, owner: admin})
+        }
       }
+      console.log('CREDENTIAL SET')
       onLogin(credentials);
     } catch(error) {
       alert(`Unknown error:\n${JSON.stringify(error)}`);
     }
   }, [onLogin]);
 
-
+  if(!admin){
+    return <LinearProgress sx={{width:'100%'}}/>
+  }
 
   const wrap: (c: JSX.Element) => JSX.Element = (component) =>
   <div className={classes.root}>
@@ -94,7 +101,7 @@ export const LoginPage: React.FC<Props> = ({onLogin}) => {
     const handleLogin = async (event: React.FormEvent) => {
       event.preventDefault();
       await login({party: username,
-                   token: auth.makeToken(username)} as Credentials);
+                   token: auth.makeToken(username)} as Credentials, admin);
     }
     return wrap(<>
       {/* FORM_BEGIN */}
@@ -119,9 +126,9 @@ export const LoginPage: React.FC<Props> = ({onLogin}) => {
         onLogin={creds => {
           
 
-          console.log('creds', creds, 'admin', admin)
+          console.log('DAML HUB LOGIN CALLBACK FIRED', creds, 'admin', admin)
           if (creds) {
-            login(creds);
+            login(creds, admin);
           }
         }}
         options={{

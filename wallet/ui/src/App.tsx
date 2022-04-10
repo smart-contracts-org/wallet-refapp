@@ -26,6 +26,7 @@ const theme = createTheme({
 });
 
 export const App: React.FC = () => {
+  console.log('APP rendered')
   const [isOpen, setOpen] = React.useState(false);
   const [isRightOpen, setRightOpen] = React.useState(true);
   const [rerender, setRerender] = React.useState(false);
