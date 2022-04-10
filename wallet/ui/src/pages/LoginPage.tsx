@@ -48,13 +48,14 @@ type Props = {
 
 export const LoginPage: React.FC<Props> = ({onLogin}) => {
   const classes = useStyles();
-  
+  const admin = useAdminParty();
+  console.log('admin party', admin)
   
   const login = useCallback(async (credentials: Credentials) => {
     try {
       const ledger = new Ledger({token: credentials.token});
       let userContract = await ledger.fetchByKey(User.User, credentials.party);
-      console.log('user contract', userContract, 'default')
+      console.log('user contract', userContract, 'default', admin)
       if (userContract === null) {
         const user = {username: credentials.party, following: []};
         userContract = await ledger.create(User.User, user);
@@ -116,7 +117,9 @@ export const LoginPage: React.FC<Props> = ({onLogin}) => {
         withButton
         withToken
         onLogin={creds => {
-          console.log('creds', creds)
+          
+
+          console.log('creds', creds, 'admin', admin)
           if (creds) {
             login(creds);
           }
