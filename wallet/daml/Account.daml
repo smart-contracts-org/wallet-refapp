@@ -116,6 +116,17 @@ template AssetHoldingAccount with
           amount
           observers = Set.empty
 
+    nonconsuming choice Issue: ContractId Asset
+      with
+        amount: Decimal
+      controller assetType.issuer
+      do
+        create Asset with
+          assetType
+          owner = assetType.issuer
+          amount
+          observers = Set.empty
+
 
 
 
