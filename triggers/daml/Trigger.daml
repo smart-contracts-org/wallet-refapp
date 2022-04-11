@@ -4,7 +4,6 @@ import Account
 import qualified Daml.Trigger as T
 import DA.Foldable
 import DA.Action
-import DA.List (head)
 
 autoSendExampleAssetAccountProposal: T.Trigger ()
 autoSendExampleAssetAccountProposal = T.Trigger 
