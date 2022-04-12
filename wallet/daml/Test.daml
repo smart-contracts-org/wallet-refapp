@@ -39,7 +39,6 @@ setupParties = do
   dianne <- allocateParty "Dianne"
   return $ TestParties with ..
 
-Test.test : Script ()
 test = do
 
   tP@TestParties{..} <- setupParties
