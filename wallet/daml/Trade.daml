@@ -6,17 +6,34 @@ module Trade where
 
 import DA.Set as Set
 import Asset
-
+import DA.Action
 -- The Trade templates represents a proposal for a swap of two assets between two parties: the proposer and the receiver
 template Trade
   with
     proposer : Party
     receiver : Party
     offeredAssetCid : ContractId AssetInSwap
-    requestedAssetsTxPreApprovalCid : ContractId TransferPreApproval
+    -- requestedAssetsTxPreApprovalCid : ContractId TransferPreApproval
+    requestedAssetType: AssetType
+    requestedAssetCids: [ContractId Asset]
+    outputAmounts: [Decimal]
   where
     signatory proposer
     observer receiver
+    let
+      validateTxInputs: [ContractId Asset] -> [Decimal] -> Update Decimal
+      validateTxInputs assetCids outputAmounts = do
+        totAssetAmount <- sum . map (\x -> x.amount) <$> forA assetCids \assetCid -> do
+          asset <- fetch assetCid
+          assertMsg "Asset type mismatch between asset and account" $
+            asset.assetType == requestedAssetType
+          assertMsg "Owner mismatch between asset and account" $
+            asset.owner == receiver
+          archive assetCid
+          return asset
+        assertMsg "Insufficient funds passed to create all output assets" $
+          totAssetAmount >= sum outputAmounts
+        return totAssetAmount
 
     choice Trade_Cancel : ()
       controller proposer
@@ -36,21 +53,45 @@ template Trade
         offeredTxPreApprovalCid : ContractId TransferPreApproval
       controller receiver
       do
-        asset <- fetch requestedAssetCid
+        assertMsg "Non fungible assets cannot be merged" $
+          assetType.fungible
+        totAssetAmount <- validateTxInputs requestedAssetCids outputAmounts
+        let 
+          createOutputAssets assetsList amt = do
+            assertMsg "Each output asset amount must be positive" $
+              amt > 0.0
+            a <- create Asset with
+              assetType = requestedAssetType
+              owner = receiver
+              amount = amt
+              observers = Set.empty
+            return $ a :: assetsList
+        outputAssets <- foldlA createOutputAssets [] outputAmounts
         
-        assetCid <- create Asset with
-          assetType = asset.assetType
-          owner = receiver
-          amount = asset.amount
-          observers = Set.empty
+        if (totAssetAmount > sum outputAmounts)
+        then do 
+          a <- create Asset with
+            assetType = requestedAssetType
+            owner = receiver
+            amount = (totAssetAmount - sum outputAmounts)
+            observers = Set.empty
+          
+          offeredAsset <- fetch offeredAssetCid
+          
+          requestedAssetsTxPreApprovalCid <- create TransferPreApproval with
+            asset = offeredAsset.asset
+            newOwner = receiver
 
-
-        
-        newReceiverAsset <- exercise offeredTxPreApprovalCid TransferPreApproval_TransferAssetInSwap 
+          newReceiverAsset <- exercise offeredTxPreApprovalCid TransferPreApproval_TransferAssetInSwap 
             with assetInSwapCid = offeredAssetCid
-        newProposerAsset <- exercise requestedAssetsTxPreApprovalCid TransferPreApproval_TransferAsset 
+          newProposerAsset <- exercise requestedAssetsTxPreApprovalCid TransferPreApproval_TransferAsset 
             with txAssetCid = requestedAssetCid
-        return (newProposerAsset, newReceiverAsset)
+          return (newProposerAsset, newReceiverAsset)
+
+
+         else
+          return (a,a)
+
 
 -- TransferPreApproal template gives the transfer originator the authority to change the asset owner
 -- from the transfer originator party to the transfer recipient party
