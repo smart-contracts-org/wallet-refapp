@@ -101,7 +101,7 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
   const classes = useNarrowPendingStyles();
   console.log('requestedAssetsTxPreApprovalCid', requestedAssetsTxPreApprovalCid)
   const transferPreapproval = useGetTransferPreapprovalContractByContractId(requestedAssetsTxPreApprovalCid).contract;
-  console.log('swap', transferPreapproval)
+  console.log('transferPreapproval', transferPreapproval)
   const proposerAsset = useGetAssetInSwapContractByContractId(proposerAssetCid).contract
   console.log('propse', proposerAsset)
   const proposerAssetSymbol = proposerAsset?.payload.asset.assetType?.symbol|| "";
@@ -123,7 +123,7 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
 
   const receiverAssetOwner = transferPreapproval?.payload.asset.owner || "";
   
-  if(!proposerAsset || !transferPreapproval){
+  if(!proposerAsset ){
     return null
   }
  

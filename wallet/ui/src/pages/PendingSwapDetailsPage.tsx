@@ -2,10 +2,10 @@ import React from 'react';
 
 import { ContractId } from '@daml/types';
 import { Asset } from '@daml.js/wallet-refapp/lib/Asset';
-import { Trade, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Trade/module';
 import { Swap } from '../components/Swap/Swap';
 import { useGetTransferPreapprovalContractByContractId } from '../ledgerHooks/ledgerHooks';
 import { LinearProgress } from '@mui/material';
+import { Trade, TransferPreApproval } from '@daml.js/wallet-refapp/lib/Account';
 
 interface PendingSwapDetailsPageProps {
   tradeCid: ContractId<Trade>;

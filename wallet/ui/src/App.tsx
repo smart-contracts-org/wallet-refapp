@@ -15,7 +15,6 @@ import DamlLedger from '@daml/react';
 import Credentials from './Credentials';
 import { httpBaseUrl } from './config';
 import { LoginPage } from './pages/LoginPage';
-import { deleteCookie } from './utils/deleteCookie';
 import { RightDrawer } from './components/RightDrawer/RightDrawer';
 import { damlHubLogout } from '@daml/hub-react';
 
@@ -30,7 +29,6 @@ export const App: React.FC = () => {
   console.log('APP rendered')
   const [isOpen, setOpen] = React.useState(false);
   const [isRightOpen, setRightOpen] = React.useState(true);
-  const [rerender, setRerender] = React.useState(false);
   const [credentials, setCredentials] = React.useState<Credentials | undefined>();
     
 
