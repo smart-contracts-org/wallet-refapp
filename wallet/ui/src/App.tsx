@@ -17,6 +17,7 @@ import { httpBaseUrl } from './config';
 import { LoginPage } from './pages/LoginPage';
 import { deleteCookie } from './utils/deleteCookie';
 import { RightDrawer } from './components/RightDrawer/RightDrawer';
+import { damlHubLogout } from '@daml/hub-react';
 
 
 const theme = createTheme({
@@ -30,7 +31,7 @@ export const App: React.FC = () => {
   const [isOpen, setOpen] = React.useState(false);
   const [isRightOpen, setRightOpen] = React.useState(true);
   const [rerender, setRerender] = React.useState(false);
-  const [credentials, setCredentials] = React.useState<Credentials | undefined>(undefined);
+  const [credentials, setCredentials] = React.useState<Credentials | undefined>();
     
 
   const handleDrawerOpen = () => {
@@ -41,10 +42,8 @@ export const App: React.FC = () => {
   }
 
   const onLogout = () => {
-    deleteCookie('DAMLHUB_LEDGER_ACCESS_TOKEN')
+    damlHubLogout()
     setCredentials(undefined)
-    // used because deleting the cookie will not trigger rerender
-    setRerender(!rerender);
   }
   const handleDrawerClose = () => {
     setOpen(false);
@@ -80,10 +79,7 @@ export const App: React.FC = () => {
                 </Box>
               </DamlLedger>
              : 
-             <>
              <LoginPage onLogin={setCredentials}/>
-            </>
-
           }
           <Box paddingBottom={10}/>
         </ThemeProvider>
