@@ -36,6 +36,16 @@ template Trade
         offeredTxPreApprovalCid : ContractId TransferPreApproval
       controller receiver
       do
+        asset <- fetch requestedAssetCid
+        
+        assetCid <- create Asset with
+          assetType = asset.assetType
+          owner = receiver
+          amount = asset.amount
+          observers = Set.empty
+
+
+        
         newReceiverAsset <- exercise offeredTxPreApprovalCid TransferPreApproval_TransferAssetInSwap 
             with assetInSwapCid = offeredAssetCid
         newProposerAsset <- exercise requestedAssetsTxPreApprovalCid TransferPreApproval_TransferAsset 
