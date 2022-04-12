@@ -401,9 +401,9 @@ test = do
     exerciseCmd aliceBOBAccountHolderProposalCid AssetHoldingAccountProposal_Accept
   
   -- Alice pre-approves transfer of BOBs from Dianne and settles the trade
-  aliceTxApprovalCid <- submit alice do
-    exerciseByKeyCmd @AssetHoldingAccount (offeredAsset.assetType, alice) Preapprove_Transfer_In with 
-      asset = offeredAsset
+  -- aliceTxApprovalCid <- submit alice do
+  --   exerciseByKeyCmd @AssetHoldingAccount (offeredAsset.assetType, alice) Preapprove_Transfer_In with 
+  --     asset = offeredAsset
   submit alice do
     exerciseCmd tradeCid Trade_Settle with
       requestedAssetCids = aliceALCCids

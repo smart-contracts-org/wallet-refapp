@@ -417,7 +417,7 @@ template Trade
       do
         -- pre-approves transfer from sender to receiver
         offeredAsset <- fetch offeredAssetCid
-        (receiverAssetHoldingAccountCid, _) <- fetchByKey @AssetHoldingAccount (requestedAssetType, receiver)
+        (receiverAssetHoldingAccountCid, _) <- fetchByKey @AssetHoldingAccount (offeredAsset.asset.assetType, receiver)
           
           -- extracted what we do in Preapprove_Transfer_In
         offeredTxPreApprovalCid <- exercise receiverAssetHoldingAccountCid Preapprove_Transfer_In with
