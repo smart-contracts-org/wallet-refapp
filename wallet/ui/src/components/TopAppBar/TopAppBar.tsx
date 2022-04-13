@@ -88,7 +88,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, h
             <Card sx={{ width: '300px', display: 'flex', flexDirection: 'column' }}>
               <CardContent>
                 <Typography variant='caption'>
-                  Ledger ID:
+                  Party ID:
                 </Typography>
                 <Card  variant='outlined'  sx={{ mb: 1, mt: 1, borderRadius: 1 }}>
                   <CardActionArea onClick={copy} sx={{ padding: 1 }}>
@@ -103,12 +103,10 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ party, onLogout, isOpen, h
                 <Card variant='outlined' sx={{ padding: 1 }}>
                 <Box display='flex' flexDirection='row' alignItems='center'mb={1}>
                   <InfoIcon sx={{marginRight:1}} color='primary'/> 
-                  <Typography variant='caption'><i>Whats the ledger ID used for ?</i></Typography>
+                  <Typography variant='caption'><i>What's a Party ID ?</i></Typography>
                   </Box>
                   <Typography color='text.primary' variant='caption' sx={{alignItems: 'center'}}>
-                  
-                   You unique ledgerID is associated with this wallet. It is required to receive transfers / swaps / asset holding invites, or any other activity that requires your unique Ledger ID as a counter party.
-                  </Typography>
+                  A Party ID is used to identify you in a variety of transactions where you are a counter party. For example: transfers, swaps and asset holding invites.                  </Typography>
                 </Card >
 
               </CardContent>

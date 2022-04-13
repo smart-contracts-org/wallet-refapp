@@ -1,7 +1,9 @@
 import React from 'react';
 
 import { Card, CardContent, Typography } from '@mui/material';
+import { useAdminParty } from '@daml/hub-react';
 export const GettingStartedMessage: React.FC = () => {
+  const admin = useAdminParty()
   return (
     <>
       <Card sx={{ margin: 1 }}>
@@ -14,19 +16,19 @@ export const GettingStartedMessage: React.FC = () => {
             </Typography>
           <br />
           <Typography>
-            <b>1.</b> Requesting to be an ExampleToken asset holder. <i>This will be necessary for the swap workflow later on.</i>
+            <b>1.</b> Becoming an ExampleToken asset holder<i> ( used for the swap workflow later on)</i>
           </Typography>
           <Typography>
-            <b>2.</b> Creating a new asset class via creating a new AssetHoldingAccount
+            <b>2.</b> Creating a new asset class and a new AssetHoldingAccount.
            </Typography>
           <Typography>
-            <b>3.</b>  Issuing quantities of that specific asset.
+            <b>3.</b>   Issuing quantities of the new asset.
            </Typography>
           <Typography>
-            <b>4.</b>  Inviting others to become asset holders (because without your invitation of becoming an asset holder, you will not be able to send or swap the newly created tokens)
+            <b>4.</b> Inviting others (or the default counter party) to become asset holders (so that they can  send or swap the newly created tokens with you)
            </Typography>
           <Typography>
-            <b>5.</b>  Sending assets to other users.
+            <b>5.</b>  Sending assets to other users
            </Typography>
           <Typography>
             <b>6.</b>  Swapping your newly created asset with the ExampleToken.
@@ -39,28 +41,27 @@ export const GettingStartedMessage: React.FC = () => {
             1. Requesting ExampleToken
             </Typography>
           <Typography>
-            To receive ExampleTokens via airdrop, you will need to tweet to <b>@DamlDriven</b> with your ledger ID and the hashtag #ExampleTokensPlz.
+            To receive ExampleTokens via airdrop:
           </Typography>
           <br />
           <Typography>
-            Your ledger ID can be found on the top right corner by clicking on the avatar Icon.
+            <b>1.</b>  Check your <b>Pending Activities</b> in the menu on the left side of the screen.
+           </Typography>
+          <br />
+          <Typography>
+            <b>2.</b>  Accept the Asset Holding Account Invitation in Pending Activities. Now you have an ExampleToken holding account.
+           </Typography>
+          <br />
+          <Typography>
+            <i>Important: ensure the invitation is from {admin}</i>
           </Typography>
           <br />
           <Typography>
-            Once you have tweeted this, wait a few minutes and check your "Pending Activities" in the left hand menu, and accept the Asset Holding Account invitation.
-          </Typography>
+            By accepting the invitation, you are opening an ExampleToken AssetHoldingAccount, and giving the issuer the right to airdrop (create the asset directly in your wallet) the tokens to you.          </Typography>
           <br />
           <Typography>
-            <i>Important: ensure the invitation is from ledger-party-68815041-ad16-4d9a-8177-9f9b20d8fb3f</i>
-          </Typography>
-          <br />
-          <Typography>
-            By accepting the invitation, you are opening an ExampleToken AssetHoldingAccount, and giving permission to the issuer the right to airdrop (create the asset directly in your wallet) you the tokens.
-          </Typography>
-          <br />
-          <Typography>
-            While you wait for the ExampleTokens to be airdropped to you, you can continue the steps below.
-            </Typography>
+            <b>3.</b> Click <b>Request Airdrop</b> and specify an amount you would like to receive. Once your balance updates, you will have received some ExampleTokens.
+           </Typography>
         </CardContent>
       </Card>
       <Card sx={{ margin: 1 }}>
@@ -69,29 +70,27 @@ export const GettingStartedMessage: React.FC = () => {
             2. Creating an AssetHoldingAccount
             </Typography>
           <Typography>
-            Click "Create" on the left menu drawer.
-            By creating an AssetHoldingAccount, you are acting as the issuer (as well as the owner) of this account.
-            </Typography>
-          <br />
-          <Typography>
-            As the issuer, you are able to define the token symbol (ticker / name), whether it is fungible, reshareable, or airdroppable.
-          </Typography>
-          <br/>
-          <Typography>
             The purpose of the AssetHoldingAccount is to allow the owner to perform additional actions such as creating a swap, or transfering the associated asset to another user.
             </Typography>
+          <Typography>
+            When you create an AssetHoldingAccount, you act as the issuer (as well as the owner) of tokens from this account.
+            </Typography>
           <br />
           <Typography>
-          Once you’ve created an AssetHoldingAccount, you can mint the asset into your account. 
+            <b>1.</b> Click <b>Create</b> in the left menu
           </Typography>
-          <br/>
           <Typography>
-            After you have defined the characteristics, click "Create" to create this asset account.
-            </Typography>
-            <br/>
-            <Typography>
-              <i>Note, Assets and AssetHoldingAccounts are linked by common properties: issuer, symbol, resharable, airdroppable, fungible.</i>
-            </Typography>
+            <b>2.</b> Define the characteristics of the tokens that will be issued from this account: the name, optional reference, and whether it is fungible, reshareable, or airdroppable.
+          </Typography>
+          <Typography>
+            <b>3.</b> Click the <b>Create</b> button at the bottom of the screen
+          </Typography>
+          <Typography>
+            <i>Note: Assets and AssetHoldingAccounts are linked by common properties: issuer, symbol, resharable, airdroppable, fungible.</i>
+          </Typography>
+          <Typography>
+            Once you’ve created an AssetHoldingAccount, you can mint the asset into your account and airdrop it to others.
+          </Typography>
         </CardContent>
       </Card>
       <Card sx={{ margin: 1 }}>
@@ -103,19 +102,19 @@ export const GettingStartedMessage: React.FC = () => {
             The brand new asset account will have a starting balance of 0.
             </Typography>
           <Typography>
-            As an issuer, you can issue new amounts into your account. Click "Issue / Airdrop".
+            As an issuer, you can issue new amounts into your account. Click <b>Issue / Airdrop</b>.
             </Typography>
           <br />
           <Typography>
-            <b>Issue To Self</b> <br />means the assets will have the owner field set as your ledgerID. We are creating the assets directly in your wallet (you can choose to send or swap them later).
+            <b>Issue To Self</b> <br />means the assets will have the owner field set as your party ID. We are creating the assets directly in your wallet (you can choose to send or swap them later).
             </Typography>
           <br />
           <Typography>
-            <b>Airdrop</b><br /> means you will be issuing assets directly in another users wallet. In order to airdrop assets, the recipient must first grant you permission to create the assets in their wallet. An assetHolding invitation (or in this case, an airdrop invitation) is required.
+            <b>Airdrop</b><br /> means you will be issuing assets directly in another users wallet. <br /><br />In order to airdrop assets, the recipient must first grant you permission to create the assets in their wallet. An assetHolding invitation, or in this case, <b>an airdrop invitation is required</b>.
             </Typography>
           <br />
           <Typography>
-            Specify an amount to issue, and click issue. You can always issue more later.
+            Specify an amount to issue, and click <b>Issue</b>. You can always issue more later.
             </Typography>
         </CardContent>
       </Card>
@@ -129,16 +128,15 @@ export const GettingStartedMessage: React.FC = () => {
             </Typography>
           <br />
           <Typography>
-            An imperfect anology would be, I won't be able to send you Japanese Yen if you don't open up a Japanese Yen foreign currency account.
-            </Typography>
-          <br />
-          <Typography>
-            Go to “My Asset Accounts” in the lefthand side menu, click on the asset you want to share,  and click "Invite".
+            <b>1. </b>Go to <b>My Asset Accounts</b> in the left menu.
              </Typography>
           <br />
           <Typography>
-            Specify the ledger ID, and click invite.
-             </Typography>
+            <b>2. </b>click on the asset you want to share,  and click <b>Invite new owner</b>.
+          </Typography>
+          <Typography>
+            <b>3. </b>Specify the Party Id (Or use the default counter party), and click <b>Invite</b>
+          </Typography>
           <br />
 
           <Typography>
@@ -147,12 +145,11 @@ export const GettingStartedMessage: React.FC = () => {
              </Typography>
           <br />
           <Typography>
-Note, if the account is resharable, any account owner can invite other users to create AssetHoldingAccounts for this asset. If the account is not resharable, only the issuer can invite other users to create AssetHoldingAccounts for this asset.
-             </Typography>
+            <i>Note: If the account is resharable, any account owner can invite other users to create AssetHoldingAccounts for this asset. If the account is not resharable, only the issuer can invite other users to create AssetHoldingAccounts for this asset. </i>            </Typography>
           <br />
           <Typography>
-            If later on, you decide that you don't want to share this asset account, you can go to "Pending Activities", "Outbound Requests" and cancel the invitation, provided that it is hasn't been accepted by the recipient yet.
-             </Typography>
+            If later on, you decide that you don't want to share this asset account, you can go to <b>Pending Activities</b> > <b>Outbound Requests</b> and cancel the invitation, provided that it is hasn't been accepted by the recipient yet.
+          </Typography>
 
         </CardContent>
       </Card>
@@ -162,19 +159,32 @@ Note, if the account is resharable, any account owner can invite other users to 
             5. Send
             </Typography>
           <Typography>
-            Assuming the recipient has accepted the AssetHolderAccount invitation, then you can send the user the asset.
+            Once the recipient has accepted the AssetHolderAccount invitation you can send the user the asset.          </Typography>
+          <br />
+          <Typography>
+            <b>1.</b> Select the asset that you want to send.
+             </Typography>
+          <br></br>
+          <Typography>
+            <b>2.</b> Click <b>Send</b>
+          </Typography>
+          <br></br>
+          <Typography>
+            <b>3.</b> Click <b>Specify the Party ID and the amount</b>
+          </Typography>
+
+          <br />
+          <Typography>
+            <i>Important: you can send tokens to anyone, regardless of if they have the assetHoldingAccount. However in order for the recipient to receive the tokens, the user needs to have that asset account</i>
           </Typography>
           <br />
+
           <Typography>
-            For the asset that you want to send, click "send" and specify the party ID and amount
+            The balance for this asset should have decreased by the amount you've sent.
              </Typography>
           <br />
           <Typography>
-            <i>important: you can send tokens to anyone, regardless of if they have the assetHoldingAccount. However in order for the recipient to receive the tokens, the user needs to have that asset account</i>
-             </Typography>
-          <br />
-          <Typography>
-            If you decide later on, and assuming the recipient has not accepted the send request, you can cancel it by going to "Pending activities" outbound, and click on the asset that you are sending, and click "Cancel".
+            If you decide later on, and assuming the recipient has not accepted the send request, you can cancel it by going to <b>Pending activities</b> > <b>outbound</b>, and click on the asset that you are sending, and click <b>Cancel</b>.
              </Typography>
         </CardContent>
       </Card>
@@ -184,37 +194,28 @@ Note, if the account is resharable, any account owner can invite other users to 
             5. Swap
             </Typography>
           <Typography>
-            Let's try and swap your newly issued asset with some ExampleTokens. What you'll be creating here is a swap request. The assets are not swapped immediately, but rather a request to swap is created.
+            Let's try and swap your newly issued asset with some ExampleTokens. What you'll be creating here is a swap request. The assets are not swapped immediately, but rather a request to swap is created. The swap occurs only when and if the recipient agrees to the request.            </Typography>
+          <br />
+          <Typography>
+           <b>1.</b> Navigate to the asset that you want to swap.
             </Typography>
           <br />
           <Typography>
-            If the recipient agrees to your proposed swap, then will the atomic swap occur. If the recipient doesn't like the agreement, they can reject the swap request.
+            <b>2. </b>First ensure you have enough balance of the token you want to swap. If not, you can issue yourself additional quantities. 
             </Typography>
-          <br />
-          <Typography>
-            Navigate to the asset that you want to swap, and click "Swap"
-            </Typography>
-          <br />
-          <Typography>
-            Specify the user's ledger ID. For this example, we will the issuer of ExampleTokens,
-            
             <br/>
-            <br/>
-
-            <i><b>ledger-party-68815041-ad16-4d9a-8177-9f9b20d8fb3f</b></i>
-            <br/>
-            <br/>
-
-            specify the amount of your token that you want to swap out.
+            <Typography>
+             <b>3. </b>Click <b>Swap</b>
             </Typography>
-          <br />
+            <br/>
           <Typography>
-            And specify the asset Type you want to receive, and the quantity.
-            </Typography>
+            <b>4. </b>
+          Specify the ledger ID of the user who will receive the swap request. For this example, we can use the Party ID of the Default Counter Party, click <b>use default party</b> in the recipient field.
+          </Typography>
+          <br></br>
           <Typography>
-            Perhaps you believe your asset is worth 1 ExampleToken, or 100 ExampleTokens.
+            <b>5.</b> Specify the amount of your token that you want to swap out, the asset type you want to receive, and the quantity. Perhaps you believe your asset is worth 1 ExampleToken, or 100 ExampleTokens.
             </Typography>
-          <br />
           <Typography>
             If later you want to change the swap terms, you will need to cancel the swap proposal and create a new one with the new terms.
           </Typography>
