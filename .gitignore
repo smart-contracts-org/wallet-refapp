@@ -1,11 +1,10 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-*.daml
 
-wallet/*.daml
 wallet/ui/daml.js
 *.dar
-
+triggers/.daml
+wallet/.daml
 build
 node_modules
 *.zip

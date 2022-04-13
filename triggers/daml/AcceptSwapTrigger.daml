@@ -1,0 +1,45 @@
+
+module AcceptSwapTrigger where
+
+import qualified Daml.Trigger as T
+import DA.Foldable
+import DA.Action
+import DA.List (head)
+import DA.Optional.Total (whenSome, isSome, fromOptional, fromSome)
+import Account 
+import Asset (Asset(Asset))
+
+-- Auto accepts incoming swap requests
+-- Configed on Daml hub for only the userAdmin party
+
+acceptSwapTrigger: T.Trigger ()
+acceptSwapTrigger = T.Trigger 
+ { initialize = pure (),
+  updateState = \_  -> pure (),
+  registeredTemplates = T.RegisteredTemplates [T.registeredTemplate @Asset, T.registeredTemplate @Trade, T.registeredTemplate @AssetHoldingAccount, T.registeredTemplate @TransferPreApproval],
+  rule = \p -> do
+    tradeRequests <- T.query @Trade
+    allAssetContracts <- T.query @Asset
+
+    let isMyIncomingTrades = (\tradeRequests -> tradeRequests.receiver == p)
+    let myTrades = filter (\(_, contract) -> isMyIncomingTrades contract) tradeRequests
+
+
+
+    debug ("asset holding account invites", myTrades)
+
+    
+    unless ( DA.Foldable.null myTrades ) do 
+      case myTrades of 
+        [] -> pure ()
+
+        (tradeCid, c) :: _ -> do
+          let isRequestedAsset = (\asset -> asset.assetType == c.requestedAssetType && asset.owner == p)
+          let requestedAssets = filter(\(cid,contract) -> isRequestedAsset contract) allAssetContracts
+          debug("REQUESTED ASSETS", requestedAssets)
+          let requestedAssetCids = map fst requestedAssets
+          T.dedupExercise tradeCid Trade_Settle with 
+            requestedAssetCids = requestedAssetCids
+    debug $ "TRIGGERED",
+  heartbeat = None
+}
