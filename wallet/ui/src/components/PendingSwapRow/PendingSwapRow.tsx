@@ -123,7 +123,7 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
 
   const receiverAssetOwner = transferPreapproval?.payload.asset.owner || "";
   
-  if(!proposerAsset ){
+  if(!proposerAsset || !transferPreapproval){
     return null
   }
  

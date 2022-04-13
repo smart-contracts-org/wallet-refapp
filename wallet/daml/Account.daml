@@ -474,7 +474,7 @@ template TransferPreApproval
     newOwner : Party
   where
     signatory asset.assetType.issuer
-    observer newOwner
+    observer newOwner, asset.owner
 
     choice TransferPreApproval_Cancel : ()
       controller asset.owner
