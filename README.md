@@ -132,6 +132,7 @@ interesting ones to familiarize yourself with:
 Workflow for sender: 
 1. Get Sender Asset Holding Contract
  2. Exercise create_trade on asset holding contract, 
+  2a. within this create_trade, the sender preApproves the receiving asset
  3. with the list of assets for that account
  with amount
  inbound asset details

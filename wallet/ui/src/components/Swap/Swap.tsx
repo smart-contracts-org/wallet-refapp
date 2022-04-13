@@ -10,9 +10,9 @@ import { useNavigate } from 'react-router-dom';
 import { useParty } from '@daml/react/defaultLedgerContext';
 import { Asset } from '@daml.js/wallet-refapp';
 import { ContractId } from '@daml/types';
-import { Trade } from '@daml.js/wallet-refapp/lib/Trade/module';
 import { usePageStyles } from '../../pages/PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { LoadingButton } from '@mui/lab';
+import { Trade } from '@daml.js/wallet-refapp/lib/Account';
 interface SwapProps {
   proposerAssetCid: ContractId<Asset.Asset>;
   receiverAssetSymbol: string;
@@ -98,7 +98,7 @@ export const Swap: React.FC<SwapProps> = (props) => {
 
   // TODO: for the receiver, this is what they will be sending out
   const outboundAssetCids = outboundAssetContracts.map((contract) => contract.contractId)
-  
+  console.log('outbound', outboundAssetCids)
   
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();
@@ -157,38 +157,38 @@ export const Swap: React.FC<SwapProps> = (props) => {
     }
     // receiver exercises mergeSplit on the account that
     // holds the asset of what the proposer wants
-    const mergeSplitResult = await ledgerHooks.exerciseMergeSplit({
-      outIssuer: receiverAssetIssuer, 
-      outSymbol: receiverAssetSymbol , 
-      outReference: receiverAssetReference, 
-      outFungible:  receiverAssetIsFungible, 
-      outputAmount: receiverAssetAmount, 
-      assetCids: outboundAssetCids
-    })
-    if(!mergeSplitResult.isOk){
-      setError('accept')
-      setSuccess(undefined)
-      setLoading(undefined)
-      return;
-    }
-    console.log('mergeSplitResult', mergeSplitResult)
+    // const mergeSplitResult = await ledgerHooks.exerciseMergeSplit({
+    //   outIssuer: receiverAssetIssuer, 
+    //   outSymbol: receiverAssetSymbol , 
+    //   outReference: receiverAssetReference, 
+    //   outFungible:  receiverAssetIsFungible, 
+    //   outputAmount: receiverAssetAmount, 
+    //   assetCids: outboundAssetCids
+    // })
+    // if(!mergeSplitResult.isOk){
+    //   setError('accept')
+    //   setSuccess(undefined)
+    //   setLoading(undefined)
+    //   return;
+    // }
+    // console.log('mergeSplitResult', mergeSplitResult)
     
-    const preApprove = await ledgerHooks.exercisePreApprove(
-      {owner: proposerAssetOwner, 
-        issuer: proposerAssetIssuer, 
-        fungible: proposerAssetIsFungible, 
-        symbol: proposerAssetSymbol, 
-        reference: proposerAssetReference, 
-        amount: proposerAssetAmount })
-    console.log('PREApprove', preApprove)
-    if(!preApprove.isOk){
-      console.log(preApprove.payload)
-      setError('accept')
-      setSuccess(undefined)
-      setLoading(undefined);
-      return
-    }
-    const resultTrade = await ledgerHooks.exerciseTradeSettle(tradeCid, mergeSplitResult.payload[0][1] , preApprove.payload[0])
+    // const preApprove = await ledgerHooks.exercisePreApprove(
+    //   {owner: proposerAssetOwner, 
+    //     issuer: proposerAssetIssuer, 
+    //     fungible: proposerAssetIsFungible, 
+    //     symbol: proposerAssetSymbol, 
+    //     reference: proposerAssetReference, 
+    //     amount: proposerAssetAmount })
+    // console.log('PREApprove', preApprove)
+    // if(!preApprove.isOk){
+    //   console.log(preApprove.payload)
+    //   setError('accept')
+    //   setSuccess(undefined)
+    //   setLoading(undefined);
+    //   return
+    // }
+    const resultTrade = await ledgerHooks.exerciseTradeSettle(tradeCid, outboundAssetCids)
     if(!resultTrade.isOk){
       setError('accept')
       setSuccess(undefined)

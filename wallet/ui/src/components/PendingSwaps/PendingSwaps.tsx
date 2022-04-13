@@ -11,7 +11,7 @@ export const PendingSwaps: React.FC<PendingActivitiesPageProps> = (props) => {
   const {isInbound} = props;
   const {loading, contracts} = useGetAssetSwapRequests(isInbound)
 
-  console.log(contracts)
+  console.log('contracts', contracts)
   if(loading){
     return <LinearProgress/>
   }
