@@ -134,7 +134,7 @@ export const LoginPage: React.FC<Props> = ({onLogin}) => {
         options={{
           method: {
             button: {
-              render: () => <Button variant='contained' fullWidth></Button>,
+              render: () => <Button sx={{margin: 1}} variant='contained' fullWidth></Button>,
             },
           },
         }}
