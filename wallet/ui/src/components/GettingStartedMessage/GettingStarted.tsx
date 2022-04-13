@@ -128,7 +128,7 @@ export const GettingStartedMessage: React.FC = () => {
             </Typography>
           <br />
           <Typography>
-            <b>1.</b>Go to <b>My Asset Accounts</b> in the left menu.
+            <b>1. </b>Go to <b>My Asset Accounts</b> in the left menu.
              </Typography>
           <br />
           <Typography>
@@ -145,7 +145,7 @@ export const GettingStartedMessage: React.FC = () => {
              </Typography>
           <br />
           <Typography>
-            Note: If the account is resharable, any account owner can invite other users to create AssetHoldingAccounts for this asset. If the account is not resharable, only the issuer can invite other users to create AssetHoldingAccounts for this asset.             </Typography>
+            <i>Note: If the account is resharable, any account owner can invite other users to create AssetHoldingAccounts for this asset. If the account is not resharable, only the issuer can invite other users to create AssetHoldingAccounts for this asset. </i>            </Typography>
           <br />
           <Typography>
             If later on, you decide that you don't want to share this asset account, you can go to <b>Pending Activities</b> > <b>Outbound Requests</b> and cancel the invitation, provided that it is hasn't been accepted by the recipient yet.

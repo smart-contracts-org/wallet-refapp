@@ -106,7 +106,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
         <TextField
           margin="none"
           id="symbol"
-          label="Symbol"
+          label="Symbol (Mandatory field)"
           type="text"
           fullWidth
           variant="outlined"
@@ -121,7 +121,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
         <TextField
           margin="none"
           id="reference"
-          label="Reference"
+          label="Reference (Optional field)"
           type="text"
           fullWidth
           maxRows={4}
@@ -133,7 +133,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
           sx={{marginBottom: 1}}
         />
         <Typography variant='caption' color='text.secondary' mb={1}>
-          Optional. The reference is a unique text associated with the asset. It could be an image link or serial number.
+          <Typography variant='caption' color='primray'><b>Optional field</b></Typography> The reference is a unique text associated with the asset. It could be an image link or serial number.
           </Typography>
 
         <FormGroup>
