@@ -13,7 +13,8 @@ import { getAssetSum } from '../../utils/getAssetSum';
 import { useParty } from '@daml/react';
 import { useGetAllAssetHoldingAccounts, useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { AssetType } from '@daml.js/wallet-refapp/lib/Asset';
-
+import { useAdminParty } from '@daml/hub-react';
+import { deploymentMode, DeploymentMode } from '../../config';
 
 interface SwapFormProps {
   symbol: string;
@@ -66,6 +67,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const SwapForm: React.FC<SwapFormProps> = (props) => {
   const { symbol, isFungible, issuer, reference } = props
+  const prodAdminParty = useAdminParty();
+  const admin = deploymentMode === DeploymentMode.DEV ? 'a' :  prodAdminParty;
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [inboundAssetType, setInboundAssetType] = React.useState<undefined | AssetType>();
 
@@ -121,6 +124,12 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
     }
 
   }
+  const onAdminClick = () => {
+    if(!admin){
+      return;
+    }
+    setRecipient(admin);
+  }
   const classes = useStyles();
   if(loadingAssetContracts||loadingOwnedAssetAccounts){
     return (
@@ -156,6 +165,8 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
             value={recipient}
             className={classes.recipientTextField}
             onChange={(e) => setRecipient(e.currentTarget.value)}
+            InputProps={{endAdornment: <Button onClick={onAdminClick} fullWidth sx={{maxWidth: '120px', margin: 0, whiteSpace: 'nowrap', textOverflow: 'ellipsis', }} variant='contained' size='small'><Typography sx={{textTransform: 'capitalize'}} variant='caption'>Use Default Party</Typography></Button>}}
+
           />
         </Box>
         <div className={classes.swapAssetContainer} >

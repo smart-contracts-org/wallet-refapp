@@ -8,6 +8,8 @@ import { makeStyles } from '@mui/styles';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useNavigate } from 'react-router-dom';
 import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
+import { useAdminParty } from '@daml/hub-react';
+import { deploymentMode, DeploymentMode } from '../../config';
 
 interface InviteNewAssetOwnerFormProps {
   owner: string;
@@ -40,12 +42,21 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = ({ issuer, reference,symbol, fungible, owner}) => {
   const classes = useStyles();
+  const prodAdminParty = useAdminParty();
+  const admin = deploymentMode === DeploymentMode.DEV ? 'a' :  prodAdminParty;
   const [hasError, setError] = React.useState(false);
   const [recipient, setRecipient] = React.useState("");
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
   const nav = useNavigate();
   const ledgerHooks = useLedgerHooks();
+
+  const onAdminClick = () => {
+    if(!admin){
+      return;
+    }
+    setRecipient(admin);
+  }
 
   const onBack = () => {
     nav(-1)
@@ -78,8 +89,11 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
           type="text"
           fullWidth
           variant="outlined"
+          value={recipient}
           size='small'
           onChange={(e) => setRecipient(e.currentTarget.value)}
+          InputProps={{endAdornment: <Button onClick={onAdminClick} fullWidth sx={{maxWidth: '120px', margin: 0, whiteSpace: 'nowrap', textOverflow: 'ellipsis', }} variant='contained' size='small'><Typography sx={{textTransform: 'capitalize'}} variant='caption'>Use Default Party</Typography></Button>}}
+
 
         />
         <Card className={classes.helpMessage} elevation={0} variant='outlined'>
