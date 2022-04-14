@@ -4,10 +4,8 @@ module AcceptSwapTrigger where
 import qualified Daml.Trigger as T
 import DA.Foldable
 import DA.Action
-import DA.List (head)
-import DA.Optional.Total (whenSome, isSome, fromOptional, fromSome)
 import Account 
-import Asset (Asset(Asset))
+import Asset
 
 -- Auto accepts incoming swap requests
 -- Configed on Daml hub for only the userAdmin party

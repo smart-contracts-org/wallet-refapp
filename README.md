@@ -260,3 +260,13 @@ daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --ledger-port 6865 \
              --ledger-party "a"
 ```
+
+# building the frontend locally
+Navigate to the Account directory, run 
+`daml codegen js .daml/dist/account-0.0.1.dar -o ../../ui/account.js`
+
+Navigate to the user directory, run
+`daml codegen js .daml/dist/user-0.0.1.dar -o ../../ui/user.js`
+
+Navigate to the asset dir, run
+`daml codegen js .daml/dist/asset-0.0.1.dar -o ../../ui/asset.js`

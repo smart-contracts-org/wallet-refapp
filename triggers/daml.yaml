@@ -4,17 +4,17 @@
 sdk-version: 1.18.1
 name: triggers
 source: daml
-parties:
-  - Alice
-  - Bob
 version: 0.0.1
 dependencies:
   - daml-prim
   - daml-stdlib
   - daml-script
   - daml-trigger
-
-  - ../wallet/wallet-refapp.dar
+  - ../main/Account/account.dar
+  - ../main/Asset/asset.dar
+  - ../main/User/user.dar
 
 sandbox-options:
   - --wall-clock-time
+
+
