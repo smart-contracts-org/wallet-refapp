@@ -3,6 +3,9 @@
 
 wallet/ui/daml.js
 *.dar
+main/Account/.daml
+main/Asset/.daml
+main/User/.daml
 triggers/.daml
 wallet/.daml
 build

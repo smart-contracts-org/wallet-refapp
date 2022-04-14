@@ -261,14 +261,14 @@ daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --ledger-party "a"
 ```
 
-# building the frontend locally
-Need to build these first, since account has dependencies to asset
+# Building the Dar files
+From the parent directory of this project, run `make build-dars`
+This will build the dar files needed to be uploaded to Daml hub
 
-Build the dar files first, navigate to each template and at the root of the template, run 
-`daml build` and `daml build -o account.dar`
-
-Run the below from the parent directory, this will generate the js typings in the UI directory
+Next, to create the js typings, run the below 
 `daml codegen js main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar -o ../../ui/daml.js`
+For further reading about codegen, look here
+https://docs.daml.com/tools/codegen.html
 
-
-Then run npm install
+`cd ui`, run `npm install` to install 
+run `npm run zip` to create the zip file. 
