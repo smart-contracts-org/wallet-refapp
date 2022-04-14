@@ -266,7 +266,7 @@ From the parent directory of this project, run `make build-dars`
 This will build the dar files needed to be uploaded to Daml hub
 
 Next, to create the js typings, run the below 
-`daml codegen js main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar -o ../../ui/daml.js`
+`daml codegen js main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar -o ui/daml.js`
 For further reading about codegen, look here
 https://docs.daml.com/tools/codegen.html
 

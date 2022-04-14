@@ -4,7 +4,6 @@
 sdk-version: 1.18.1
 name: Account
 source: daml
-init-script: Main:setup
 version: 0.0.1
 dependencies:
   - daml-prim
@@ -15,7 +14,3 @@ dependencies:
 
 sandbox-options:
   - --wall-clock-time
-codegen:
-  js:
-    output-directory: account.js
-    npm-scope: account.js

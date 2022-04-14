@@ -4,6 +4,7 @@
 main/Account/.daml
 main/Asset/.daml
 main/User/.daml
+main/Tests/.daml
 triggers/.daml
 build
 node_modules

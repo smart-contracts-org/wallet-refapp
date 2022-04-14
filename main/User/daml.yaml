@@ -4,8 +4,6 @@
 sdk-version: 1.18.1
 name: User
 source: daml
-init-script: Main:setup
-
 version: 0.0.1
 dependencies:
   - daml-prim
@@ -13,7 +11,3 @@ dependencies:
   - daml-script
 sandbox-options:
   - --wall-clock-time
-codegen:
-  js:
-    output-directory: user.js
-    npm-scope: user.js
