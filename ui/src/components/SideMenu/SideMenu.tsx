@@ -8,7 +8,7 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 
 import ListItemText from '@mui/material/ListItemText';
-import { Divider,  ListItemButton, Switch, Typography } from '@mui/material';
+import { Divider,  ListItemButton, Switch, Typography, Link as LinkBtn } from '@mui/material';
 import { menuItems } from '../../configs/sideMenu.config';
 
 const drawerWidth: number = 200;
@@ -81,16 +81,16 @@ export const SideMenu: React.FC<SideMenuProps> = (props) => {
           </Box>
         <Box padding={2} flexDirection='column' display='flex' justifyContent='start'>
           <Typography variant='caption' color='text.secondary'>
-            Documentation
+          <LinkBtn sx={{textDecoration: 'none'}} target="_blank" href="https://github.com/maxhsu-da/wallet-refapp">App ReadMe</LinkBtn>
         </Typography>
           <Typography variant='caption' color='text.secondary'>
-            Github
+            <LinkBtn sx={{textDecoration: 'none'}} target="_blank" href="https://github.com/maxhsu-da/wallet-refapp">Github</LinkBtn>
         </Typography>
           <Typography variant='caption' color='text.secondary'>
-            Feature Requests
+          <LinkBtn sx={{textDecoration: 'none'}} target="_blank" href="https://github.com/maxhsu-da/wallet-refapp/issues">Feature Requests</LinkBtn>
         </Typography>
           <Typography variant='caption' color='text.secondary'>
-            Download Daml
+          <LinkBtn sx={{textDecoration: 'none'}}  href="https://docs.daml.com/getting-started/installation.html" target="_blank">Download Daml</LinkBtn>
         </Typography>
         </Box>
       </Box>
