@@ -1,7 +1,3 @@
 sdk-version: 1.18.1
 name: wallet-refapp
 source: daml
-codegen:
-  js:
-    output-directory: daml.js
-    npm-scope: daml.js

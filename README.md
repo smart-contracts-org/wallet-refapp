@@ -262,11 +262,13 @@ daml trigger --dar .daml/dist/triggers-0.0.1.dar \
 ```
 
 # building the frontend locally
-Navigate to the Account directory, run 
-`daml codegen js .daml/dist/account-0.0.1.dar -o ../../ui/account.js`
+Need to build these first, since account has dependencies to asset
 
-Navigate to the user directory, run
-`daml codegen js .daml/dist/user-0.0.1.dar -o ../../ui/user.js`
+Build the dar files first, navigate to each template and at the root of the template, run 
+`daml build` and `daml build -o account.dar`
 
-Navigate to the asset dir, run
-`daml codegen js .daml/dist/asset-0.0.1.dar -o ../../ui/asset.js`
+Run the below from the parent directory, this will generate the js typings in the UI directory
+`daml codegen js main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar -o ../../ui/daml.js`
+
+
+Then run npm install

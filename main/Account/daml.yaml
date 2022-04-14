@@ -15,3 +15,7 @@ dependencies:
 
 sandbox-options:
   - --wall-clock-time
+codegen:
+  js:
+    output-directory: account.js
+    npm-scope: account.js

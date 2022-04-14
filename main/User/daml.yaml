@@ -13,3 +13,7 @@ dependencies:
   - daml-script
 sandbox-options:
   - --wall-clock-time
+codegen:
+  js:
+    output-directory: user.js
+    npm-scope: user.js
