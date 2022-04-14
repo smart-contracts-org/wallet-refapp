@@ -8,7 +8,7 @@ import { makeStyles } from '@mui/styles';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
 import ListItemText from '@mui/material/ListItemText';
-import { Divider, ListItemButton, Typography } from '@mui/material';
+import { Divider, ListItemButton, Typography, Link as LinkBtn } from '@mui/material';
 import { menuItems } from '../../configs/sideMenu.config';
 
 const drawerWidth: number = 200;
@@ -73,18 +73,18 @@ export const SideMenuMobile: React.FC<SideMenuMobileProps> = ({isOpen, handleDra
       </Box>
       <Box marginTop={'auto'} marginBottom={3}>
         <Divider />
-        <Box padding={2} flexDirection='column' display='flex'>
-        <Typography variant='caption' color='text.secondary'>
-          Documentation
+        <Box padding={2} flexDirection='column' display='flex' justifyContent='start'>
+          <Typography variant='caption' color='text.secondary'>
+          <LinkBtn sx={{textDecoration: 'none'}} target="_blank" href="https://github.com/maxhsu-da/wallet-refapp">App ReadMe</LinkBtn>
         </Typography>
-        <Typography variant='caption' color='text.secondary'>
-          Contribute
+          <Typography variant='caption' color='text.secondary'>
+            <LinkBtn sx={{textDecoration: 'none'}} target="_blank" href="https://github.com/maxhsu-da/wallet-refapp">Github</LinkBtn>
         </Typography>
-        <Typography variant='caption' color='text.secondary'>
-          Feature Requests
+          <Typography variant='caption' color='text.secondary'>
+          <LinkBtn sx={{textDecoration: 'none'}} target="_blank" href="https://github.com/maxhsu-da/wallet-refapp/issues">Feature Requests</LinkBtn>
         </Typography>
-        <Typography variant='caption' color='text.secondary'>
-          Download Daml
+          <Typography variant='caption' color='text.secondary'>
+          <LinkBtn sx={{textDecoration: 'none'}}  href="https://docs.daml.com/getting-started/installation.html" target="_blank">Download Daml</LinkBtn>
         </Typography>
         </Box>
       </Box>
