@@ -8,8 +8,8 @@ build: build-dars
 
 .PHONY: build-dars
 build-dars:
-	daml build
+	./build.sh
 
 .PHONY: test-dars
-test-dars: build-dars
-	daml test 
+test-dars:
+	cd main/Tests && daml test

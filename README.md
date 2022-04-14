@@ -260,3 +260,15 @@ daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --ledger-port 6865 \
              --ledger-party "a"
 ```
+
+# Building the Dar files
+From the parent directory of this project, run `make build-dars`
+This will build the dar files needed to be uploaded to Daml hub
+
+Next, to create the js typings, run the below 
+`daml codegen js main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar -o ui/daml.js`
+For further reading about codegen, look here
+https://docs.daml.com/tools/codegen.html
+
+`cd ui`, run `npm install` to install 
+run `npm run zip` to create the zip file. 

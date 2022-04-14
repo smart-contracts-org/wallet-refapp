@@ -4,7 +4,6 @@ import Account
 import qualified Daml.Trigger as T
 import DA.Foldable
 import DA.Action
-import DA.List (head)
 
 -- Auto accept airdrop request from other users
 -- Used to get Example Token quantities

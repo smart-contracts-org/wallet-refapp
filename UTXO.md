@@ -1,4 +1,4 @@
-### What is UTXO and why we use it in the Wallet Daml Reference App
+# What is UTXO and why we use it in the Wallet Daml Reference App
 
 UTXO stands for “Unspent Transaction Output”. It is the accounting model in most public blockchain networks including Bitcoin, with Etherium being a notable exception.
 To learn the difference between UTXO and Account/Balance model, see the following article on Medium

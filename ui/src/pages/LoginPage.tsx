@@ -7,12 +7,14 @@ import Ledger from '@daml/ledger';
 import { DamlHubLogin as DamlHubLoginBtn } from '@daml/hub-react';
 import { authConfig, DeploymentMode, deploymentMode, Insecure } from '../config';
 import { useAuth0 } from "@auth0/auth0-react";
-import { User, Account } from '@daml.js/wallet-refapp';
 import { LoadingButton } from '@mui/lab';
 import { useAdminParty } from '@daml/hub-react';
 import { Avatar, Box, Card, CardContent, TextField, Typography, Button, LinearProgress } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
+import { AssetHoldingAccountRequest } from '@daml.js/account/lib/Account/module';
+import { User } from '@daml.js/user/lib/User/module';
+
 
 type Props = {
   onLogin: (credentials: Credentials) => void;
@@ -58,15 +60,15 @@ export const LoginPage: React.FC<Props> = ({onLogin}) => {
     console.log('LOGIN CALLED', 'admin', admin)
     try {
       const ledger = new Ledger({token: credentials.token});
-      let userContract = await ledger.fetchByKey(User.User, credentials.party);
+      let userContract = await ledger.fetchByKey(User, credentials.party);
       console.log('user contract', userContract, 'default', admin)
       if (userContract === null) {
         const user = {username: credentials.party, following: []};
-        userContract = await ledger.create(User.User, user);
+        userContract = await ledger.create(User, user);
         
         if (admin && admin !== credentials.party){
           console.log('creating AssetHoldingAccountRequest')
-          await ledger.create(Account.AssetHoldingAccountRequest, {recipient: credentials.party, owner: admin})
+          await ledger.create(AssetHoldingAccountRequest, {recipient: credentials.party, owner: admin})
         }
       }
       console.log('CREDENTIAL SET')
@@ -124,8 +126,7 @@ export const LoginPage: React.FC<Props> = ({onLogin}) => {
         withButton
         withToken
         onLogin={creds => {
-          
-
+    
           console.log('DAML HUB LOGIN CALLBACK FIRED', creds, 'admin', admin)
           if (creds) {
             login(creds, admin);

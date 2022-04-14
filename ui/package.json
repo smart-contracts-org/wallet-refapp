@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "@auth0/auth0-react": "^1.9.0",
-    "@daml.js/wallet-refapp": "file:daml.js/wallet-refapp-0.1.0",
+    "@daml.js/account": "file:daml.js/Account-0.0.1",
+    "@daml.js/user": "file:daml.js/User-0.0.1",
+    "@daml.js/asset": "file:daml.js/Asset-0.0.1",
     "@daml/hub-react": "^1.1.0",
     "@daml/ledger": "1.16.0",
     "@daml/react": "1.16.0",
@@ -20,9 +22,7 @@
     "jwt-simple": "^0.5.6",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-router-dom": "^6.2.1",
-    "semantic-ui-css": "^2.4.1",
-    "semantic-ui-react": "^0.88.1"
+    "react-router-dom": "^6.2.1"
   },
   "scripts": {
     "start": "react-scripts start",

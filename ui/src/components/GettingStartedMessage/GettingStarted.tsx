@@ -148,7 +148,7 @@ export const GettingStartedMessage: React.FC = () => {
             <i>Note: If the account is resharable, any account owner can invite other users to create AssetHoldingAccounts for this asset. If the account is not resharable, only the issuer can invite other users to create AssetHoldingAccounts for this asset. </i>            </Typography>
           <br />
           <Typography>
-            If later on, you decide that you don't want to share this asset account, you can go to <b>Pending Activities</b> > <b>Outbound Requests</b> and cancel the invitation, provided that it is hasn't been accepted by the recipient yet.
+            If later on, you decide that you don't want to share this asset account, you can go to <b>Pending Activities</b> {'>'} <b>Outbound Requests</b> and cancel the invitation, provided that it is hasn't been accepted by the recipient yet.
           </Typography>
 
         </CardContent>
@@ -184,7 +184,7 @@ export const GettingStartedMessage: React.FC = () => {
              </Typography>
           <br />
           <Typography>
-            If you decide later on, and assuming the recipient has not accepted the send request, you can cancel it by going to <b>Pending activities</b> > <b>outbound</b>, and click on the asset that you are sending, and click <b>Cancel</b>.
+            If you decide later on, and assuming the recipient has not accepted the send request, you can cancel it by going to <b>Pending activities</b> {'>'} <b>outbound</b>, and click on the asset that you are sending, and click <b>Cancel</b>.
              </Typography>
         </CardContent>
       </Card>
