@@ -106,9 +106,9 @@ chmod u+r+x filename.sh
 https://askubuntu.com/questions/409025/permission-denied-when-running-sh-scripts
 
 2. run `make codegen` which runs the below script:
-`daml codegen js  main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar main/LocalDev/.daml/dist/LocalDev-0.0.1.dar -o ui/daml.js`
+`daml codegen js  main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar -o ui/daml.js`
 This will generate a `daml.js` in the `/ui` directory that has the JS bindings. 
-You will notice a `LocalDev-0.0.1.dar`, this is <b>not</b> used for DamlHub, but for running the sandbox ledger locally. 
+
 3. `cd ui` and run `npm install`, 
 4. run `npm run zip`, this will generate `wallet-refapp-ui.zip` which you will upload to daml hub. 
 
@@ -123,14 +123,32 @@ You will notice a `LocalDev-0.0.1.dar`, this is <b>not</b> used for DamlHub, but
 
 # Run the Project Locally
 From the root of the project
-1. Run `make build-dars`, this will generate the `.daml` files which include `Account-0.0.1.dar`, and the other dars which are needed for the js bindings.
-2. run 
-`daml codegen js  main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar main/LocalDev/.daml/dist/LocalDev-0.0.1.dar -o ui/daml.js`
+1. Run `make build`, this will generate the `.daml` files which include `Account-0.0.1.dar`, and the other dars which are needed for the js bindings.
+2. From the root, run `make codegen` which runs the below script:
+
+`daml codegen js  main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar -o ui/daml.js`
+
 This will generate a `daml.js` in the `/ui` directory that has the JS bindings. 
-You will notice a `LocalDev-0.0.1.dar`, this is what we need to run sandbox ledger locally. 
+
 3. `cd ui` and run `npm install`
-5. We need to run `daml start` in the `/main/LocalDev` directory. If you are following along in the same terminal from step 4, then go back out `cd ../main/LocalDev` and run `daml start` to start the local sandbox ledger. 
-6. In another terminal, go to the ui directory, and run `npm install` and `npm start` to start the UI. 
+
+4. From the root, run 
+```
+daml sandbox --ledgerid wallet-refapp-sandbox main/Asset/asset.dar main/User/user.dar main/Account/account.dar
+```
+This will upload the dars into the sandbox and start the sandbox. 
+
+In another terminal, run 
+```
+daml json-api --ledger-host localhost --ledger-port 6865 --http-port 7575
+```
+
+Finally in the /ui directory, run 
+
+`npm start` 
+
+to start the ui. 
+
 
 ## Configuring triggers locally
 [todo]
@@ -283,5 +301,3 @@ daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --ledger-party "a"
 ```
 
-
-518032f41fd0175461b35ae0c9691e08b4aea55e62915f8360af2cc7a1f2ba6c, cc348d369011362a5190fe96dd1f0dfbc697fdfd10e382b9e9666f0da05961b7, 9de3ae0b7b4e753f7ce2a5dcaa8d49ab4b92c4d8a8fb9589b5f8c893fbea5bd1, 99a2705ed38c1c26cbb8fe7acf36bbf626668e167a33335de932599219e0a235, e22bce619ae24ca3b8e6519281cb5a33b64b3190cc763248b4c3f9ad5087a92c, d58cf9939847921b2aab78eaa7b427dc4c649d25e6bee3c749ace4c3f52f5c97, 6c2c0667393c5f92f1885163068cd31800d2264eb088eb6fc740e11241b2bf06, 8a7806365bbd98d88b4c13832ebfa305f6abaeaf32cfa2b7dd25c4fa489b79fb, 108aa371793a39379d09dd6f02b5613e8bf37ec9893a826747545df5318475f1, 86828b9843465f419db1ef8a8ee741d1eef645df02375ebf509cdc8c3ddd16cb, c1f1f00558799eec139fb4f4c76f95fb52fa1837a5dd29600baa1c8ed1bdccfd, 733e38d36a2759688a4b2c4cec69d48e7b55ecc8dedc8067b815926c917a182a, f20de1e4e37b92280264c08bf15eca0be0bc5babd7a7b5e574997f154c00cb78, 3f4deaf145a15cdcfa762c058005e2edb9baa75bb7f95a4f8f6f937378e86415, bfcd37bd6b84768e86e432f5f6c33e25d9e7724a9d42e33875ff74f6348e733f, 6839a6d3d430c569b2425e9391717b44ca324b88ba621d597778811b2d05031d, 36ca4e027e6f3c2c3445fcf20a373b754d01c793d712611c59b0513521160a48, cb0552debf219cc909f51cbb5c3b41e9981d39f8f645b1f35e2ef5be2e0b858a, 76bf0fd12bd945762a01f8fc5bbcdfa4d0ff20f8762af490f8f41d6237c6524f, d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662, 057eed1fd48c238491b8ea06b9b5bf85a5d4c9275dd3f6183e0e6b01730cc2ba, 38e6274601b21d7202bb995bc5ec147decda5a01b68d57dda422425038772af7, e491352788e56ca4603acc411ffe1a49fefd76ed8b163af86cf5ee5f4c38645b, 40f452260bef3f29dede136108fc08a88d5a5250310281067087da6f0baddff7, 97b883cd8a2b7f49f90d5d39c981cf6e110cf1f1c64427a28a6d58ec88c43657,
