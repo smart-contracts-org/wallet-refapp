@@ -116,7 +116,7 @@ This will generate a `daml.js` in the `/ui` directory that has the JS bindings.
 `main/User/.daml/dist$ daml ledger upload-dar User-0.0.1.dar`
 
 (Inspect if the dar has been uploaded)
-`daml damlc inspect-dar .daml/dist/LocalDev-0.0.1.dar`
+`daml damlc inspect-dar .daml/dist/User-0.0.1.dar`
 ## Configure triggers for Daml Hub
 [todo]
 
