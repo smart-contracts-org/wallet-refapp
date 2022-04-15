@@ -112,6 +112,11 @@ You will notice a `LocalDev-0.0.1.dar`, this is <b>not</b> used for DamlHub, but
 3. `cd ui` and run `npm install`, 
 4. run `npm run zip`, this will generate `wallet-refapp-ui.zip` which you will upload to daml hub. 
 
+(Manually uploading dars from root)
+`main/User/.daml/dist$ daml ledger upload-dar User-0.0.1.dar`
+
+(Inspect if the dar has been uploaded)
+`daml damlc inspect-dar .daml/dist/LocalDev-0.0.1.dar`
 ## Configure triggers for Daml Hub
 [todo]
 

@@ -15,11 +15,6 @@ daml build
 daml build -o account.dar
 echo "Account dar file built"
 
-# No LocalDev.dar file required here.
-cd ../LocalDev
-daml build
-echo "LocalDev dar file built"
-
 cd ../../triggers
 daml build
 daml build -o triggers.dar
