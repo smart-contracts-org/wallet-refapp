@@ -106,7 +106,7 @@ chmod u+r+x filename.sh
 https://askubuntu.com/questions/409025/permission-denied-when-running-sh-scripts
 
 2. run `make codegen` which runs the below script:
-`daml codegen js  main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar -o ui/daml.js`
+`daml codegen js  main/Asset/.daml/dist/Asset-0.0.1.dar main/User/.daml/dist/User-0.0.1.dar main/Account/.daml/dist/Account-0.0.1.dar -o ui/daml.js`
 This will generate a `daml.js` in the `/ui` directory that has the JS bindings. 
 
 3. `cd ui` and run `npm install`, 
