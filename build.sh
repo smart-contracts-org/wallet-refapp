@@ -15,6 +15,14 @@ daml build
 daml build -o account.dar
 echo "Account dar file built"
 
+cd ../../triggers
+daml build
+daml build -o triggers.dar
+echo "Triggers dar file built"
+echo "Dars building complete"
+
+
+
 
 # cd ..
 

@@ -85,33 +85,73 @@ You have successfully transfered ownership of your asset to `bob`
 If you would like to make any changes, simply create a pull request and include the description and goal of your PR. 
 
 
-## Deploying to Daml Hub
+# Deploying to Daml Hub
 
-Deploying `wallet-refapp` to the hosted Daml platform
-[Daml Hub](https://hub.daml.com/) is quite simple. Log into your Daml Hub
-account, create a new ledger and upload your Daml models and your UI.
+What we will need to upload to Daml hub
 
-To upload the Daml models, compile them into a DAR by executing
+1. Asset.dar
+2. User.dar
+3. Account.dar
+4. Triggers.dar
+5. wallet-refapp.zip (UI asset)
+
+From the root of the project, 
+1. `make build`, this will generate the `.daml` files which include `Account-0.0.1.dar`, and the other dars which is needed for the js bindings, as well as the dar files to upload onto daml hub (Asset.dar, User.dar, Account.dar, Triggers.dar)
+
+If you have trouble executing the .sh file, do
+
 ```
-daml build -o wallet-refapp.dar
+chmod u+r+x filename.sh
 ```
-at the root of your repository. Afterwards, open to the Daml Hub website, select
-the ledger you want to deploy to, go to the "Daml" selection and upload the
-DAR `wallet-refapp.dar` you have just created.
+https://askubuntu.com/questions/409025/permission-denied-when-running-sh-scripts
 
-To upload the UI, create a ZIP file containing all your UI assets by executing
+2. run `make codegen` which runs the below script:
+`daml codegen js  main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar -o ui/daml.js`
+This will generate a `daml.js` in the `/ui` directory that has the JS bindings. 
+
+3. `cd ui` and run `npm install`, 
+4. run `npm run zip`, this will generate `wallet-refapp-ui.zip` which you will upload to daml hub. 
+
+(Manually uploading dars from root)
+`main/User/.daml/dist$ daml ledger upload-dar User-0.0.1.dar`
+
+(Inspect if the dar has been uploaded)
+`daml damlc inspect-dar .daml/dist/LocalDev-0.0.1.dar`
+## Configure triggers for Daml Hub
+[todo]
+
+
+# Run the Project Locally
+From the root of the project
+1. Run `make build`, this will generate the `.daml` files which include `Account-0.0.1.dar`, and the other dars which are needed for the js bindings.
+2. From the root, run `make codegen` which runs the below script:
+
+`daml codegen js  main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar -o ui/daml.js`
+
+This will generate a `daml.js` in the `/ui` directory that has the JS bindings. 
+
+3. `cd ui` and run `npm install`
+
+4. From the root, run 
 ```
-daml build
-daml codegen js .daml/dist/wallet-refapp-0.1.0.dar -o ui/daml.js
-(cd ui && npm install && npm run-script build && zip -r ../wallet-refapp-ui.zip build)
+daml sandbox --ledgerid wallet-refapp-sandbox main/Asset/asset.dar main/User/user.dar main/Account/account.dar
 ```
-at the root of the repository. Afterwards, select the "UI Assets" tab of your
-chosen ledger on the Daml Hub website, upload the ZIP file
-(`wallet-refapp-ui.zip`) you have just created and publish it.
+This will upload the dars into the sandbox and start the sandbox. 
 
-To see your deployed instance of `wallet-refapp` in action, follow the
-"Visit site" link at the top right corner of your "UI Assets" page.
+In another terminal, run 
+```
+daml json-api --ledger-host localhost --ledger-port 6865 --http-port 7575
+```
 
+Finally in the /ui directory, run 
+
+`npm start` 
+
+to start the ui. 
+
+
+## Configuring triggers locally
+[todo]
 
 ## Next steps
 
@@ -261,14 +301,3 @@ daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --ledger-party "a"
 ```
 
-# Building the Dar files
-From the parent directory of this project, run `make build-dars`
-This will build the dar files needed to be uploaded to Daml hub
-
-Next, to create the js typings, run the below 
-`daml codegen js main/Asset/.daml/dist/asset-0.0.1.dar main/User/.daml/dist/user-0.0.1.dar main/Account/.daml/dist/account-0.0.1.dar -o ui/daml.js`
-For further reading about codegen, look here
-https://docs.daml.com/tools/codegen.html
-
-`cd ui`, run `npm install` to install 
-run `npm run zip` to create the zip file. 

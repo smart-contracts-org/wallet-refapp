@@ -13,3 +13,11 @@ build-dars:
 .PHONY: test-dars
 test-dars:
 	cd main/Tests && daml test
+
+.PHONY: clean
+clean: 
+	./clean.sh
+
+.PHONY: codegen
+codegen:
+	./codegen.sh
