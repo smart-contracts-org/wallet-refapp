@@ -62,8 +62,9 @@ export const GettingStartedMessage: React.FC = () => {
           <Typography>
             <b>3. </b>Return to <b>My Asset Accounts</b>
           </Typography>
+          <br/>
           <Typography>
-            <b>3.</b> Click <b>Request Airdrop</b> and specify an amount of ExampleTokens would like to receive. You should see your updated balance immediately.
+            <b>4.</b> Click <b>Request Airdrop</b> and specify an amount of ExampleTokens would like to receive. You should see your updated balance immediately.
            </Typography>
         </CardContent>
       </Card>
@@ -79,12 +80,15 @@ export const GettingStartedMessage: React.FC = () => {
           <Typography>
             <b>1.</b> Click <b>Create</b> in the left menu.
           </Typography>
+          <br/>
           <Typography>
             <b>2.</b> Define the characteristics of the tokens that will be issued from this account: the symbol (name), optional reference, and whether they are fungible, reshareable, or airdroppable.
           </Typography>
+          <br/>
           <Typography>
             <b>3.</b> Click the <b>Create</b> button at the bottom of the screen.
           </Typography>
+          <br/>
           <Typography>
             <i>Note: Assets and AssetHoldingAccounts are linked by common properties: issuer, symbol, resharable, airdroppable, fungible.</i>
           </Typography>
@@ -131,6 +135,7 @@ export const GettingStartedMessage: React.FC = () => {
           <Typography>
             <b>2. </b>Select the asset you want to share, and click <b>Invite new owner</b>.
           </Typography>
+          <br/>
           <Typography>
             <b>3. </b>Specify the Party Id (Or use the default counterparty), and click <b>Invite</b>
           </Typography>

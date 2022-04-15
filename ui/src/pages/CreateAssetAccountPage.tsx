@@ -4,6 +4,7 @@ import { CreateAccountForm } from '../components/CreateAccountForm/CreateAccount
 import { usePageStyles } from './AssetProfilePage';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useNavigate } from 'react-router-dom';
+import { isMobile } from '../platform/platform';
 
 
 export const CreateAssetAccountPage: React.FC = () => {
@@ -19,11 +20,11 @@ export const CreateAssetAccountPage: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
         <Box margin={1} width='100%' flexDirection='row' display='flex' alignItems='center' justifyContent='start'>
-          <Box position='absolute'>
+          {isMobile() && <Box position='absolute'>
             <IconButton color='primary' onClick={onClick}>
               <ArrowBackIosNewIcon />
             </IconButton>
-          </Box>
+          </Box>}
           <Box flexGrow='1' textAlign='center'>
             <Typography color='primary' variant='h5' sx={{ flexGrow: 1, marginLeft: 'auto' }}>
               Create

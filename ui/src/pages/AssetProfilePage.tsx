@@ -19,9 +19,9 @@ import { useGetMyAssetAccountByKey, useGetMyOwnedAssetsByAssetType } from '../le
 import { getAssetSum } from '../utils/getAssetSum';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
-import WarningIcon from '@mui/icons-material/Warning';
 import { useAdminParty } from '@daml/hub-react';
 import { DeploymentMode, deploymentMode } from '../config';
+import ReportIcon from '@mui/icons-material/Report';
 export const usePageStyles = makeStyles((theme: Theme) => ({
 
 
@@ -177,7 +177,7 @@ export const AssetProfilePage: React.FC = () => {
               <div className={classes.actionContainer}>
 
 
-                <IconButton color='primary' component={Link} to={sendPath}>
+                <IconButton color='primary' disabled={amount === 0} component={Link} to={sendPath}>
                   <SendIcon />
                 </IconButton>
                 <Typography variant='caption'>
@@ -185,7 +185,7 @@ export const AssetProfilePage: React.FC = () => {
               </Typography>
               </div>
               <div className={classes.actionContainer}>
-                <IconButton color='primary' component={Link} to={swapPath}>
+                <IconButton color='primary' disabled={amount === 0} component={Link} to={swapPath}>
                   <SwapHorizontalCircleIcon />
                 </IconButton>
                 <Typography variant='caption'>
@@ -202,9 +202,9 @@ export const AssetProfilePage: React.FC = () => {
               </div>
             </div>
             {amount === 0 && issuer === party && <Card variant='outlined' sx={{ width: '100%', margin: 1, alignItems: 'center', padding: 1, display: 'flex' }} >
-              <WarningIcon sx={{ marginRight: 1 }} />
+              <ReportIcon sx={{ marginRight: 1 }} />
               <Typography variant='body2'>
-                You have {amount} amount. Click "issue / airdrop" to issue assets.
+                You have {amount} amount. Click <b>issue / airdrop</b> to issue assets.
               </Typography>
             </Card>}
             <AssetDetails
