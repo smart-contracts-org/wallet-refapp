@@ -40,7 +40,6 @@ export const PendingSwapRowContents: React.FC<PendingSwapRowContentsProps> = (pr
     isInbound
 
   } = props
-  console.log(props)
   const classes = useNarrowPendingStyles();
   const inboundMessage = (
     <>

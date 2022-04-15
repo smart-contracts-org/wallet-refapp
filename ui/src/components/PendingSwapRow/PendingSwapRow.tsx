@@ -99,16 +99,11 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
     tradeCid
   } = props;
   const classes = useNarrowPendingStyles();
-  console.log('requestedAssetsTxPreApprovalCid', requestedAssetsTxPreApprovalCid)
   const transferPreapproval = useGetTransferPreapprovalContractByContractId(requestedAssetsTxPreApprovalCid).contract;
-  console.log('transferPreapproval', transferPreapproval)
   const proposerAsset = useGetAssetInSwapContractByContractId(proposerAssetCid).contract
-  console.log('propse', proposerAsset)
   const proposerAssetSymbol = proposerAsset?.payload.asset.assetType?.symbol|| "";
   const proposerAssetAmount = proposerAsset?.payload.asset.amount|| "";
   const proposerAssetIsFungible = proposerAsset?.payload.asset.assetType.fungible || false 
-  console.log('pending',proposerAssetIsFungible
-  )
   const proposerAssetIssuer = proposerAsset?.payload.asset.assetType.issuer|| "";
   const proposerAssetOwner = proposerAsset?.payload.asset.owner|| "";
 

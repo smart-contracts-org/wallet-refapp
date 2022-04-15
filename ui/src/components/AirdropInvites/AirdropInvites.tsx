@@ -12,9 +12,8 @@ interface AirdropInvitesProps {
 export const AirdropInvites: React.FC<AirdropInvitesProps> = (props) => {
   const { reference, isFungible, symbol} = props;
   const pendingInvites = useGetAccountInvitesByAssetType({ reference, symbol, fungible: isFungible}).contracts
-  console.log('pendign', props)
   const {loading, contracts} = useGetMyIssuedAssetAccounts({fungible: isFungible, symbol, reference})
-  console.log(contracts)
+  
   const pendingInviteRows = pendingInvites.map((contract) => {
     const {issuer,fungible, reference,symbol } = contract.payload.account.assetType
     const recipient = contract.payload.recipient

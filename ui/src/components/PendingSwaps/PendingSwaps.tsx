@@ -10,8 +10,6 @@ import { PendingSwapRow } from '../PendingSwapRow/PendingSwapRow';
 export const PendingSwaps: React.FC<PendingActivitiesPageProps> = (props) => {
   const {isInbound} = props;
   const {loading, contracts} = useGetAssetSwapRequests(isInbound)
-
-  console.log('contracts', contracts)
   if(loading){
     return <LinearProgress/>
   }
@@ -23,10 +21,7 @@ export const PendingSwaps: React.FC<PendingActivitiesPageProps> = (props) => {
     const receiver = contract.payload.receiver;
     const tradeCid = contract.contractId;
     const proposerAssetCid = contract.payload.offeredAssetCid as ContractId<AssetInSwap>;
-    console.log('proposerAssetCid',proposerAssetCid)
-    // TODO: add to documentation
-    // the proposer creates a PreApproval proposal contract, on which the
-    // swap receiver needs to accept / reject
+  
     const requestedAssetsTxPreApprovalCid = contract.payload.requestedAssetsTxPreApprovalCid;
 
     const pendingSwapRowProps = {

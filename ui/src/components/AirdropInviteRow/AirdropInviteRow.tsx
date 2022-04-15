@@ -53,7 +53,6 @@ interface AirdropInviteRowProps {
 }
 
 export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = (props) => {
-  console.log('r', props)
   const {isAccepted, symbol, issuer, owner, reference, fungible} = props;
   const classes = useStyles();
   const [amount, setAmount] = React.useState("");

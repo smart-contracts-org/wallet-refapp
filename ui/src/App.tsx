@@ -27,12 +27,10 @@ const theme = createTheme({
 });
 
 export const App: React.FC = () => {
-  console.log('APP rendered')
   const [isOpen, setOpen] = React.useState(false);
   const [isRightOpen, setRightOpen] = React.useState(true);
   const [credentials, setCredentials] = React.useState<Credentials | undefined>();
     
-
   const handleDrawerOpen = () => {
     setOpen(true);
   };

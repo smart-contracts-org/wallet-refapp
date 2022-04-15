@@ -92,12 +92,12 @@ export const useGetAssetHoldingInviteByContractId = (arg: ContractId<AssetHoldin
 
 export const useGetAssetTransfers = (isInbound?: boolean) => {
   const myPartyId = useParty();
-  const res = useStreamQueries(AssetTransfer, () => [{ recipient: isInbound ? myPartyId : undefined, sender: isInbound ? undefined : myPartyId }]);
+  const res = useStreamQueries(AssetTransfer, () => [{ recipient: isInbound ? myPartyId : 'x', sender: isInbound ? undefined : myPartyId }]);
   return res
 }
 export const useGetAssetSwapRequests = (isInbound?: boolean) => {
   const myPartyId = useParty();
-  const trades = useStreamQueries(Trade, () => [{ receiver: isInbound ? myPartyId : undefined, proposer: isInbound ? undefined : myPartyId }]);
+  const trades = useStreamQueries(Trade, () => [{ receiver: isInbound ? myPartyId : 'x', proposer: isInbound ? undefined : myPartyId }]);
   return trades
 }
 

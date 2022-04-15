@@ -58,7 +58,6 @@ export const ContractsContext = React.createContext<ContractContextProps>({} as 
     setAllContracts(newState)
   }
   const toggleTheme = () => {
-    console.log('toggle', allContracts.isDarkTheme)
     const newState = {...allContracts, isDarkTheme: !allContracts.isDarkTheme}
     setAllContracts(newState)
   }

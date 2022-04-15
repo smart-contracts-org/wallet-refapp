@@ -1,12 +1,16 @@
 import React from 'react';
-import {  LinearProgress } from '@mui/material';
+import {  AlertColor, LinearProgress } from '@mui/material';
 import { PendingActivitiesPageProps } from '../PendingActivities/PendingActivities';
 import { useGetAssetInviteRequests } from '../../ledgerHooks/ledgerHooks';
 import { PendingAccountInviteRow } from '../PendingAccountInviteRow/PendingAccountInviteRow';
+import { SharedSnackbarContext } from '../../context/SharedSnackbarContext';
 
 export const PendingAccountInvites: React.FC<PendingActivitiesPageProps> = (props) => {
   const {isInbound} = props;
+
   const {loading, contracts} = useGetAssetInviteRequests(isInbound);
+  
+ 
   const accountInviteRows = contracts.map((contract) => {
   const {
     symbol,

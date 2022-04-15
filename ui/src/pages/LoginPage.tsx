@@ -126,9 +126,7 @@ export const LoginPage: React.FC<Props> = ({onLogin}) => {
         withButton
         withToken
         onLogin={creds => {
-    
-          console.log('DAML HUB LOGIN CALLBACK FIRED', creds, 'admin', admin)
-          if (creds) {
+              if (creds) {
             login(creds, admin);
           }
         }}

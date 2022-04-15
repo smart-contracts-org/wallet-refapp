@@ -106,7 +106,6 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
   
   const onAccept = async () => {
     if(!assetAccountCid || !assetTransferCid){
-      console.log(assetAccountCid, assetTransferCid)
       return;
     }
     const result = await ledgerHooks.acceptAssetTransfer(assetAccountCid, assetTransferCid);
