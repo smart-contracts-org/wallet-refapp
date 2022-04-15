@@ -15,35 +15,6 @@ import DA.Set as Set
 import DA.Foldable (forA_)
 import DA.Optional (whenSome)
 import Asset
-template AssetHoldingAccountRequest with
-    recipient: Party
-    owner: Party
-  where 
-    signatory recipient
-    observer owner
-    choice Accept: ContractId AssetHoldingAccountProposal
-      with assetHoldingAccount: ContractId AssetHoldingAccount
-      controller owner
-      do
-         exercise assetHoldingAccount Invite_New_Asset_Holder with 
-          recipient = recipient
-
-template AirdropRequest with
-    amount: Decimal
-    requester: Party
-    assetHoldingAccountIssuer: Party
-    assetHoldingAccountCid: ContractId AssetHoldingAccount
-  where
-    signatory requester
-    observer assetHoldingAccountIssuer
-    choice Accept_Airdrop: ContractId Asset
-    
-      controller assetHoldingAccountIssuer
-      do
-        exercise assetHoldingAccountCid Airdrop with
-          amount = amount
-
-
 
 -- AssetHoldingAccount represents an account, where Asset contracts can be held
 -- Assets held in the account are all Asset contracts from Active Contract Set,
@@ -73,18 +44,18 @@ template AssetHoldingAccount with
     -- If the assets can be merged and the total amount is sufficient to split it into outputAmounts, then
     -- the function returns the total amount of input assets. Otherwise the action fails.
     let
-      validateTxInputs: [ContractId Asset] -> [Decimal] -> Update Decimal
-      validateTxInputs assetCids outputAmounts = do
-        totAssetAmount <- sum . map (\x -> x.amount) <$> forA assetCids \assetCid -> do
+      validateTxInputs: [ContractId Asset] -> Decimal -> Update Decimal
+      validateTxInputs assetCids outputAmount = do
+        totAssetAmount <- sum <$> forA assetCids \assetCid -> do
           asset <- fetch assetCid
           assertMsg "Asset type mismatch between asset and account" $
             asset.assetType == assetType
           assertMsg "Owner mismatch between asset and account" $
             asset.owner == owner
           archive assetCid
-          return asset
+          return asset.amount
         assertMsg "Insufficient funds passed to create all output assets" $
-          totAssetAmount >= sum outputAmounts
+          totAssetAmount >= outputAmount
         return totAssetAmount
 
     -- Send an invite for a party to create AssetHoldingAccount for this asset type.
@@ -113,31 +84,6 @@ template AssetHoldingAccount with
           owner
           amount
           observers = Set.empty
-    
-    nonconsuming choice Issue_To_Self: ContractId Asset
-      with
-        amount: Decimal
-      controller assetType.issuer
-      do
-        create Asset with
-          assetType
-          owner = assetType.issuer
-          amount
-          observers = Set.empty
-
-    nonconsuming choice Issue_Asset: ContractId Asset
-      with
-        amount: Decimal
-      controller assetType.issuer
-      do
-        create Asset with
-          assetType
-          owner = assetType.issuer
-          amount
-          observers = Set.empty
-
-
-
 
     -- This choice consolidates the input set of assets in the account and from the total amount
     -- creates new set of Asset contracts in the desired input amounts plus one more Asset with the remaining amount
@@ -152,7 +98,7 @@ template AssetHoldingAccount with
       do
         assertMsg "Non fungible assets cannot be merged" $
           assetType.fungible
-        totAssetAmount <- validateTxInputs assetCids outputAmounts
+        totAssetAmount <- validateTxInputs assetCids $ sum outputAmounts
         let 
           createOutputAssets assetsList amt = do
             assertMsg "Each output asset amount must be positive" $
@@ -175,43 +121,6 @@ template AssetHoldingAccount with
         else
           return outputAssets
 
-    -- The purpose of this choice is to allow client application to create a transfer proposal using multiple Asset 
-    -- contracts held in the account. Client application can query for all active Asset contracts, where assetType and owner 
-    -- match between Asset and AssetHoldingAccount, which represent assets held in the account.
-    -- Then the list of Asset contract Ids can be passed to this choice allowing the transfer proposal to be created
-    -- as long as the transfer amount is less than the total amount of the assets passed to the choice.
-    -- This choice is not used. Instead a more universal choice Create_Transfers is utilized.
-{-     nonconsuming choice Create_Transfer : ContractId AssetTransfer
-      with
-        assetCids : [ContractId Asset]
-        amount : Decimal
-        recipient : Party
-      controller owner 
-      do
-
-        assertMsg "The amount of non fungible asset must be 1.0." $
-          assetType.fungible || amount==1.0
-        assertMsg "Transfer amount must be positive." $
-          amount>0.0
-        totAssetAmount <- sum . map (\x -> x.amount) <$> forA assetCids \assetCid -> do
-          asset <- fetch assetCid
-          assertMsg "Asset type mismatch between asset and account" $
-            asset.assetType == assetType
-          assertMsg "Owner mismatch between asset and account" $
-            asset.owner == owner
-          archive assetCid
-          return asset
-        when (totAssetAmount > amount) do 
-          create Asset with
-            assetType
-            owner
-            amount = totAssetAmount - amount
-          return ()
-        let transferAsset = Asset with ..
-        create AssetTransfer with
-          asset = transferAsset
-          recipient -}
-
     -- The purpose of this choice is to allow client application to create a set of transfer proposals using multiple Asset 
     -- contracts held in the account. Client application can query for all active Asset contracts, where assetType and owner 
     -- match between Asset and AssetHoldingAccount, which represent assets held in the account.
@@ -226,7 +135,7 @@ template AssetHoldingAccount with
         let (txAmounts, txRecipients) = unzip transfers
         assertMsg "Non fungible assets must be transferred one at a time and the amount of non fungible asset must be 1.0" $
           assetType.fungible || (L.length assetCids==1 && L.length transfers==1 && L.head txAmounts==1.0)
-        totAssetAmount <- validateTxInputs assetCids txAmounts
+        totAssetAmount <- validateTxInputs assetCids $ sum txAmounts
         forA_ transfers (\tx -> do
           assertMsg "Each transfer amount must be positive" $
             tx._1 > 0.0
@@ -237,7 +146,6 @@ template AssetHoldingAccount with
               amount = tx._1
               observers = Set.empty
             recipient = tx._2
-            sender = owner
           )
         when (totAssetAmount > sum txAmounts) do 
           create Asset with
@@ -274,7 +182,7 @@ template AssetHoldingAccount with
       do
         assertMsg "Non fungible assets must be traded one at a time" $
           assetType.fungible || L.length assetCids==1
-        totAssetAmount <- validateTxInputs assetCids [offeredAssetAmount]
+        totAssetAmount <- validateTxInputs assetCids offeredAssetAmount
         offeredAssetCid <- create AssetInSwap with
           asset = Asset with
             assetType
@@ -369,6 +277,12 @@ template AssetHoldingAccountCloseProposal with
       controller account.assetType.issuer 
       do
         return ()
+
+
+-- TODO: The Trade_Settle choice requires changes to the signature: requestedAssetType and amount should be derived from requestedAssetsTxPreApprovalCid
+-- validateTxInputs function requires change of signature and internal logic
+-- Overall this choice needs a code review
+-- Create_Trade choice in the AssetHoldingAccount template will need to be modified accordingly
 
 -- The Trade templates represents a proposal for a swap of two assets between two parties: the proposer and the receiver
 template Trade
@@ -477,12 +391,12 @@ template TransferPreApproval
     observer newOwner, asset.owner
 
     choice TransferPreApproval_Cancel : ()
-      controller asset.owner
+      controller newOwner
       do
         return ()
 
     choice TransferPreApproval_Reject : ()
-      controller newOwner
+      controller asset.owner
       do
         return ()
 
@@ -540,13 +454,42 @@ template AssetInSwap
       controller receiver
       do
         create asset
+        
 
-    choice Accept_Swap : ContractId Asset
-      -- Requiring the authority of both the recipient and the asset issuer ensures that transfer can only be accepted
-      -- by calling Deposit_Transfer_Into_Account choice on the AssetHoldingAccount template,
-      -- which in turn ensures one cannot accept asset transfer without having asset holding account
-      controller receiver, asset.assetType.issuer
+-- When the user logs in for the 1st time an AssetHoldingAccountProposal for Example Token (ET) is automatically 
+-- created for the user. This invite can be seen under Pending Activities. 
+-- When the user accepts the invite, user's AssetHoldingAccount for ET is created, which allows 
+-- the user to request an airdrop of ET token into the account. 
+-- The airdrop request is automatically granted by the issuer party of ET.
+-- This functionality is distinct from the regular Propose/Accept workflow for creating AssetHoldingAccount and for airdrop.
+-- The automation of creating AssetHoldingAccountProposal and the acceptance of airdrop request for ET is implemented
+-- using Triggers and two templates (AssetHoldingAccountRequest and AirdropRequest) designed for this specific purpose.
+template AssetHoldingAccountRequest with
+    recipient: Party
+    owner: Party
+  where 
+    signatory recipient
+    observer owner
+    -- TODO: Rename choice to AssetHoldingAccountRequest_Accept
+    choice Accept: ContractId AssetHoldingAccountProposal
+      -- TODO: Rename variable to assetHoldingAccountCid
+      with assetHoldingAccount: ContractId AssetHoldingAccount
+      controller owner
       do
-        create asset with
-          owner = receiver
-          observers = Set.empty
+         exercise assetHoldingAccount Invite_New_Asset_Holder with 
+          recipient = recipient
+
+template AirdropRequest with
+    amount: Decimal
+    requester: Party
+    assetHoldingAccountIssuer: Party
+    assetHoldingAccountCid: ContractId AssetHoldingAccount
+  where
+    signatory requester
+    observer assetHoldingAccountIssuer
+    -- TODO: Rename choice to AirdropRequest_Accept
+    choice Accept_Airdrop: ContractId Asset    
+      controller assetHoldingAccountIssuer
+      do
+        exercise assetHoldingAccountCid Airdrop with
+          amount = amount
