@@ -72,7 +72,7 @@ The below steps will walk you through how to create an asset, and send that asse
 3. Specify a ticker / symbol for the asset account. Specify if it should be fungible / shareable / airdroppable.
 4. Click "Create" and this account will be created. Note that the balance will be 0. 
 5. Click "Issue/Airdrop" assets, and you will be able to issue an amount for this asset. 
-6. Before you can send the asset to someone, you need to invite the recipient to be an asset owner, so click "Invite" and specifiy the recipient Ledger ID. For simplicity you can just input `bob`. 
+6. Before you can send the asset to someone, you need to invite the recipient to be an asset owner, so click "Invite" and specifiy the recipient Party ID. For simplicity you can just input `bob`. 
 7. Logout by clicking on the avatar icon on the top right corner, and login with `bob`
 8. Click "Pending Activities" on the right handside, and you should see an asset invite request, accept it. 
 9. Logout of `bob` and log back in using "Alice"
