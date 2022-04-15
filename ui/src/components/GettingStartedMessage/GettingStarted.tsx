@@ -16,16 +16,16 @@ export const GettingStartedMessage: React.FC = () => {
             </Typography>
           <br />
           <Typography>
-            <b>1.</b> Becoming an ExampleToken asset holder<i> ( used for the swap workflow later on)</i>
+            <b>1.</b> Becoming an ExampleToken asset holder<i> (used for the swap workflow later on)</i>
           </Typography>
           <Typography>
             <b>2.</b> Creating a new asset class and a new AssetHoldingAccount.
            </Typography>
           <Typography>
-            <b>3.</b>   Issuing quantities of the new asset.
+            <b>3.</b>Issuing the asset.
            </Typography>
           <Typography>
-            <b>4.</b> Inviting others (or the default counter party) to become asset holders (so that they can  send or swap the newly created tokens with you)
+            <b>4.</b> Inviting others to become asset holders (so that they can send or swap the newly created tokens with you)
            </Typography>
           <Typography>
             <b>5.</b>  Sending assets to other users
@@ -49,7 +49,7 @@ export const GettingStartedMessage: React.FC = () => {
            </Typography>
           <br />
           <Typography>
-            <b>2.</b>  Accept the Asset Holding Account Invitation in Pending Activities. Now you have an ExampleToken holding account.
+            <b>2.</b>  Accept the Asset Holding Account Invitation in Pending Activities.
            </Typography>
           <br />
           <Typography>
@@ -60,7 +60,10 @@ export const GettingStartedMessage: React.FC = () => {
             By accepting the invitation, you are opening an ExampleToken AssetHoldingAccount, and giving the issuer the right to airdrop (create the asset directly in your wallet) the tokens to you.          </Typography>
           <br />
           <Typography>
-            <b>3.</b> Click <b>Request Airdrop</b> and specify an amount you would like to receive. Once your balance updates, you will have received some ExampleTokens.
+            <b>3. </b>Return to <b>My Asset Accounts</b>
+          </Typography>
+          <Typography>
+            <b>3.</b> Click <b>Request Airdrop</b> and specify an amount of ExampleTokens would like to receive. You should see your updated balance immediately.
            </Typography>
         </CardContent>
       </Card>
@@ -70,26 +73,20 @@ export const GettingStartedMessage: React.FC = () => {
             2. Creating an AssetHoldingAccount
             </Typography>
           <Typography>
-            The purpose of the AssetHoldingAccount is to allow the owner to perform additional actions such as creating a swap, or transfering the associated asset to another user.
-            </Typography>
-          <Typography>
-            When you create an AssetHoldingAccount, you act as the issuer (as well as the owner) of tokens from this account.
+            The AssetHoldingAccount allows the owner to issue tokens, create swaps or transfer the associated assets to another user.
             </Typography>
           <br />
           <Typography>
-            <b>1.</b> Click <b>Create</b> in the left menu
+            <b>1.</b> Click <b>Create</b> in the left menu.
           </Typography>
           <Typography>
-            <b>2.</b> Define the characteristics of the tokens that will be issued from this account: the name, optional reference, and whether it is fungible, reshareable, or airdroppable.
+            <b>2.</b> Define the characteristics of the tokens that will be issued from this account: the symbol (name), optional reference, and whether they are fungible, reshareable, or airdroppable.
           </Typography>
           <Typography>
-            <b>3.</b> Click the <b>Create</b> button at the bottom of the screen
+            <b>3.</b> Click the <b>Create</b> button at the bottom of the screen.
           </Typography>
           <Typography>
             <i>Note: Assets and AssetHoldingAccounts are linked by common properties: issuer, symbol, resharable, airdroppable, fungible.</i>
-          </Typography>
-          <Typography>
-            Once you’ve created an AssetHoldingAccount, you can mint the asset into your account and airdrop it to others.
           </Typography>
         </CardContent>
       </Card>
@@ -99,10 +96,10 @@ export const GettingStartedMessage: React.FC = () => {
             3. Issue / Airdrop Assets
             </Typography>
           <Typography>
-            The brand new asset account will have a starting balance of 0.
+            The new asset account will have a starting balance of 0.
             </Typography>
           <Typography>
-            As an issuer, you can issue new amounts into your account. Click <b>Issue / Airdrop</b>.
+            As an issuer, you can issue new amounts into your account. Go to <b>My Asset Accounts</b> and click <b>Issue / Airdrop</b>.
             </Typography>
           <br />
           <Typography>
@@ -124,7 +121,7 @@ export const GettingStartedMessage: React.FC = () => {
             4. Invite New Asset Owner
             </Typography>
           <Typography>
-            Next, we want to send some of our newly issued assets to another user. However, before we can do this, the recipient will need to be invited as an asset holder.
+            Next, we want to send some of our newly issued assets to another user. In order for the recipient to accept your transfers or airdrops, you must invite the recipient as an asset holder for the particular AssetHoldingAccount. 
             </Typography>
           <br />
           <Typography>
@@ -132,17 +129,15 @@ export const GettingStartedMessage: React.FC = () => {
              </Typography>
           <br />
           <Typography>
-            <b>2. </b>click on the asset you want to share,  and click <b>Invite new owner</b>.
+            <b>2. </b>Select the asset you want to share, and click <b>Invite new owner</b>.
           </Typography>
           <Typography>
-            <b>3. </b>Specify the Party Id (Or use the default counter party), and click <b>Invite</b>
+            <b>3. </b>Specify the Party Id (Or use the default counterparty), and click <b>Invite</b>
           </Typography>
           <br />
-
           <Typography>
-
             Once the user accepts your invitation, the AssetHoldingAccounts will be created.
-             </Typography>
+          </Typography>
           <br />
           <Typography>
             <i>Note: If the account is resharable, any account owner can invite other users to create AssetHoldingAccounts for this asset. If the account is not resharable, only the issuer can invite other users to create AssetHoldingAccounts for this asset. </i>            </Typography>
@@ -162,17 +157,16 @@ export const GettingStartedMessage: React.FC = () => {
             Once the recipient has accepted the AssetHolderAccount invitation you can send the user the asset.          </Typography>
           <br />
           <Typography>
-            <b>1.</b> Select the asset that you want to send.
+            <b>1. </b>Select the asset that you want to send.
              </Typography>
           <br></br>
           <Typography>
-            <b>2.</b> Click <b>Send</b>
+            <b>2. </b><b>Specify the Party ID and the amount</b>
           </Typography>
           <br></br>
           <Typography>
-            <b>3.</b> Click <b>Specify the Party ID and the amount</b>
+            <b>3. </b> Click <b>Send</b>
           </Typography>
-
           <br />
           <Typography>
             <i>Important: you can send tokens to anyone, regardless of if they have the assetHoldingAccount. However in order for the recipient to receive the tokens, the user needs to have that asset account</i>
@@ -210,7 +204,7 @@ export const GettingStartedMessage: React.FC = () => {
             <br/>
           <Typography>
             <b>4. </b>
-          Specify the ledger ID of the user who will receive the swap request. For this example, we can use the Party ID of the Default Counter Party, click <b>use default party</b> in the recipient field.
+          Specify the party ID of the recipient. For this example, we can use the Party ID of the default counterparty, so click <b>use default party</b> in the recipient field.
           </Typography>
           <br></br>
           <Typography>
