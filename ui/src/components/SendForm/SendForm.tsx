@@ -58,6 +58,7 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
   const onCancel = () => {
     nav(-1)
   }
+  
   const [recipient, setRecipient] = React.useState("");
   const [amount, setAmount] = React.useState("");
   const [isLoading, setLoading] = React.useState<boolean>(false);
@@ -69,6 +70,11 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
       <LinearProgress sx={{width: '100%'}}/>
     )
   }
+  const handleKeyboardEvent = (e: React.KeyboardEvent<HTMLImageElement>) => {
+    if(e.key === 'Enter'){
+     isSuccessful ? onReset() : onSubmit();
+    }
+  };
   const onSubmit = async () => {
     setLoading(true);
     const result = await ledgerHooks.sendAsset({assetAccountCid, amount, recipient, assetCids })
@@ -111,6 +117,8 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
         <TextField
           disabled={isLoading || isSuccessful}
           margin="normal"
+          onKeyDown={handleKeyboardEvent}
+
           id="recipient"
           label="Recipient's LedgerID"
           type="text"
@@ -126,6 +134,8 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
         <TextField
           disabled={isLoading || isSuccessful}
           margin="none"
+          onKeyDown={handleKeyboardEvent}
+
           id="amount"
           value={amount}
           error={parseFloat(amount) < 0}
