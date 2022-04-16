@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { useAdminParty } from '@daml/hub-react';
 import { deploymentMode, DeploymentMode } from '../../config';
+import { SharedSnackbarContext } from '../../context/SharedSnackbarContext';
 
 interface InviteNewAssetOwnerFormProps {
   owner: string;
@@ -48,6 +49,8 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
   const [recipient, setRecipient] = React.useState("");
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
+  const {openSnackbar} = React.useContext(SharedSnackbarContext)
+
   const nav = useNavigate();
   const ledgerHooks = useLedgerHooks();
 
@@ -68,6 +71,7 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
       setLoading(false);
       setSuccessful(true);
       setError(false);
+      openSnackbar("Invitation Sent", "success")
     } else {
       setLoading(false)
       setError(true)
@@ -75,7 +79,13 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
     }
     
   }
+  const handleKeyboardEvent = (e: React.KeyboardEvent<HTMLImageElement>) => {
+    if(e.key === 'Enter'){
+     isSuccessful ? onReset() : onSubmit();
+    }
+  };
   const onReset = () => {
+    setRecipient("")
     setSuccessful(false);
     setLoading(false);
   }
@@ -87,9 +97,12 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
           id="recipient"
           label="Recipient"
           type="text"
+          disabled={isSuccessful}
           fullWidth
+          autoComplete={"off"}
           variant="outlined"
           value={recipient}
+          onKeyDown={handleKeyboardEvent}
           size='small'
           onChange={(e) => setRecipient(e.currentTarget.value)}
           InputProps={{endAdornment: <Button onClick={onAdminClick} fullWidth sx={{maxWidth: '120px', margin: 0, whiteSpace: 'nowrap', textOverflow: 'ellipsis', }} variant='contained' size='small'><Typography sx={{textTransform: 'capitalize'}} variant='caption'>Use Default Party</Typography></Button>}}
@@ -111,7 +124,7 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
         onClick={isSuccessful ? onReset : onSubmit}
         className={classes.inviteButton}
       >
-        {isSuccessful ? 'Sent, send another' : 'Invite'}
+        {isSuccessful ? 'Send another' : 'Invite'}
       </LoadingButton>
       <Button fullWidth variant='outlined' onClick={onBack}>
         Back

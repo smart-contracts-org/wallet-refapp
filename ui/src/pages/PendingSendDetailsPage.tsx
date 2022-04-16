@@ -9,6 +9,8 @@ import { isMobile } from '../platform/platform';
 import { enableFabBack } from './IssueAirdropPage';
 import { AssetTransfer } from '@daml.js/wallet-refapp/lib/Asset';
 import { ContractId } from '@daml/types';
+import { SharedSnackbarContext } from '../context/SharedSnackbarContext';
+
 import { LoadingButton } from '@mui/lab';
 import { FloatingBackButton } from '../components/FloatingBackButton/FloatingBackButton';
 
@@ -64,7 +66,8 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
   const [isLoading, setLoading] = React.useState<string | undefined>(undefined);
   const [success, setSuccess] = React.useState<'accept'|'reject'|'cancel'|undefined>();
   const [error, setError] = React.useState<'accept'|'reject'|'cancel'|undefined>();
-  
+  const {openSnackbar} = React.useContext(SharedSnackbarContext)
+
   //TODO: can we use something else besdies contract
   const assetTransferResponse = useGetAssetTransferByContractId({contractId: contractId as ContractId<AssetTransfer>});
   const assetTransferCid = assetTransferResponse.contract?.contractId
@@ -114,6 +117,7 @@ export const PendingSendDetailsPage: React.FC<PendingSendDetailsPageProps> = (pr
       setLoading(undefined);
       setError(undefined);
       setSuccess('accept');
+      openSnackbar("Transfer Accepted", "success")
     } else {
       setError('accept')
       setSuccess(undefined)

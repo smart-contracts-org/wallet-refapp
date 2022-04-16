@@ -32,13 +32,13 @@ export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
   React.useEffect(() => {
 
     if(inviteContracts.length > prevInvites){
-      openSnackbar(`Asset Account Invite`, 'success' as AlertColor)
+      openSnackbar(`Asset Account Invite`, 'info' as AlertColor, true)
     }
     if(transferContracts.length > prevTranfers){
-      openSnackbar(`Transfer Request Received`, 'success' as AlertColor)
+      openSnackbar(`Transfer Request Received`, 'info' as AlertColor, true)
     }
     if(swapContracts.length > prevSwaps){
-      openSnackbar(`Swap Request Received`, 'success' as AlertColor)
+      openSnackbar(`Swap Request Received`, 'info' as AlertColor, true)
     }
 
   }, [inviteContracts.length, transferContracts.length, swapContracts.length])

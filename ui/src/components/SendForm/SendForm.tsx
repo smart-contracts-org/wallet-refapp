@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import { useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { ContractId } from '@daml/types';
 import { AssetHoldingAccount } from '@daml.js/wallet-refapp/lib/Account';
+import { SharedSnackbarContext } from '../../context/SharedSnackbarContext';
+
 import { getAssetSum } from '../../utils/getAssetSum';
 import { numberWithCommas } from '../../utils/numberWithCommas';
 import InfoIcon from '@mui/icons-material/Info';
@@ -46,6 +48,7 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
   const { reference,assetAccountCid, issuer,isFungible, ticker, owner } = props;
   const classes = useStyles();
   const nav = useNavigate();
+  const {openSnackbar} = React.useContext(SharedSnackbarContext)
   const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: isFungible, owner, reference});
   const ledgerHooks = useLedgerHooks();
   const assetCids = contracts.map((contract) => contract.contractId)
@@ -73,6 +76,7 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
       setLoading(false);
       setSuccessful(true);
       setError(false);
+      openSnackbar("Transfer Request Sent", "success")
     } else {
       setSuccessful(false);
       setLoading(false);
@@ -111,6 +115,7 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
           label="Recipient's LedgerID"
           type="text"
           value={recipient}
+          autoComplete={"off"}
           fullWidth
           variant="outlined"
           size='small'
@@ -161,7 +166,7 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
             marginBottom: 0.5
           }}
         >
-          {isSuccessful ? 'Complete, make another transaction' : 'Send'}
+          {isSuccessful ? 'Make another transaction' : 'Send'}
         </LoadingButton>
         <Button variant='outlined' onClick={onCancel}>
           {isSuccessful ? 'Back' : 'Back'}
