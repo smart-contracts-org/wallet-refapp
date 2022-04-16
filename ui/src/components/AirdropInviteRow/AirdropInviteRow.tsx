@@ -5,6 +5,8 @@ import { makeStyles } from '@mui/styles';
 import { LoadingButton } from '@mui/lab';
 import clx from 'clsx'
 import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
+import { SharedSnackbarContext } from '../../context/SharedSnackbarContext';
+
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     marginBottom: theme.spacing(1),
@@ -57,26 +59,40 @@ export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = (props) => {
   const classes = useStyles();
   const [amount, setAmount] = React.useState("");
   const [isLoading, setLoading] = React.useState<boolean>(false);
-  const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
   const [hasError, setError] = React.useState<boolean>(false);
   const ledgerHooks = useLedgerHooks();
+  const {openSnackbar} = React.useContext(SharedSnackbarContext)
+
+
+
+  const onReset = () => {
+    setAmount("")
+  }
 
   const onSubmit = async () => {
     if(amount.length === 0){
       setError(true)
+      return;
     }
     setLoading(true);
     const result = await ledgerHooks.exerciseAirdrop({ assetType: {issuer, symbol, reference, fungible}, amount, owner })
     if(result.isOk){
       setLoading(false);
-      setSuccessful(true);
       setError(false);
+      openSnackbar(`${amount} ${symbol} Airdropped to ${owner}`, 'success')
+      onReset();
     } else {
-      setSuccessful(false);
       setLoading(false);
       setError(true);
     }
   }
+  
+  
+  const handleKeyboardEvent = (e: React.KeyboardEvent<HTMLImageElement>) => {
+    if(e.key === 'Enter'){
+       onSubmit();
+    }
+  };
 
   return (
     <Paper className={classes.root}>
@@ -90,11 +106,14 @@ export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = (props) => {
       <TextField
       error={hasError}
         margin="none"
+        onKeyDown={handleKeyboardEvent}
         id="quantity"
         label="Amount"
+        placeholder="Amount"
         type="number"
         variant="outlined"
         size='small'
+        value={amount}
         disabled={!isAccepted}
         className={classes.quantity}
         onChange={(e) => setAmount(e.currentTarget.value)}
@@ -112,8 +131,7 @@ export const AirdropInviteRow: React.FC<AirdropInviteRowProps> = (props) => {
         className={classes.button}
         onClick={onSubmit}
       >
-        
-        {hasError ? 'Error' : isSuccessful? 'done' : 'send'}
+        {hasError ? 'Error' : 'Send'}
       </LoadingButton>
     </Paper>
   )

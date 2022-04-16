@@ -1,6 +1,5 @@
 import React from 'react';
-import { Close } from '@mui/icons-material';
-import { Alert, AlertColor, Button, IconButton, Snackbar, Typography } from '@mui/material';
+import { Alert, AlertColor, Button, Snackbar, Typography } from '@mui/material';
 import { isMobile } from '../platform/platform';
 import { Link } from 'react-router-dom';
 
@@ -9,7 +8,7 @@ interface SharedSnackbarContextProps {
   message: string;
   severity?: AlertColor;
   closeSnackbar: () => void;
-  openSnackbar: (message: string, severity?: AlertColor) => void;
+  openSnackbar: (message: string, severity?: AlertColor, enableViewButton?: boolean) => void;
 }
 interface SnackbarState {
   isOpen: boolean;
@@ -44,8 +43,8 @@ export const SharedSnackbarProvider: React.FC<unknown> = ({ children }) => {
     }}>
       <Snackbar
         anchorOrigin={{
-          vertical: isMobile() ? 'top' : 'top',
-          horizontal: 'left',
+          vertical: isMobile() ? 'top' : 'bottom',
+          horizontal: 'center',
         }}
         sx={isMobile() ? { top: { xs: 64, sm: 0 } } : undefined}
 

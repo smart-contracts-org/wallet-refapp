@@ -118,6 +118,7 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
         endIcon={isSuccessful  ? <CheckCircleIcon/> : <SendIcon />}
         loading={isLoading}
         fullWidth
+        disabled={recipient.length === 0}
         color={isSuccessful ? 'success' : undefined}
         loadingPosition="end"
         variant="outlined"

@@ -6,6 +6,7 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { AirdropInvites } from '../AirdropInvites/AirdropInvites';
 import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
+import { SharedSnackbarContext } from '../../context/SharedSnackbarContext';
 
 interface AirdropFormProps {
   symbol: string;
@@ -32,6 +33,15 @@ export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
   const ledgerHooks = useLedgerHooks();
+  const {openSnackbar} = React.useContext(SharedSnackbarContext)
+  
+  const onReset = () => {
+    setRecipient("");
+    setLoading(false)
+    setError(false)
+    setSuccessful(false)
+    
+  }
 
   const onSubmit = async () => {
     setLoading(true);
@@ -40,6 +50,8 @@ export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
       setLoading(false);
       setSuccessful(true);
       setError(false);
+      openSnackbar(`Invitiation sent to ${recipient}`, 'success')
+      onReset();
     } else {
       setLoading(false)
       setError(true)
@@ -47,6 +59,12 @@ export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
     }
     
   }
+  
+  const handleKeyboardEvent = (e: React.KeyboardEvent<HTMLImageElement>) => {
+    if(e.key === 'Enter'){
+       onSubmit();
+    }
+  };
 
   const classes = useStyles();
   return (
@@ -56,17 +74,21 @@ export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
         <TextField
           margin="none"
           id="userId"
-          label="recipient"
+          label="Recipient's Party ID"
           type="text"
           fullWidth
+          value={recipient}
           variant="outlined"
+          onKeyDown={handleKeyboardEvent}
           size='small'
+          disabled={isLoading}
+          autoComplete='off'
           sx={{marginRight: 1}}
           onChange={(e) => setRecipient(e.currentTarget.value)}
 
         />
         <Typography variant='caption' color='text.secondary'>
-          Input userID of the user you want to invite to airdrop.
+          Input party ID of the user you want to invite to airdrop.
         </Typography>
         </Box>
         <LoadingButton

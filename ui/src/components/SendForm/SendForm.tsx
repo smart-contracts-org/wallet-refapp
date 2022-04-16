@@ -120,7 +120,7 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
           onKeyDown={handleKeyboardEvent}
 
           id="recipient"
-          label="Recipient's LedgerID"
+          label="Recipient's Party ID"
           type="text"
           value={recipient}
           autoComplete={"off"}

@@ -26,7 +26,7 @@ interface IssueToSelfFormProps {
 }
 
 export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
-  const { isFungible, reference, cancelText, issueLater, onDoneClick, onNext, ticker, handleClose } = props;
+  const { isFungible, reference, cancelText, issueLater, ticker, handleClose } = props;
   const classes = useStyles()
   const ledgerHooks = useLedgerHooks();
   const {openSnackbar} = useContext(SharedSnackbarContext)
@@ -51,8 +51,10 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
       openSnackbar(`Issued ${amount} ${ticker}`, 'success' as AlertColor)
   
     } else {
+      openSnackbar('Encountered an error when issuing', 'error')
       setLoading(false)
       setError(true)
+
     }
 
 

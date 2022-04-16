@@ -41,7 +41,7 @@ export const Pages: React.FC<PagesProps> = ({setCredentials}) => {
       openSnackbar(`Swap Request Received`, 'info' as AlertColor, true)
     }
 
-  }, [inviteContracts.length, transferContracts.length, swapContracts.length])
+  }, [inviteContracts.length, transferContracts.length, swapContracts.length, openSnackbar, prevInvites, prevSwaps, prevTranfers])
   return (
     <Routes>
       <Route path='/asset' element={<AssetProfilePage />
