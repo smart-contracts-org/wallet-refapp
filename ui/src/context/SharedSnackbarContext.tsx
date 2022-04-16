@@ -1,7 +1,8 @@
 import React from 'react';
 import { Close } from '@mui/icons-material';
-import { Alert, AlertColor, IconButton, Snackbar } from '@mui/material';
+import { Alert, AlertColor, Button, IconButton, Snackbar, Typography } from '@mui/material';
 import { isMobile } from '../platform/platform';
+import { Link } from 'react-router-dom';
 
 interface SharedSnackbarContextProps {
   isOpen: boolean;
@@ -25,7 +26,6 @@ export const SharedSnackbarProvider: React.FC<unknown> = ({children}) => {
     message: '',
     severity: undefined
   })
-
   const openSnackbar = (message: string, severity?: AlertColor) => {
     console.log('fired')
     setState((state) => ({ ...state, isOpen: true, message, severity: severity }))
@@ -53,12 +53,12 @@ export const SharedSnackbarProvider: React.FC<unknown> = ({children}) => {
         autoHideDuration={5000}
         onClose={closeSnackbar}
         action={[
-          ,
+          
         ]}
       >
-        <Alert variant='filled' onClose={closeSnackbar} sx={{width:'100%'}} severity={state.severity}>
-          {state.message}
-          
+        <Alert variant='filled' onClose={closeSnackbar} sx={{width:'100%', display: 'flex', alignItems: 'center'}} severity={state.severity}>
+          <Typography >{state.message} <Button variant='outlined' size='small' sx={{textDecoration:'none' , color:'white', borderColor:'white', paddingLeft: 1}} component={Link} to={'/pending'}>View</Button></Typography>
+        
         </Alert>
         
       </Snackbar>
