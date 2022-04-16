@@ -38,10 +38,7 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [amount, setAmount] = React.useState<string>('');
   const [isIssueToSelfSuccess, setIsIssueToSelfSuccess] = React.useState(false);
-  const onIssueMoreClick = () => {
-    setAmount("")
-    setIsIssueToSelfSuccess(false)
-  }
+
   const onIssue = async () => {
     setLoading(true);
     const result = await ledgerHooks.issueAsset({ ticker, amount: amount, isFungible, reference })
@@ -63,6 +60,16 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
   const onChange = (e: React.BaseSyntheticEvent) => {
     setAmount(e.target.value);
   }
+  const onReset = () => {
+    setAmount("")
+    setIsIssueToSelfSuccess(false)
+
+  }
+  const handleKeyboardEvent = (e: React.KeyboardEvent<HTMLImageElement>) => {
+    if(e.key === 'Enter'){
+      isIssueToSelfSuccess ? onReset() : onIssue();
+    }
+  };
 
   return (
     <>
@@ -90,7 +97,9 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
             type="number"
             value={amount}
             fullWidth
+            onKeyDown={handleKeyboardEvent}
             variant="outlined"
+            disabled={isIssueToSelfSuccess}
             size='small'
             onChange={(e) => { onChange(e) }}
             inputProps={{
@@ -108,7 +117,7 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
             loading={isLoading}
             fullWidth
             variant="outlined"
-            onClick={isIssueToSelfSuccess ? onIssueMoreClick : onIssue}
+            onClick={isIssueToSelfSuccess ? onReset : onIssue}
             sx={{
               marginBottom: 0.5
             }}
