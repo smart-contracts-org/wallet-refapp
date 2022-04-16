@@ -20,7 +20,7 @@ interface Errors {
 }
 const errors: Errors = {
   accept: 'Error, unable to accept',
-  reject: 'Error, unable to reject',
+  reject: 'Error, unable to reject.',
   cancel: 'Error, unable to cancel'
 }
 

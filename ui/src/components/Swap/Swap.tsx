@@ -76,7 +76,6 @@ export const Swap: React.FC<SwapProps> = (props) => {
     isInbound,
   
   } = props;
-  console.log('props', props)
   const nav = useNavigate();
   const myPartyId = useParty();
   const [isLoading, setLoading] = React.useState<string | undefined>(undefined);
@@ -98,7 +97,6 @@ export const Swap: React.FC<SwapProps> = (props) => {
 
   // TODO: for the receiver, this is what they will be sending out
   const outboundAssetCids = outboundAssetContracts.map((contract) => contract.contractId)
-  console.log('outbound', outboundAssetCids)
   
   const classes = usePageStyles();
   const ledgerHooks = useLedgerHooks();
@@ -151,43 +149,10 @@ export const Swap: React.FC<SwapProps> = (props) => {
   
   const onAccept = async () => {
     if(outboundAssetContracts.length === 0){
-      console.log('not enough')
       setError('accept')
       return
     }
-    // receiver exercises mergeSplit on the account that
-    // holds the asset of what the proposer wants
-    // const mergeSplitResult = await ledgerHooks.exerciseMergeSplit({
-    //   outIssuer: receiverAssetIssuer, 
-    //   outSymbol: receiverAssetSymbol , 
-    //   outReference: receiverAssetReference, 
-    //   outFungible:  receiverAssetIsFungible, 
-    //   outputAmount: receiverAssetAmount, 
-    //   assetCids: outboundAssetCids
-    // })
-    // if(!mergeSplitResult.isOk){
-    //   setError('accept')
-    //   setSuccess(undefined)
-    //   setLoading(undefined)
-    //   return;
-    // }
-    // console.log('mergeSplitResult', mergeSplitResult)
-    
-    // const preApprove = await ledgerHooks.exercisePreApprove(
-    //   {owner: proposerAssetOwner, 
-    //     issuer: proposerAssetIssuer, 
-    //     fungible: proposerAssetIsFungible, 
-    //     symbol: proposerAssetSymbol, 
-    //     reference: proposerAssetReference, 
-    //     amount: proposerAssetAmount })
-    // console.log('PREApprove', preApprove)
-    // if(!preApprove.isOk){
-    //   console.log(preApprove.payload)
-    //   setError('accept')
-    //   setSuccess(undefined)
-    //   setLoading(undefined);
-    //   return
-    // }
+  
     const resultTrade = await ledgerHooks.exerciseTradeSettle(tradeCid, outboundAssetCids)
     if(!resultTrade.isOk){
       setError('accept')

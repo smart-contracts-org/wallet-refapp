@@ -27,7 +27,6 @@ export interface PendingTransferRowProps {
 export const PendingTransferRow: React.FC<PendingTransferRowProps> = (props) => {
   const classes = useNarrowPendingStyles();
   const {owner, isFungible, reference, transferCid, issuer, amount, symbol, sender, receiver, isNarrow, isInbound} = props;
-  console.log(props)
   
   const quriesInput = [
     ['sender', sender],
@@ -44,7 +43,6 @@ export const PendingTransferRow: React.FC<PendingTransferRowProps> = (props) => 
   ]
   const queries = createQueriesString(quriesInput)
   const path = `/pending-activity?` + queries
-  console.log(path)
   return (
     <>
       <Card className={classes.card}>

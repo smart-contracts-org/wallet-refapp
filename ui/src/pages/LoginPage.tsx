@@ -111,6 +111,7 @@ export const LoginPage: React.FC<Props> = ({onLogin}) => {
                   placeholder='Username'
                   value={username}
                  size='small'
+                 autoComplete='off'
                   onChange={e => setUsername(e.currentTarget.value)} sx={{marginBottom: 1}} />
       <Button fullWidth variant='contained' 
               onClick={handleLogin}>
@@ -126,9 +127,7 @@ export const LoginPage: React.FC<Props> = ({onLogin}) => {
         withButton
         withToken
         onLogin={creds => {
-    
-          console.log('DAML HUB LOGIN CALLBACK FIRED', creds, 'admin', admin)
-          if (creds) {
+              if (creds) {
             login(creds, admin);
           }
         }}

@@ -10,28 +10,27 @@ interface AirdropInvitesProps {
 }
 
 export const AirdropInvites: React.FC<AirdropInvitesProps> = (props) => {
-  const { reference, isFungible, symbol} = props;
-  const pendingInvites = useGetAccountInvitesByAssetType({ reference, symbol, fungible: isFungible}).contracts
-  console.log('pendign', props)
-  const {loading, contracts} = useGetMyIssuedAssetAccounts({fungible: isFungible, symbol, reference})
-  console.log(contracts)
+  const { reference, isFungible, symbol } = props;
+  const pendingInvites = useGetAccountInvitesByAssetType({ reference, symbol, fungible: isFungible }).contracts
+  const { loading, contracts } = useGetMyIssuedAssetAccounts({ fungible: isFungible, symbol, reference })
+
   const pendingInviteRows = pendingInvites.map((contract) => {
-    const {issuer,fungible, reference,symbol } = contract.payload.account.assetType
+    const { issuer, fungible, reference, symbol } = contract.payload.account.assetType
     const recipient = contract.payload.recipient
     return (
-      <AirdropInviteRow   owner={recipient} isAccepted={false} issuer={issuer} fungible={fungible} reference={reference || ""} symbol={symbol} />
+      <AirdropInviteRow owner={recipient} isAccepted={false} issuer={issuer} fungible={fungible} reference={reference || ""} symbol={symbol} />
     )
   })
   const inviteRows = contracts.map((contract) => {
-    const {issuer,fungible, reference,symbol } = contract.payload.assetType
-    const {owner} = contract.payload
+    const { issuer, fungible, reference, symbol } = contract.payload.assetType
+    const { owner } = contract.payload
     return (
       <AirdropInviteRow owner={owner} isAccepted={true} issuer={issuer} fungible={fungible} reference={reference || ""} symbol={symbol} />
     )
   })
-  if(loading){
+  if (loading) {
     return (
-      <LinearProgress/>
+      <LinearProgress />
     )
   }
   return (

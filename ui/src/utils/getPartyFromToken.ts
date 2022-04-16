@@ -6,7 +6,6 @@ export const partyFromToken = (token: string) => {
     const party = decoded["https://daml.com/ledger-api"].actAs.shift()
     return party
   } catch (e) {
-    console.log(e.message || "failed to extract party from jwt token")
     return undefined;
   }
 }

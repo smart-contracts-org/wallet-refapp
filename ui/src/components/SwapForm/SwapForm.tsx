@@ -13,6 +13,7 @@ import { getAssetSum } from '../../utils/getAssetSum';
 import { useParty } from '@daml/react';
 import { useGetAllAssetHoldingAccounts, useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { AssetType } from '@daml.js/wallet-refapp/lib/Asset';
+import { SharedSnackbarContext } from '../../context/SharedSnackbarContext';
 import { useAdminParty } from '@daml/hub-react';
 import { deploymentMode, DeploymentMode } from '../../config';
 
@@ -71,6 +72,7 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
   const admin = deploymentMode === DeploymentMode.DEV ? 'a' :  prodAdminParty;
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [inboundAssetType, setInboundAssetType] = React.useState<undefined | AssetType>();
+  const {openSnackbar} = React.useContext(SharedSnackbarContext)
 
   const handleChange = (event: SelectChangeEvent) => {
     const inboundAssetType = (event.target.value);
@@ -118,6 +120,7 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
     if(result.isOk){
       setLoading(false);
       setSuccessful(true);
+      openSnackbar("Swap Request Sent", "success")
     } else {
       setLoading(false);
       setSuccessful(false)

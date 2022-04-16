@@ -1,12 +1,12 @@
 import TextField from '@mui/material/TextField';
-import { Button, Card, CardContent, FormControl, Typography } from '@mui/material';
+import { AlertColor, Button, Card, CardContent, FormControl, Typography } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
-import React from 'react';
+import React, { useContext } from 'react';
 import { LoadingButton } from '@mui/lab';
-import { IssueSuccess } from '../IssueSuccess/IssueSuccess';
 import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { useNavigate } from 'react-router';
+import { SharedSnackbarContext } from '../../context/SharedSnackbarContext';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -26,16 +26,17 @@ interface IssueToSelfFormProps {
 }
 
 export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
-  const { isFungible, reference, cancelText, issueLater, onDoneClick, onNext, ticker, handleClose } = props;
+  const { isFungible, reference, cancelText, issueLater, ticker, handleClose } = props;
   const classes = useStyles()
   const ledgerHooks = useLedgerHooks();
+  const {openSnackbar} = useContext(SharedSnackbarContext)
   const nav = useNavigate();
   const onBack = () => {
     nav(-1)
   }
   const [hasError, setError] = React.useState<boolean>(false);
   const [isLoading, setLoading] = React.useState<boolean>(false);
-  const [amount, setAmount] = React.useState<string>('0');
+  const [amount, setAmount] = React.useState<string>('');
   const [isIssueToSelfSuccess, setIsIssueToSelfSuccess] = React.useState(false);
 
   const onIssue = async () => {
@@ -47,10 +48,13 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
       handleClose()
       setIsIssueToSelfSuccess(true)
       setLoading(false)
-
+      openSnackbar(`Issued ${amount} ${ticker}`, 'success' as AlertColor)
+  
     } else {
+      openSnackbar('Encountered an error when issuing', 'error')
       setLoading(false)
       setError(true)
+
     }
 
 
@@ -58,12 +62,20 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
   const onChange = (e: React.BaseSyntheticEvent) => {
     setAmount(e.target.value);
   }
+  const onReset = () => {
+    setAmount("")
+    setIsIssueToSelfSuccess(false)
+
+  }
+  const handleKeyboardEvent = (e: React.KeyboardEvent<HTMLImageElement>) => {
+    if(e.key === 'Enter'){
+      isIssueToSelfSuccess ? onReset() : onIssue();
+    }
+  };
 
   return (
     <>
-      {isIssueToSelfSuccess ? (
-        <IssueSuccess onNext={onNext} onDoneClick={onDoneClick} />
-      ) : (
+      { (
         <><FormControl fullWidth>
           <Card className={classes.root} elevation={0} variant='outlined'>
             <Typography color='text.primary' variant='body2' p={1}>
@@ -85,8 +97,11 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
             id="quantity"
             label="Quantity"
             type="number"
+            value={amount}
             fullWidth
+            onKeyDown={handleKeyboardEvent}
             variant="outlined"
+            disabled={isIssueToSelfSuccess}
             size='small'
             onChange={(e) => { onChange(e) }}
             inputProps={{
@@ -104,12 +119,12 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
             loading={isLoading}
             fullWidth
             variant="outlined"
-            onClick={onIssue}
+            onClick={isIssueToSelfSuccess ? onReset : onIssue}
             sx={{
               marginBottom: 0.5
             }}
           >
-            Issue
+            {isIssueToSelfSuccess ?"Issue Again" : "Issue"}
       </LoadingButton>
           <Button
             variant='outlined'

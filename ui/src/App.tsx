@@ -17,6 +17,7 @@ import { httpBaseUrl } from './config';
 import { LoginPage } from './pages/LoginPage';
 import { RightDrawer } from './components/RightDrawer/RightDrawer';
 import { damlHubLogout } from '@daml/hub-react';
+import { SharedSnackbarProvider } from './context/SharedSnackbarContext';
 
 
 const theme = createTheme({
@@ -26,12 +27,10 @@ const theme = createTheme({
 });
 
 export const App: React.FC = () => {
-  console.log('APP rendered')
   const [isOpen, setOpen] = React.useState(false);
   const [isRightOpen, setRightOpen] = React.useState(true);
   const [credentials, setCredentials] = React.useState<Credentials | undefined>();
     
-
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -56,6 +55,7 @@ export const App: React.FC = () => {
         <ThemeProvider theme={theme}>
           <CssBaseline/>
           <TopAppBar party={credentials?.party} onLogout={ onLogout} isOpen={isOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} />
+          <SharedSnackbarProvider>
 
           <Toolbar/>
           {
@@ -80,6 +80,7 @@ export const App: React.FC = () => {
              <LoginPage onLogin={setCredentials}/>
           }
           <Box paddingBottom={10}/>
+          </SharedSnackbarProvider>
         </ThemeProvider>
       </ContractsProvider>
     </HashRouter>

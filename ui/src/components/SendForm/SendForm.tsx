@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import { useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { ContractId } from '@daml/types';
 import { AssetHoldingAccount } from '@daml.js/wallet-refapp/lib/Account';
+import { SharedSnackbarContext } from '../../context/SharedSnackbarContext';
+
 import { getAssetSum } from '../../utils/getAssetSum';
 import { numberWithCommas } from '../../utils/numberWithCommas';
 import InfoIcon from '@mui/icons-material/Info';
@@ -46,6 +48,7 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
   const { reference,assetAccountCid, issuer,isFungible, ticker, owner } = props;
   const classes = useStyles();
   const nav = useNavigate();
+  const {openSnackbar} = React.useContext(SharedSnackbarContext)
   const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol: ticker, isFungible: isFungible, owner, reference});
   const ledgerHooks = useLedgerHooks();
   const assetCids = contracts.map((contract) => contract.contractId)
@@ -55,6 +58,7 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
   const onCancel = () => {
     nav(-1)
   }
+  
   const [recipient, setRecipient] = React.useState("");
   const [amount, setAmount] = React.useState("");
   const [isLoading, setLoading] = React.useState<boolean>(false);
@@ -66,6 +70,11 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
       <LinearProgress sx={{width: '100%'}}/>
     )
   }
+  const handleKeyboardEvent = (e: React.KeyboardEvent<HTMLImageElement>) => {
+    if(e.key === 'Enter'){
+     isSuccessful ? onReset() : onSubmit();
+    }
+  };
   const onSubmit = async () => {
     setLoading(true);
     const result = await ledgerHooks.sendAsset({assetAccountCid, amount, recipient, assetCids })
@@ -73,6 +82,7 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
       setLoading(false);
       setSuccessful(true);
       setError(false);
+      openSnackbar("Transfer Request Sent", "success")
     } else {
       setSuccessful(false);
       setLoading(false);
@@ -107,10 +117,13 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
         <TextField
           disabled={isLoading || isSuccessful}
           margin="normal"
+          onKeyDown={handleKeyboardEvent}
+
           id="recipient"
-          label="Recipient's LedgerID"
+          label="Recipient's Party ID"
           type="text"
           value={recipient}
+          autoComplete={"off"}
           fullWidth
           variant="outlined"
           size='small'
@@ -121,6 +134,8 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
         <TextField
           disabled={isLoading || isSuccessful}
           margin="none"
+          onKeyDown={handleKeyboardEvent}
+
           id="amount"
           value={amount}
           error={parseFloat(amount) < 0}
@@ -161,7 +176,7 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
             marginBottom: 0.5
           }}
         >
-          {isSuccessful ? 'Complete, make another transaction' : 'Send'}
+          {isSuccessful ? 'Make another transaction' : 'Send'}
         </LoadingButton>
         <Button variant='outlined' onClick={onCancel}>
           {isSuccessful ? 'Back' : 'Back'}

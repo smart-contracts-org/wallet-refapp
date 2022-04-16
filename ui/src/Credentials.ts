@@ -17,7 +17,6 @@ export type Credentials = {
 }
 
 function computeToken(party: string): string {
-  console.log('computerToke', party)
   const payload = {
     "https://daml.com/ledger-api": {
       "ledgerId": ledgerId,
@@ -30,7 +29,6 @@ function computeToken(party: string): string {
 
 export const computeCredentials = (party: string): Credentials => {
   const token = computeToken(party);
-  console.log('token', token)
   return {party, token};
 }
 

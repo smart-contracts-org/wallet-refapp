@@ -40,7 +40,6 @@ export const PendingAccountInviteRow: React.FC<PendingAccountInviteRowProps> = (
     receiver, 
     isInbound
   } = props;
-  console.log(props)
 
   const queriesInput = [
     ['sender', sender],
@@ -58,7 +57,6 @@ export const PendingAccountInviteRow: React.FC<PendingAccountInviteRowProps> = (
   ]
   const queries = createQueriesString(queriesInput)
   const path = `/pending-activity?` + queries
-  console.log(path)
   return (
     <>
       <Card className={classes.card}>

@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 export const MyActiveAccountsPage: React.FC = () => {
-  console.log('my')
   const classes = useStyles();
   const { loading, contracts } = useGetAllAssetHoldingAccounts();
   const assetRows = contracts.map((contract) => <AssetAccountRow
