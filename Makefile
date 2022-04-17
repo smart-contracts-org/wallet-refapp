@@ -12,7 +12,12 @@ build-dars:
 
 .PHONY: test-dars
 test-dars:
+	# Remove later
 	cd main/Tests && daml test
+	cd ..
+	cd main/Account && daml test
+	cd ..
+	cd main/Asset && daml test
 
 .PHONY: clean
 clean: 

@@ -375,7 +375,9 @@ test = do
         amount = 15.0
         observers = Set.empty
   -- Alice queries the ledger for all incoming trade proposals
-
+  aliceIncomingTrades <- queryFilter @Trade alice
+    (\trade -> trade.receiver==alice)
+  let (tradeCid, trade) = head aliceIncomingTrades
   -- Alice consolidates ALC assets and creates ALC contract required to accept Dianne's trade proposal
   optAliceALCAccTuple <- queryContractKey alice (alice_tkn, alice)
   let aliceALCAcc = (fromSome optAliceALCAccTuple)._2
