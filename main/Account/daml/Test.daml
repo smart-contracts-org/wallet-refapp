@@ -511,7 +511,7 @@ trade_test = do
         amount = 13.0
         observers = Set.empty
 
-  party1IncomingTrades <- queryFilter @Trade party1
+  party1IncomingTrades <- queryFilter @Account.Trade party1
     (\trade -> trade.receiver==party1)
   let (tradeCid, trade) = head party1IncomingTrades
 
