@@ -10,14 +10,15 @@ import Daml.Script
 import DA.Optional
 import DA.Set.Types (Set(Set))
 
-
 accountBalance_test: Script ()
 dupe_account_test  : Script ()
 account_reshare_test  : Script ()
 account_airdrop_test: Script ()
 transfer_test: Script ()
+transfer_privacy_test: Script ()
 dupe_account_invite_test: Script ()
 account_recipient_mismatch_test: Script ()
+trade_test: Script ()
 
 data TestParties = TestParties with
   alice: Party
@@ -27,10 +28,6 @@ data TestParties = TestParties with
   issuer: Party
   party1: Party
   party2: Party
-
-
-
-
 
 setupParties: Script TestParties
 setupParties = do
@@ -58,8 +55,6 @@ assertBalance party account_cid expected = do
   let account = fromSome optionalAccount
   balance <- accountBalance account
   balance === expected
-
-  
 
 accountBalance_test = do
   testParties@TestParties{..} <- setupParties
@@ -93,11 +88,10 @@ accountBalance_test = do
       observers = Set.empty
 
   let expected:Decimal  = 15.0
-  
+
   assertBalance issuer account_cid expected
 
   pure()
-
 
 dupe_account_test = script do
   testParties@TestParties{..} <- setupParties
@@ -139,11 +133,8 @@ dupe_account_test = script do
 
   pure()
 
-
 account_reshare_test = script do
-  
   testParties@TestParties{..} <- setupParties
-
 
   let 
     issuer_token = AssetType with
@@ -205,7 +196,6 @@ account_reshare_test = script do
 account_airdrop_test = script do
 
   testParties@TestParties{..} <- setupParties
-
 
   let 
     airdroppable_token = AssetType with
@@ -272,7 +262,6 @@ transfer_test = script do
 -- SETUP START
   testParties@TestParties{..} <- setupParties
 
-
   let 
     transfer_token = AssetType with
       issuer = issuer
@@ -338,10 +327,12 @@ transfer_test = script do
 
   pure()
 
+transfer_privacy_test = do 
+  pure()
+
 dupe_account_invite_test = do
   testParties@TestParties{..} <- setupParties
 
-  
   let 
     token = AssetType with
       issuer = issuer
@@ -372,9 +363,7 @@ dupe_account_invite_test = do
   submitMustFail party1 do
       exerciseCmd party1_account_proposal_cid_2 AssetHoldingAccountProposal_Accept
 
-
   pure()
-
 
 account_recipient_mismatch_test = do
   testParties@TestParties{..} <- setupParties
@@ -393,7 +382,6 @@ account_recipient_mismatch_test = do
       airdroppable = False
       resharable = False 
   
-
   party1_account_proposal_cid_1 <- submit issuer do
     exerciseCmd account_cid Invite_New_Asset_Holder with
       recipient = party1
@@ -402,14 +390,12 @@ account_recipient_mismatch_test = do
     exerciseCmd account_cid Invite_New_Asset_Holder with
       recipient = party1
   
-
   asset_cid <- submit issuer do
     createCmd Asset with
       assetType = token
       owner = issuer
       amount = 10.0
       observers = Set.empty
-
 
   submit issuer do 
     exerciseCmd account_cid Create_Transfers with
@@ -424,4 +410,121 @@ account_recipient_mismatch_test = do
   submitMustFail issuer do
     exerciseCmd account_cid Deposit_Transfer_Into_Account with transferCid = party1TransferCid
     
+  pure()
+
+trade_test = do
+  testParties@TestParties{..} <- setupParties
+
+-- Account creation and asset issuance start
+  let 
+    rare_token = AssetType with
+      issuer = issuer
+      symbol = "rare"
+      fungible = True
+      reference = None
+  let 
+    common_token = AssetType with
+      issuer = party1
+      symbol = "common"
+      fungible = True
+      reference = None
+  
+  -- Account creation start
+  issuer_rare_account_cid <- submit issuer do
+    createCmd AssetHoldingAccount with 
+      assetType = rare_token
+      owner = issuer
+      airdroppable = False
+      resharable = False
+  
+  party1_common_account_cid <- submit party1 do
+    createCmd AssetHoldingAccount with 
+      assetType = common_token
+      owner = party1
+      airdroppable = False
+      resharable = False
+  -- Account creation end
+
+  -- Asset issuance start
+  issuer_rare_token_asset_cid_1 <- submit issuer do
+    createCmd Asset with
+      assetType = rare_token
+      owner = issuer
+      amount = 1.0
+      observers = Set.empty
+  
+  issuer_rare_token_asset_cid_2 <- submit issuer do
+    createCmd Asset with
+      assetType = rare_token
+      owner = issuer
+      amount = 4.0
+      observers = Set.empty
+
+  party1_common_asset_cid_1 <- submit party1 do
+    createCmd Asset with
+      assetType = common_token
+      owner = party1
+      amount = 10.0
+      observers = Set.empty
+      
+  party1_common_asset_cid_2 <- submit party1 do
+    createCmd Asset with
+      assetType = common_token
+      owner = party1
+      amount = 10.0
+      observers = Set.empty
+
+  -- Asset issuance end
+-- End of Account creation and asset issuance
+
+-- Start of invitations to accounts
+  party1_rare_account_proposal_cid <- submit issuer do
+    exerciseCmd issuer_rare_account_cid Invite_New_Asset_Holder with
+      recipient = party1
+  
+  issuer_common_account_proposal_cid <- submit party1 do
+    exerciseCmd party1_common_account_cid Invite_New_Asset_Holder with
+      recipient = issuer
+
+  party1_rare_account_cid <- submit party1 do
+    exerciseCmd party1_rare_account_proposal_cid AssetHoldingAccountProposal_Accept
+
+  issuer_common_account_cid <- submit issuer do
+    exerciseCmd issuer_common_account_proposal_cid AssetHoldingAccountProposal_Accept
+-- End of invitations
+
+ -- Balance before swap
+  assertBalance issuer issuer_rare_account_cid 5.0
+  assertBalance issuer issuer_common_account_cid 0.0
+
+  assertBalance party1 party1_common_account_cid 20.0
+  assertBalance party1 party1_rare_account_cid 0.0
+
+-- Start of swap
+  -- Issuer proposes swap to party1
+  submit issuer do
+    exerciseCmd issuer_rare_account_cid Create_Trade with
+      assetCids = [issuer_rare_token_asset_cid_1, issuer_rare_token_asset_cid_2]
+      offeredAssetAmount = 3.0
+      requestedAsset = Asset with
+        assetType = common_token
+        owner = party1
+        amount = 13.0
+        observers = Set.empty
+
+  party1IncomingTrades <- queryFilter @Trade party1
+    (\trade -> trade.receiver==party1)
+  let (tradeCid, trade) = head party1IncomingTrades
+
+  submit party1 do
+    exerciseCmd tradeCid Trade_Settle with
+      requestedAssetCids = [party1_common_asset_cid_1, party1_common_asset_cid_2]
+
+ -- Balance after swap
+  assertBalance issuer issuer_rare_account_cid 2.0
+  assertBalance issuer issuer_common_account_cid 13.0
+
+  assertBalance party1 party1_common_account_cid 7.0
+  assertBalance party1 party1_rare_account_cid 3.0
+
   pure()
