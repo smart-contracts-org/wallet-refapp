@@ -8,7 +8,6 @@ import DA.List
 import DA.Set as Set
 import Daml.Script
 import DA.Optional
-import DA.Set.Types (Set(Set))
 
 accountBalance_test: Script ()
 dupe_account_test  : Script ()
