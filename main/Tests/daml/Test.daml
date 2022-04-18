@@ -30,6 +30,8 @@ data TestParties = TestParties with
   bob: Party
   chris: Party
   dianne: Party
+  edith: Party
+  frank: Party
 
 setupParties: Script TestParties
 setupParties = do
@@ -37,6 +39,8 @@ setupParties = do
   bob <- allocateParty "Bob"
   chris <- allocateParty "Chris"
   dianne <- allocateParty "Dianne"
+  edith <- allocateParty "Edith"
+  frank <- allocateParty "Frank"
   return $ TestParties with ..
 
 test = do
@@ -132,7 +136,6 @@ test = do
     createCmd AssetTransfer with
       asset = a
       recipient = bob
-      sender = alice
   let 
     a = Asset with
       assetType = alice_tkn
@@ -143,7 +146,6 @@ test = do
     createCmd AssetTransfer with
       asset = a
       recipient = bob
-      sender = alice
 
   -- Alice invites Bob to have asset holding account for ALC
   bobALCAccountHolderProposalCid <- submit alice do
@@ -339,8 +341,6 @@ test = do
       assetCids = bobALCCids
   bobALCAccBalance <- accountBalance bobALCAcc 
   bobALCAccBalance === 0.0
-  --optBobALCAccTuple <- queryContractKey bob (alice_tkn, bob)
-  --assert $ isNone optBobALCAccTuple
 
   -- Test Trade
 
@@ -364,6 +364,12 @@ test = do
       recipient = dianne
   dianneALCAccCid <- submit dianne do
     exerciseCmd dianneALCAccountHolderProposalCid AssetHoldingAccountProposal_Accept
+  -- Dianne invites Alice to have asset holding account for BOB, Alice acepts
+  aliceBOBAccountHolderProposalCid <- submit dianne do
+    exerciseByKeyCmd @AssetHoldingAccount (bob_tkn, dianne) Invite_New_Asset_Holder with
+      recipient = alice
+  aliceBOBAccCid <- submit alice do
+    exerciseCmd aliceBOBAccountHolderProposalCid AssetHoldingAccountProposal_Accept
   -- Dianne proposes to sell 10 BOBs to Alice for 15 ALCs
   submit dianne do
     exerciseCmd dianneBOBAccCid Create_Trade with
@@ -378,33 +384,98 @@ test = do
   aliceIncomingTrades <- queryFilter @Trade alice
     (\trade -> trade.receiver==alice)
   let (tradeCid, trade) = head aliceIncomingTrades
-  -- Alice consolidates ALC assets and creates ALC contract required to accept Dianne's trade proposal
+  -- Alice collects ALC assets to pass them to Trade_Settle choice
   optAliceALCAccTuple <- queryContractKey alice (alice_tkn, alice)
   let aliceALCAcc = (fromSome optAliceALCAccTuple)._2
   aliceALCCids <- accountAssets aliceALCAcc
-  -- aliceALCCids <- submit alice do
-  --   exerciseByKeyCmd @AssetHoldingAccount (alice_tkn, alice) Merge_Split with
-  --     assetCids = aliceALCCids
-  --     outputAmounts = [15.0]
-  optOfferedAsset <- queryContractId alice trade.offeredAssetCid
-  let offeredAsset = (fromSome optOfferedAsset).asset
-  -- Alice can't pre-approve transfer of BOBs because Alice does not have BOB account
-  submitMustFail alice do
-    exerciseByKeyCmd @AssetHoldingAccount (offeredAsset.assetType, alice) Preapprove_Transfer_In with 
-      asset = offeredAsset
-  -- Dianne invites Alice to have asset holding account for BOB, Alice acepts
-  aliceBOBAccountHolderProposalCid <- submit dianne do
-    exerciseByKeyCmd @AssetHoldingAccount (bob_tkn, dianne) Invite_New_Asset_Holder with
-      recipient = alice
-  aliceBOBAccCid <- submit alice do
-    exerciseCmd aliceBOBAccountHolderProposalCid AssetHoldingAccountProposal_Accept
-  
-  -- Alice pre-approves transfer of BOBs from Dianne and settles the trade
-  -- aliceTxApprovalCid <- submit alice do
-  --   exerciseByKeyCmd @AssetHoldingAccount (offeredAsset.assetType, alice) Preapprove_Transfer_In with 
-  --     asset = offeredAsset
   submit alice do
     exerciseCmd tradeCid Trade_Settle with
       requestedAssetCids = aliceALCCids
+
+
+  -- Test swap forth and back workflow: Edith issues 1 EDT, Frank issues 1 FRK
+  -- Edith swaps 1 EDT for Frank's 1 FRK
+  -- Edith swaps 1 FRK for Frank's 1 EDT
+  let 
+    edith_tkn = AssetType with
+      issuer = edith
+      symbol = "EDT"
+      fungible = True
+      reference = None 
+  let 
+    frank_tkn = AssetType with
+      issuer = frank
+      symbol = "FRK"
+      fungible = True
+      reference = None
+  
+  edithEDTAccCid <- submit edith do
+    createCmd AssetHoldingAccount with 
+      assetType = edith_tkn
+      owner = edith
+      airdroppable = False
+      resharable = True
+  edithEDTCid <- submit edith do
+    createCmd Asset with
+      assetType = edith_tkn
+      owner = edith
+      amount = 1.0
+      observers = Set.empty
+  frankFRKAccCid <- submit frank do
+    createCmd AssetHoldingAccount with 
+      assetType = frank_tkn
+      owner = frank
+      airdroppable = False
+      resharable = True
+  frankFRKCid <- submit frank do
+    createCmd Asset with
+      assetType = frank_tkn
+      owner = frank
+      amount = 1.0
+      observers = Set.empty
+  frankAssetAccountHolderProposalCid <- submit edith do
+    exerciseByKeyCmd @AssetHoldingAccount (edith_tkn, edith) Invite_New_Asset_Holder with
+      recipient = frank
+  frankEDTAccCid <- submit frank do
+    exerciseCmd frankAssetAccountHolderProposalCid AssetHoldingAccountProposal_Accept
+  edithAssetAccountHolderProposalCid <- submit frank do
+    exerciseByKeyCmd @AssetHoldingAccount (frank_tkn, frank) Invite_New_Asset_Holder with
+      recipient = edith
+  edithFRKAccCid <- submit edith do
+    exerciseCmd edithAssetAccountHolderProposalCid AssetHoldingAccountProposal_Accept
+
+  edithTradeCid <- submit edith do
+    exerciseCmd edithEDTAccCid Create_Trade with
+      assetCids = [edithEDTCid]
+      offeredAssetAmount = 1.0
+      requestedAsset = Asset with
+        assetType = frank_tkn
+        owner = frank
+        amount = 1.0
+        observers = Set.empty
+  optEdithTrade <- queryContractId edith edithTradeCid
+  optOfferedAsset <- queryContractId edith (fromSome optEdithTrade).offeredAssetCid 
+  submit frank do
+    exerciseCmd edithTradeCid Trade_Settle with
+      requestedAssetCids = [frankFRKCid]
+
+  optEdithFRKAcc <- queryContractId edith edithFRKAccCid
+  edithFRKCids <- accountAssets $ fromSome optEdithFRKAcc
+  edithTradeCid <- submit edith do
+    exerciseCmd edithFRKAccCid Create_Trade with
+      assetCids = edithFRKCids
+      offeredAssetAmount = 1.0
+      requestedAsset = Asset with
+        assetType = edith_tkn
+        owner = frank
+        amount = 1.0
+        observers = Set.empty
+  optEdithTrade <- queryContractId edith edithTradeCid
+  optOfferedAsset <- queryContractId edith (fromSome optEdithTrade).offeredAssetCid
+  optFrankEDTAcc <- queryContractId frank frankEDTAccCid
+  frankEDTCids <- accountAssets $ fromSome optFrankEDTAcc
+  submit frank do
+    exerciseCmd edithTradeCid Trade_Settle with
+      requestedAssetCids = frankEDTCids
 
   pure()
