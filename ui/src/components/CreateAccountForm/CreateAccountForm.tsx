@@ -2,7 +2,7 @@ import TextField from '@mui/material/TextField';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import { Card, CardContent, FormControl, Typography } from '@mui/material';
+import { Card, CardContent, FormControl, Link, Typography } from '@mui/material';
 import React from 'react';
 import WarningIcon from '@mui/icons-material/Warning';
 import { LoadingButton } from '@mui/lab';
@@ -89,9 +89,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
         <CardContent>
         <Card elevation={0} variant='outlined' className={classes.root}>
         <Typography color='text.secondary' variant='body2' p={1}>
-          Define the asset characteristics below and create your new Asset Holding Account.  After the Asset Holding Account is created, you can issue new asset quantities into the account and more. See the Wallet Daml Reference App - concepts and their implementation article.
-
-
+          Define the asset characteristics below and create your new Asset Holding Account.  After the Asset Holding Account is created, you can issue new asset quantities into the account and more. Read <Link target="_blank" href="https://github.com/maxhsu-da/wallet-refapp/blob/main/Concepts.md#wallet-daml-reference-app---concepts-and-their-implementation">Wallet Daml Reference App - concepts and their implementation article for details.</Link>
         </Typography>
       </Card>
       <div>
@@ -151,7 +149,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
           </Typography>
           <FormControlLabel control={<Switch defaultChecked onChange={(e) => { setFungible(e.target.checked) }} />} label="Fungible" />
           <Typography variant='caption' color='text.secondary' mb={1}>
-            If activated, the asset can be divided. Set Fungible to true if you want to create an NFT.
+            If activated, the asset can be divided. Set Fungible to false if you want the asset to be non-fungible, this means the contract cannot be divided, and it's only unit of issuance is 1.
           </Typography>
         </FormGroup>
       </FormControl>
