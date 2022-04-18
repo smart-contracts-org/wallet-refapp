@@ -1,4 +1,4 @@
-import { Box, CssBaseline, Toolbar } from '@mui/material';
+import { Box, CssBaseline, LinearProgress, Toolbar } from '@mui/material';
 import React from 'react'
 import { SideMenu } from './components/SideMenu/SideMenu';
 import { TopAppBar } from './components/TopAppBar/TopAppBar';
@@ -30,7 +30,7 @@ export const App: React.FC = () => {
   const [isOpen, setOpen] = React.useState(false);
   const [isRightOpen, setRightOpen] = React.useState(true);
   const [credentials, setCredentials] = React.useState<Credentials | undefined>();
-    
+  const [isLoggingIn, setIsLoggingIn] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -45,6 +45,9 @@ export const App: React.FC = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const handleIsLoggingIn = (isLoggingIn: boolean) => {
+    setIsLoggingIn(isLoggingIn)
+  }
 
     
 
@@ -58,6 +61,7 @@ export const App: React.FC = () => {
           <SharedSnackbarProvider>
 
           <Toolbar/>
+          {isLoggingIn && <LinearProgress sx={{width: '100%'}}/>}
           {
            (credentials) ? 
               <DamlLedger
@@ -77,7 +81,7 @@ export const App: React.FC = () => {
                 </Box>
               </DamlLedger>
              : 
-             <LoginPage onLogin={setCredentials}/>
+             <LoginPage setIsLoggingIn={handleIsLoggingIn} onLogin={setCredentials}/>
           }
           <Box paddingBottom={10}/>
           </SharedSnackbarProvider>

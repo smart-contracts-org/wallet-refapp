@@ -108,6 +108,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
           id="symbol"
           label="Symbol (Mandatory field)"
           type="text"
+          autoComplete='off'
           fullWidth
           variant="outlined"
           size='small'
@@ -123,6 +124,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
           id="reference"
           label="Reference (Optional field)"
           type="text"
+          autoComplete='off'
           fullWidth
           maxRows={4}
           multiline
