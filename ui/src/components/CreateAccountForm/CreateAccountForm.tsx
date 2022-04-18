@@ -89,7 +89,9 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
         <CardContent>
         <Card elevation={0} variant='outlined' className={classes.root}>
         <Typography color='text.secondary' variant='body2' p={1}>
-          You must create an Asset Account first before you can mint your assets. Once you create the asset account, you will be able to mint tokens to yourself, or airdrop to other users.
+          Define the asset characteristics below and create your new Asset Holding Account.  After the Asset Holding Account is created, you can issue new asset quantities into the account and more. See the Wallet Daml Reference App - concepts and their implementation article.
+
+
         </Typography>
       </Card>
       <div>
@@ -108,6 +110,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
           id="symbol"
           label="Symbol (Mandatory field)"
           type="text"
+          autoComplete='off'
           fullWidth
           variant="outlined"
           size='small'
@@ -123,6 +126,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
           id="reference"
           label="Reference (Optional field)"
           type="text"
+          autoComplete='off'
           fullWidth
           maxRows={4}
           multiline

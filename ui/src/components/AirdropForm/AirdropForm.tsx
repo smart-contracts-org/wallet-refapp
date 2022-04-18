@@ -18,8 +18,8 @@ interface AirdropFormProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    display: 'flex', 
-    flexDirection: 'row', 
+    display: 'flex',
+    flexDirection: 'row',
     alignItems: 'start'
   }
 }))
@@ -27,26 +27,26 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
-  const {issuer, owner, symbol, isFungible, reference} = props;
+  const { issuer, owner, symbol, isFungible, reference } = props;
   const [hasError, setError] = React.useState(false);
   const [recipient, setRecipient] = React.useState("");
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
   const ledgerHooks = useLedgerHooks();
-  const {openSnackbar} = React.useContext(SharedSnackbarContext)
-  
+  const { openSnackbar } = React.useContext(SharedSnackbarContext)
+
   const onReset = () => {
     setRecipient("");
     setLoading(false)
     setError(false)
     setSuccessful(false)
-    
+
   }
 
   const onSubmit = async () => {
     setLoading(true);
-    const result = await ledgerHooks.inviteNewAssetHolder({recipient, owner, assetType: {issuer, reference: reference || "", fungible: isFungible, symbol}})
-    if(result.isOk){
+    const result = await ledgerHooks.inviteNewAssetHolder({ recipient, owner, assetType: { issuer, reference: reference || "", fungible: isFungible, symbol } })
+    if (result.isOk) {
       setLoading(false);
       setSuccessful(true);
       setError(false);
@@ -57,55 +57,60 @@ export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
       setError(true)
       setSuccessful(false);
     }
-    
+
   }
-  
+
   const handleKeyboardEvent = (e: React.KeyboardEvent<HTMLImageElement>) => {
-    if(e.key === 'Enter'){
-       onSubmit();
+    if (e.key === 'Enter') {
+      onSubmit();
     }
   };
 
   const classes = useStyles();
   return (
     <>
+      <Card className={classes.root} elevation={0} variant='outlined' sx={{ marginBottom: 1 }}>
+        <Typography color='text.primary' variant='body2' p={1}>
+          To airdrop assets, recipients must first give you permission to create assets on their behalf. The invitation form below allows you to send a request to airdrop. Once the recipient accepts, then you can airdrop assets to the recipients by clicking <b>send</b>
+        </Typography>
+      </Card>
       <FormControl error={hasError} className={classes.root}>
         <Box mr={0.5}>
-        <TextField
-          margin="none"
-          id="userId"
-          label="Recipient's Party ID"
-          type="text"
-          fullWidth
-          value={recipient}
-          variant="outlined"
-          onKeyDown={handleKeyboardEvent}
-          size='small'
-          disabled={isLoading}
-          autoComplete='off'
-          sx={{marginRight: 1}}
-          onChange={(e) => setRecipient(e.currentTarget.value)}
+          <TextField
+            margin="none"
+            id="userId"
+            label="Recipient's Party ID"
+            type="text"
+            fullWidth
+            value={recipient}
+            variant="outlined"
+            onKeyDown={handleKeyboardEvent}
+            size='small'
+            disabled={isLoading}
+            autoComplete='off'
+            sx={{ marginRight: 1 }}
+            onChange={(e) => setRecipient(e.currentTarget.value)}
 
-        />
-        <Typography variant='caption' color='text.secondary'>
-          Input party ID of the user you want to invite to airdrop.
+          />
+          <Typography variant='caption' color='text.secondary'>
+            Input party ID of the user you want to invite to airdrop.
         </Typography>
         </Box>
         <LoadingButton
-        disabled={recipient.length === 0}
-        loading={isLoading}
-        loadingPosition="end"
-        variant="outlined"
-        onClick={onSubmit}
-      >
-        {isSuccessful ? 'Send': 'Send'}
-      </LoadingButton>
+          disabled={recipient.length === 0}
+          loading={isLoading}
+          loadingPosition="end"
+          variant="outlined"
+          onClick={onSubmit}
+        >
+          {isSuccessful ? 'Send' : 'Send'}
+        </LoadingButton>
       </FormControl>
-      {hasError && <Card   sx={{margin: 1, width: '100%'}} ><CardContent><Typography>
-      An error was encountered, please try again. 
+      {hasError && <Card sx={{ margin: 1, width: '100%' }} ><CardContent><Typography>
+        An error was encountered, please try again.
         </Typography>
-        </CardContent></Card>}
-      <AirdropInvites symbol={symbol} isFungible={isFungible} reference={reference}/>
-      </>
+      </CardContent></Card>}
+      <AirdropInvites symbol={symbol} isFungible={isFungible} reference={reference} />
+    </>
   );
 }

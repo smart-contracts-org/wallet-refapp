@@ -111,7 +111,7 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
         />
         <Card className={classes.helpMessage} elevation={0} variant='outlined'>
         <Typography color='text.primary' variant='body2' p={1}>
-          You must create an Asset Account first before you can mint your assets. The asset account holds the assets. Hence this step must come first before you can own any assets.
+          To be able to send or swap assets with another user, the user must be invited as an Asset Account holder. Upon sending the invitation an AssetHoldingAccountRequest will be created, which the recipient can choose to accept or reject.  
         </Typography>
       </Card>
         <LoadingButton

@@ -156,11 +156,10 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
           <InfoIcon color='primary' sx={{marginRight:1}}/> <Typography variant='body2'><i>Please note</i></Typography>
             </Box>
         <Typography color='text.primary' variant='body2' p={1}>
-          If you have not invited this user as an owner for the AssetHoldingAccount {ticker}, please do so first by going "back" and clicking "Invite". Otherwise the recipient will not be able to accept this asset.
+          Check with the recipient and ensure they have the Asset Holding Account for <b>{ticker}</b>, and that the issuer is <b>{issuer}</b>. If the user does not have this Asset Holding Account, you can invite them as an Asset Holder by going <b>back</b> and click <b>Invite</b>. Otherwise the recipient will not be able to accept this asset. 
         </Typography>
           <Typography color='text.primary' variant='body2' p={1}>
             An assetTransferProposal template is created upon clicking send. The recipient will need to accept this request first before the ownership of the asset is transferred.
-             <Link target="_blank" href="https://docs.daml.com/daml/patterns/initaccept.html">here</Link>.
         </Typography>
         </Card>
         <LoadingButton
