@@ -35,7 +35,7 @@ acceptSwapTrigger = T.Trigger
           let isRequestedAsset = (\asset -> do
             requestedAssetTxPreApproval <- T.queryContractId p c.requestedAssetsTxPreApprovalCid
           
-             asset.assetType == requestedAssetTxPreApproval.asset.assetType && asset.owner == p)
+              asset.assetType == requestedAssetTxPreApproval.asset.assetType && asset.owner == p)
           let requestedAssets = filter(\(cid,contract) -> isRequestedAsset contract) allAssetContracts
           debug("REQUESTED ASSETS", requestedAssets)
           let requestedAssetCids = map fst requestedAssets
