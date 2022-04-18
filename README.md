@@ -62,7 +62,7 @@ This should open a browser window with a login screen.
 If it doesn't, you can manually point your browser to http://localhost:3000.
 
 # Configuring Triggers for Local Development
-There are 4 triggers we need to start. The purpose of the trigger is to automate ledger actions that otherwise would require human interaction. This is so that each user can have a central bot to swap / send asset with, and users can receive a starting Example Token automatically. Read more about triggers [here](https://docs.daml.com/triggers/index.html).
+There are 4 triggers we need to start. The purpose of the trigger is to automate ledger actions that otherwise would require human interaction. This is so that each user can have a bot to swap / send asset with, and users can receive a starting Example Token automatically. Read more about triggers [here](https://docs.daml.com/triggers/index.html).
 
 In the above steps, we created a `triggers.dar` file which includes all triggers, however we still need to explicitly run each of them. 
 All triggers will be run by `userAdmin` in Daml hub, but locally, we will just use a string `a` for simplicity sake.
