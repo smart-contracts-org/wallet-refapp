@@ -5,13 +5,13 @@ import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import { AssetAccountRow } from '../components/AssetAccountRow/AssetAccountRow';
 import { Prompt } from '../components/Prompts/Prompt';
-import {  LinearProgress, Typography } from '@mui/material';
+import { LinearProgress, Typography } from '@mui/material';
 import { useGetAllAssetHoldingAccounts } from '../ledgerHooks/ledgerHooks';
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    padding: isMobile() ? theme.spacing(0) : theme.spacing(1), 
+    padding: isMobile() ? theme.spacing(0) : theme.spacing(1),
     overflow: 'hidden'
-  }, 
+  },
   welcome: {
     fontWeight: 'bold'
   }
@@ -23,15 +23,15 @@ export const MyActiveAccountsPage: React.FC = () => {
   const { loading, contracts } = useGetAllAssetHoldingAccounts();
   const assetRows = contracts.map((contract) => <AssetAccountRow
     key={contract.contractId}
-    contractId={contract.contractId} 
-    isFungible={contract.payload.assetType.fungible} 
-    owner={contract.payload.owner} 
-    issuer={contract.payload.assetType.issuer} 
+    contractId={contract.contractId}
+    isFungible={contract.payload.assetType.fungible}
+    owner={contract.payload.owner}
+    issuer={contract.payload.assetType.issuer}
     reference={contract.payload.assetType.reference || ""}
-    ticker={contract.payload.assetType.symbol} 
+    ticker={contract.payload.assetType.symbol}
     isAirdroppable={contract.payload.airdroppable}
     isShareable={contract.payload.resharable}
-    />)
+  />)
 
   if (loading) {
     return (
@@ -42,10 +42,10 @@ export const MyActiveAccountsPage: React.FC = () => {
   }
   return (
     <Box component="main" sx={{ flexGrow: 1, }} className={classes.root}>
-      <Box sx={{margin: isMobile() ? 1: 0}}>
+      <Box sx={{ margin: isMobile() ? 1 : 0 }}>
         <Prompt>
           <Typography color='text.primary' variant='body2'>
-            Assets that you own are shown here. If there is an asset that you would like to own, contact an existing owner and request an invite to the asset account with you.
+            Your Asset Holding Accounts are listed here along with the corresponding balance. If there is an asset that you wish to own, contact an existing Asset Holding Account owner and request an invite to the account.
         </Typography>
         </Prompt>
         {assetRows}
