@@ -49,9 +49,6 @@ export const App: React.FC = () => {
     setIsLoggingIn(isLoggingIn)
   }
 
-    
-
-  
   return (
     <HashRouter>
       <ContractsProvider>

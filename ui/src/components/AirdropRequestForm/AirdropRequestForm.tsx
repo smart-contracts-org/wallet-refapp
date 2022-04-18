@@ -124,11 +124,10 @@ export const AirdropRequestForm: React.FC<SendFormProps> = (props) => {
           <InfoIcon color='primary' sx={{marginRight:1}}/> <Typography variant='body2'><i>Please note</i></Typography>
             </Box>
         <Typography color='text.primary' variant='body2' p={1}>
-          If you have not invited this user as an owner for the AssetHoldingAccount {ticker}, please do so first by going "back" and clicking "Invite". Otherwise the recipient will not be able to accept this asset.
+          By requesting an airdrop, the issuer of this asset will be creating the asset directly in your wallet on behalf of you.
         </Typography>
           <Typography color='text.primary' variant='body2' p={1}>
-            An assetTransferProposal template is created upon clicking send. The recipient will need to accept this request first before the ownership of the asset is transferred.
-             <Link target="_blank" href="https://docs.daml.com/daml/patterns/initaccept.html">here</Link>.
+            An AirdropRequest template is created upon clicking <b>Request</b>, which the issuer will accept. Upon accepting, a new Asset template is generated with your Party ID as the owner.
         </Typography>
         </Card>
         <LoadingButton
@@ -143,7 +142,7 @@ export const AirdropRequestForm: React.FC<SendFormProps> = (props) => {
             marginBottom: 0.5
           }}
         >
-          {isSuccessful ? 'Complete, make another transaction' : 'Request'}
+          {isSuccessful ? 'Complete, make another request' : 'Request'}
         </LoadingButton>
         <Button variant='outlined' onClick={onCancel}>
           {isSuccessful ? 'Back' : 'Back'}
