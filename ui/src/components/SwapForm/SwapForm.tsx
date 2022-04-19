@@ -16,6 +16,7 @@ import { AssetType } from '@daml.js/wallet-refapp/lib/Asset';
 import { SharedSnackbarContext } from '../../context/SharedSnackbarContext';
 import { useAdminParty } from '@daml/hub-react';
 import { deploymentMode, DeploymentMode } from '../../config';
+import InfoIcon from '@mui/icons-material/Info';
 
 interface SwapFormProps {
   symbol: string;
@@ -265,9 +266,16 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
         </FormControl>
 
         <Card elevation={0} variant='outlined' className={classes.helpMessage}>
+        <Box display='flex' alignItems='center' margin={1}>
+          <InfoIcon color='primary' sx={{marginRight:1}}/> <Typography variant='body2'><i>Please note</i></Typography>
+            </Box>
           <Typography color='text.primary' variant='body2' p={1}>
-            You will be proposing to swap your assets for the users assets. Once the recipient accepts, the assets will atomocailly swap ownership. See how to create atomic swaps using Daml <Link href={'#'}>here</Link>
-          </Typography>
+          To execute a swap both parties need to have Asset Holding Accounts for both assets being swapped. For detailed description of a swap workflow, read <Link target="_blank" href="">Atomic Swap Implementation </Link>.
+A swap proposal sent to the Default Party is accepted automatically. The Default Party is a bot implemented using Triggers.          
+</Typography>
+<Typography color='text.primary' variant='body2' p={1}>
+A swap proposal sent to the Default Party is accepted automatically. The Default Party is a bot implemented using <Link target="_blank" href="https://docs.daml.com/triggers/index.html">Triggers</Link>.
+</Typography>
         </Card>
         <LoadingButton
           disabled={recipient.length === 0}

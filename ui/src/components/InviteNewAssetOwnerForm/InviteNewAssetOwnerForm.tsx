@@ -1,6 +1,6 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import { Button, Card, CardContent, FormControl, Typography } from '@mui/material';
+import { Button, Card, CardContent, FormControl, Typography, Link } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { Theme } from '@mui/material/styles';
@@ -95,7 +95,7 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
         <TextField
           margin="dense"
           id="recipient"
-          label="Recipient"
+          label="Recipient Party ID"
           type="text"
           disabled={isSuccessful}
           fullWidth
@@ -111,8 +111,12 @@ export const InviteNewAssetOwnerForm: React.FC<InviteNewAssetOwnerFormProps> = (
         />
         <Card className={classes.helpMessage} elevation={0} variant='outlined'>
         <Typography color='text.primary' variant='body2' p={1}>
-          To be able to send or swap assets with another user, the user must be invited as an Asset Account holder. Upon sending the invitation an AssetHoldingAccountRequest will be created, which the recipient can choose to accept or reject.  
-        </Typography>
+        Here you can invite other users to create an Asset Holding Account for <b>{symbol}</b>, which will allow those users to accept asset transfers from you and to swap their assets with you.
+The creation of Asset Holding Accounts is implemented using the <Link target="_blank" href="https://docs.daml.com/daml/patterns/initaccept.html">Initiate/Accept pattern. </Link>       </Typography>
+
+<Typography color='text.primary' variant='body2' p={1}>
+  An invite sent to the Default Party is accepted automatically. The Default Party is a bot implemented using <Link href="https://docs.daml.com/triggers/index.html" target="blank">Triggers</Link>.
+  </Typography>
       </Card>
         <LoadingButton
         endIcon={isSuccessful  ? <CheckCircleIcon/> : <SendIcon />}
