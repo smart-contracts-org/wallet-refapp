@@ -1,6 +1,6 @@
 import React from 'react';
 import TextField from '@mui/material/TextField';
-import { Box, Button, Card, CardContent, FormControl, LinearProgress, Link, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, FormControl, LinearProgress, Typography } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import SendIcon from '@mui/icons-material/Send';
 import { Theme } from '@mui/material/styles';
@@ -101,17 +101,13 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
     <>
       <FormControl className={classes.root}>
         <Box display='flex'  justifyContent='center'>
-          <Typography color='text.secondary' variant='body2' gutterBottom>
-            Sending
-        </Typography>
-          <Typography marginLeft={1} color='primary' variant='body2'>
-            {ticker || 'No ticker defined'}
-          </Typography>
-          <Typography marginLeft={1} color='text.secondary' variant='body2'>
-            Balance: 
-          </Typography>
-          <Typography marginLeft={1} color='primary' variant='body2'>
+          
+          
+          <Typography marginLeft={1}  variant='h6'>
             {formattedSum || 'undefined'}
+          </Typography>
+          <Typography marginLeft={1}  variant='h6'>
+            {ticker || 'No ticker defined'}
           </Typography>
         </Box>
         <TextField

@@ -28,10 +28,10 @@ export const GettingStartedMessage: React.FC = () => {
             <b>4.</b> Inviting others to become asset holders (so that they can send or swap the newly created tokens with you)
            </Typography>
           <Typography>
-            <b>5.</b>  Sending assets to other users
+            <b>5.</b>  Swapping your newly created asset with the ExampleToken.
            </Typography>
-          <Typography>
-            <b>6.</b>  Swapping your newly created asset with the ExampleToken.
+           <Typography>
+            <b>6.</b>  Sending assets to other users
            </Typography>
         </CardContent>
       </Card>
@@ -103,7 +103,7 @@ export const GettingStartedMessage: React.FC = () => {
             The new asset account will have a starting balance of 0.
             </Typography>
           <Typography>
-            As an issuer, you can issue new amounts into your account. Go to <b>My Asset Accounts</b> and click <b>Issue / Airdrop</b>.
+            As an issuer, you can issue new amounts into your account. Click <b>Issue / Airdrop</b>.
             </Typography>
           <br />
           <Typography>
@@ -125,7 +125,7 @@ export const GettingStartedMessage: React.FC = () => {
             4. Invite New Asset Owner
             </Typography>
           <Typography>
-            Next, we want to send some of our newly issued assets to another user. In order for the recipient to accept your transfers or airdrops, you must invite the recipient as an asset holder for the particular AssetHoldingAccount. 
+            Next, we want to swap some of our newly issued assets with another user (In this example we will use the default party). In order for the recipient to accept your swap request, you must invite the recipient to be an asset holder for the particular asset. 
             </Typography>
           <br />
           <Typography>
@@ -133,11 +133,11 @@ export const GettingStartedMessage: React.FC = () => {
              </Typography>
           <br />
           <Typography>
-            <b>2. </b>Select the asset you want to share, and click <b>Invite new owner</b>.
+            <b>2. </b>Select the asset you want to share, and click <b>Invite</b>.
           </Typography>
           <br/>
           <Typography>
-            <b>3. </b>Specify the Party Id (Or use the default counterparty), and click <b>Invite</b>
+            <b>3. </b>Specify the Party Id (Or use the default party), and click <b>Invite</b>
           </Typography>
           <br />
           <Typography>
@@ -151,40 +151,6 @@ export const GettingStartedMessage: React.FC = () => {
             If later on, you decide that you don't want to share this asset account, you can go to <b>Pending Activities</b> {'>'} <b>Outbound Requests</b> and cancel the invitation, provided that it is hasn't been accepted by the recipient yet.
           </Typography>
 
-        </CardContent>
-      </Card>
-      <Card sx={{ margin: 1 }}>
-        <CardContent>
-          <Typography color='primary' sx={{ fontWeight: 'bold' }} variant='h6'>
-            5. Send
-            </Typography>
-          <Typography>
-            Once the recipient has accepted the AssetHolderAccount invitation you can send the user the asset.          </Typography>
-          <br />
-          <Typography>
-            <b>1. </b>Select the asset that you want to send.
-             </Typography>
-          <br></br>
-          <Typography>
-            <b>2. </b><b>Specify the Party ID and the amount</b>
-          </Typography>
-          <br></br>
-          <Typography>
-            <b>3. </b> Click <b>Send</b>
-          </Typography>
-          <br />
-          <Typography>
-            <i>Important: you can send tokens to anyone, regardless of if they have the assetHoldingAccount. However in order for the recipient to receive the tokens, the user needs to have that asset account</i>
-          </Typography>
-          <br />
-
-          <Typography>
-            The balance for this asset should have decreased by the amount you've sent.
-             </Typography>
-          <br />
-          <Typography>
-            If you decide later on, and assuming the recipient has not accepted the send request, you can cancel it by going to <b>Pending activities</b> {'>'} <b>outbound</b>, and click on the asset that you are sending, and click <b>Cancel</b>.
-             </Typography>
         </CardContent>
       </Card>
       <Card sx={{ margin: 1 }}>
@@ -218,6 +184,41 @@ export const GettingStartedMessage: React.FC = () => {
           <Typography>
             If later you want to change the swap terms, you will need to cancel the swap proposal and create a new one with the new terms.
           </Typography>
+        </CardContent>
+      </Card>
+      <Card sx={{ margin: 1 }}>
+        <CardContent>
+          <Typography color='primary' sx={{ fontWeight: 'bold' }} variant='h6'>
+            6. Send
+            </Typography>
+          <Typography>
+            Ensure the recipient has the Asset Holding Account of the asset you want to send. This must be done by contacting the recipient directly.         
+            
+          </Typography>
+          <br />
+          <Typography>
+            <b>1. </b>Select the asset that you want to send from <b>My Asset Account</b>.
+             </Typography>
+          <br></br>
+          <Typography>
+            <b>2. </b>Specify the Party ID and the amount you want to send
+          </Typography>
+          <br></br>
+          <Typography>
+            <b>3. </b> Click <b>Send</b>
+          </Typography>
+          <br />
+          <Typography>
+            <i>Important: you can send tokens to anyone, regardless of if they have the assetHoldingAccount. However in order for the recipient to receive the tokens, the user needs to have that asset account</i>
+          </Typography>
+          <br />
+          <Typography>
+            The balance for this asset should have decreased by the amount you've sent.
+             </Typography>
+          <br />
+          <Typography>
+            If you decide later on, and assuming the recipient has not accepted the send request, you can cancel it by going to <b>Pending activities</b> {'>'} <b>outbound</b>, and click on the asset that you are sending, and click <b>Cancel</b>.
+             </Typography>
         </CardContent>
       </Card>
 
