@@ -22,7 +22,7 @@ acceptAirdropRequestTrigger = T.Trigger
 
     
     unless ( DA.Foldable.null requests ) do
-       mapA_ (\request ->  T.dedupExercise request Accept_Airdrop) requests
+       mapA_ (\request ->  T.dedupExercise request AirdropRequest_Accept) requests
       
     debug $ "TRIGGERED",
   heartbeat = None

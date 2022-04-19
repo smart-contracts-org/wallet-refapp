@@ -82,7 +82,7 @@ export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
 interface PendingSwapRowProps {
   proposer: string;
   receiver: string;
-  requestedAssetsTxPreApprovalCid:  ContractId<TransferPreApproval>;
+  requestedAssetTxPreApprovalCid:  ContractId<TransferPreApproval>;
   proposerAssetCid: ContractId<AssetInSwap>;
   isInbound: boolean;
   isSwapDetailsPage?: boolean;
@@ -92,14 +92,14 @@ interface PendingSwapRowProps {
 export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
   const { 
     proposerAssetCid, 
-    requestedAssetsTxPreApprovalCid, 
+    requestedAssetTxPreApprovalCid, 
     proposer,
     receiver,
     isInbound,
     tradeCid
   } = props;
   const classes = useNarrowPendingStyles();
-  const transferPreapproval = useGetTransferPreapprovalContractByContractId(requestedAssetsTxPreApprovalCid).contract;
+  const transferPreapproval = useGetTransferPreapprovalContractByContractId(requestedAssetTxPreApprovalCid).contract;
   const proposerAsset = useGetAssetInSwapContractByContractId(proposerAssetCid).contract
   const proposerAssetSymbol = proposerAsset?.payload.asset.assetType?.symbol|| "";
   const proposerAssetAmount = proposerAsset?.payload.asset.amount|| "";
@@ -125,7 +125,7 @@ export const PendingSwapRow: React.FC<PendingSwapRowProps> = (props) => {
   const queriesInput: string[][] = [
     ['proposer', proposer],
     ['receiver', receiver],
-    ['requestedAssetsTxPreApprovalCid', requestedAssetsTxPreApprovalCid],
+    ['requestedAssetTxPreApprovalCid', requestedAssetTxPreApprovalCid],
     ['tradeCid', tradeCid],
     ['isInbound', `${isInbound}`],
     ['templateName', 'swap'],

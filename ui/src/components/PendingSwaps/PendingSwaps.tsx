@@ -21,14 +21,14 @@ export const PendingSwaps: React.FC<PendingActivitiesPageProps> = (props) => {
     const receiver = contract.payload.receiver;
     const tradeCid = contract.contractId;
     const proposerAssetCid = contract.payload.offeredAssetCid as ContractId<AssetInSwap>;
-  
-    const requestedAssetsTxPreApprovalCid = contract.payload.requestedAssetsTxPreApprovalCid;
+    console.log('contract', contract)
+    const requestedAssetTxPreApprovalCid = contract.payload.requestedAssetTxPreApprovalCid;
 
     const pendingSwapRowProps = {
       proposer,
       receiver,
       proposerAssetCid,
-      requestedAssetsTxPreApprovalCid,
+      requestedAssetTxPreApprovalCid,
       isInbound,
       tradeCid
     }

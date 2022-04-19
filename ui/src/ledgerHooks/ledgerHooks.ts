@@ -93,6 +93,7 @@ export const useGetAssetHoldingInviteByContractId = (arg: ContractId<AssetHoldin
 export const useGetAssetTransfers = (isInbound?: boolean) => {
   const myPartyId = useParty();
   const res = useStreamQueries(AssetTransfer, () => [{ recipient: isInbound ? myPartyId : undefined, sender: isInbound ? undefined : myPartyId }]);
+  console.log(res)
   return res
 }
 export const useGetAssetSwapRequests = (isInbound?: boolean) => {
