@@ -481,20 +481,20 @@ trade_test = do
     exerciseCmd issuer_rare_account_cid Invite_New_Asset_Holder with
       recipient = party1
   
-  -- issuer_common_account_proposal_cid <- submit party1 do
-  --   exerciseCmd party1_common_account_cid Invite_New_Asset_Holder with
-  --     recipient = issuer
+  issuer_common_account_proposal_cid <- submit party1 do
+    exerciseCmd party1_common_account_cid Invite_New_Asset_Holder with
+      recipient = issuer
 
   party1_rare_account_cid <- submit party1 do
     exerciseCmd party1_rare_account_proposal_cid AssetHoldingAccountProposal_Accept
 
-  -- issuer_common_account_cid <- submit issuer do
-  --   exerciseCmd issuer_common_account_proposal_cid AssetHoldingAccountProposal_Accept
+  issuer_common_account_cid <- submit issuer do
+    exerciseCmd issuer_common_account_proposal_cid AssetHoldingAccountProposal_Accept
 -- End of invitations
 
  -- Balance before swap
   assertBalance issuer issuer_rare_account_cid 5.0
-  -- assertBalance issuer issuer_common_account_cid 0.0
+  assertBalance issuer issuer_common_account_cid 0.0
 
   assertBalance party1 party1_common_account_cid 20.0
   assertBalance party1 party1_rare_account_cid 0.0
@@ -520,7 +520,7 @@ trade_test = do
 
  -- Balance after swap
   assertBalance issuer issuer_rare_account_cid 2.0
-  -- assertBalance issuer issuer_common_account_cid 13.0
+  assertBalance issuer issuer_common_account_cid 13.0
 
   assertBalance party1 party1_common_account_cid 7.0
   assertBalance party1 party1_rare_account_cid 3.0

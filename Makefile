@@ -10,8 +10,8 @@ build: build-dars
 build-dars:
 	./build.sh
 
-.PHONY: test-dars
-test-dars:
+.PHONY: test
+test:
 	# Remove later
 	cd main/Tests && daml test
 	cd ..
