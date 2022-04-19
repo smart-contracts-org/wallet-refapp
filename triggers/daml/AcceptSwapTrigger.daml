@@ -4,6 +4,7 @@ module AcceptSwapTrigger where
 import qualified Daml.Trigger as T
 import DA.Foldable
 import DA.Action
+import DA.Optional (whenSome)
 import Account 
 import Asset
 
