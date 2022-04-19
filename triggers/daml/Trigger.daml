@@ -28,7 +28,7 @@ autoSendExampleAssetAccountProposal = T.Trigger
     unless ( DA.Foldable.null requests && DA.Foldable.null cids ) do
       case etAccounts of 
         [] -> pure ()
-        (cid, c) :: _ -> mapA_(\request -> T.dedupExercise request Accept with assetHoldingAccount = cid)  requests
+        (cid, c) :: _ -> mapA_(\request -> T.dedupExercise request AssetHoldingAccountRequest_Accept with assetHoldingAccountCid = cid)  requests
       
     debug $ "TRIGGERED",
   heartbeat = None

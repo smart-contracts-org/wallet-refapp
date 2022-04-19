@@ -11,7 +11,7 @@ interface PendingSwapDetailsPageProps {
   tradeCid: ContractId<Trade>;
   receiver: string;
   proposer: string;
-  requestedAssetsTxPreApprovalCid: ContractId<TransferPreApproval>;
+  requestedAssetTxPreApprovalCid: ContractId<TransferPreApproval>;
   proposerAssetCid: ContractId<Asset>;
   isInbound: string;
   proposerAssetSymbol: string;
@@ -33,7 +33,7 @@ export const PendingSwapDetailsPage: React.FC<PendingSwapDetailsPageProps> = (pr
     proposer,
   tradeCid,
   receiver,
-  requestedAssetsTxPreApprovalCid,
+  requestedAssetTxPreApprovalCid,
   proposerAssetCid,
   isInbound,
   proposerAssetSymbol,
@@ -53,7 +53,7 @@ export const PendingSwapDetailsPage: React.FC<PendingSwapDetailsPageProps> = (pr
 
   // TODO not sure if that's the right way
   
-  const transferPreapprovalLoading = useGetTransferPreapprovalContractByContractId(requestedAssetsTxPreApprovalCid).loading;
+  const transferPreapprovalLoading = useGetTransferPreapprovalContractByContractId(requestedAssetTxPreApprovalCid).loading;
   
   
   // This is the receiver assets
@@ -65,7 +65,7 @@ export const PendingSwapDetailsPage: React.FC<PendingSwapDetailsPageProps> = (pr
  }
  const swapProps = {
    tradeCid,
-   requestedAssetsTxPreApprovalCid,
+   requestedAssetTxPreApprovalCid,
    proposer,
    proposerAssetCid,
    receiverAssetSymbol,

@@ -14,7 +14,7 @@ export interface PendingSwapRowProps {
   receiver: string;
   isSwapDetailsPage?: boolean;
   outboundAssetCid?: string;
-  requestedAssetsTxPreApprovalCid?: string;
+  requestedAssetTxPreApprovalCid?: string;
 }
 
 interface PendingSwapRowContentsProps {
