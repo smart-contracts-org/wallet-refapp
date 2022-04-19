@@ -49,7 +49,7 @@ export const SharedSnackbarProvider: React.FC<unknown> = ({ children }) => {
         sx={isMobile() ? { top: { xs: 64, sm: 0 } } : undefined}
 
         open={state.isOpen}
-        autoHideDuration={5000}
+        autoHideDuration={4000}
         onClose={closeSnackbar}
         action={[
 
@@ -57,7 +57,7 @@ export const SharedSnackbarProvider: React.FC<unknown> = ({ children }) => {
       >
         <Alert variant='filled' onClose={closeSnackbar} sx={{ width: '100%', display: 'flex', alignItems: 'center' }} severity={state.severity}>
           <Typography >{state.message}
-            {state.enableViewButton && <Button variant='outlined' size='small' sx={{ textDecoration: 'none', color: 'white', borderColor: 'white', marginLeft: 1 }} component={Link} to={'/pending'}>
+            {state.enableViewButton && <Button onClick={() => closeSnackbar()} variant='outlined' size='small' sx={{ textDecoration: 'none', color: 'white', borderColor: 'white', marginLeft: 1 }} component={Link} to={'/pending'}>
               View
             </Button>}
           </Typography>

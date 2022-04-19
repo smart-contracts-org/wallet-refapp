@@ -14,11 +14,15 @@ export const PendingActivities: React.FC<PendingActivitiesPageProps> = (props) =
 
   return (
     <>
-     <Card  elevation={0} variant='outlined'>
+     { isInbound ? <Card  elevation={0} variant='outlined' sx={{mb: 1}}>
             <Typography color='text.primary' variant='body2' p={1}>
-            Pending inbound / outbound requests for asset transfers, swaps, and asset holding account invitations will be shown here. User action is required. You can either <b>Accept</b>, <b>reject</b>, or <b>cancel</b> (outbound) requests
+            Pending inbound / outbound requests for asset transfers, swaps, and Asset Holding Account invitations are displayed here. Inbound page displays the requests other users send to you, which you can <b>accept</b> or <b>reject</b>.
         </Typography>
-          </Card>
+          </Card> : <Card  elevation={0} variant='outlined' sx={{mb: 1}}>
+            <Typography color='text.primary' variant='body2' p={1}>
+            Outbound page displays the requests you sent to other users. You can cancel an outbound request while it’s pending acceptance or rejection by the recipient.
+        </Typography>
+          </Card>}
     <PendingTransfers isInbound={isInbound}/>
     <PendingAccountInvites isInbound={isInbound}/>
     <PendingSwaps isInbound={isInbound}/>

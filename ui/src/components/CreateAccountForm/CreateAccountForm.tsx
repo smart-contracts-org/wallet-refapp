@@ -106,7 +106,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
         <TextField
           margin="none"
           id="symbol"
-          label="Symbol (Mandatory field)"
+          label="e.g. MoonCoin (Mandatory field)"
           type="text"
           autoComplete='off'
           fullWidth
@@ -122,7 +122,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
         <TextField
           margin="none"
           id="reference"
-          label="Reference (Optional field)"
+          label="Reference (Optional field) e.g. Lucie in the Sky With Diamonds "
           type="text"
           autoComplete='off'
           fullWidth
@@ -141,7 +141,9 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
         <FormGroup>
           <FormControlLabel control={<Switch onChange={(e) => { setShareable(e.target.checked) }} defaultChecked />} label="Reshareable" />
           <Typography variant='caption' color='text.secondary' mb={1}>
-            If activated, any owner can invite other users to become an owner of the asset account as well.
+            If activated, any subsequent owners can invite other users to become an owner of the asset account as well.
+            <br/>
+            If false, only you (the issuer) will be able to decide who to invite as new owners. These owners cannot subsequently invite further users.
           </Typography>
           <FormControlLabel control={<Switch defaultChecked onChange={(e) => { setIsAirdroppable(e.target.checked) }} />} label="Airdroppable" />
           <Typography variant='caption' color='text.secondary' mb={1}>
@@ -149,7 +151,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({ onSubmitSu
           </Typography>
           <FormControlLabel control={<Switch defaultChecked onChange={(e) => { setFungible(e.target.checked) }} />} label="Fungible" />
           <Typography variant='caption' color='text.secondary' mb={1}>
-            If activated, the asset can be divided. Set Fungible to false if you want the asset to be non-fungible, this means the contract cannot be divided, and it's only unit of issuance is 1.
+            If activated, the asset can be divided. If set to false, the asset will be <b>non-fungible</b>, meaning you will only be able issue a quantity of 1; The asset contract is a unique contract that cannot be split.
           </Typography>
         </FormGroup>
       </FormControl>

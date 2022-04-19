@@ -94,7 +94,7 @@ export const AssetAccountRow: React.FC<AssetAccountRowProps> = ({reference, cont
             {!isMobile() &&<Button sx={{marginRight:1}} component={Link} to={swapPath}  variant='outlined' size="small"
             >Swap</Button>}
             {!isMobile() &&<Button className={classes.buttonText} sx={{marginRight:1}} variant='outlined' component={Link} to={assetInvitePath}  size="small"
-            >Invite New Asset Owner</Button>}
+            >Invite</Button>}
           </Box>
           </CardContent>
         </CardActionArea>
