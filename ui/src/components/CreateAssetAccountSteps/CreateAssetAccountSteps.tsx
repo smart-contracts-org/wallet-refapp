@@ -1,27 +1,28 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import Typography from '@mui/material/Typography';
-import { CreateAccountForm } from '../CreateAccountForm/CreateAccountForm';
-import { isMobile } from '../../platform/platform';
-import { Card, CardContent, Paper } from '@mui/material';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
+import Typography from "@mui/material/Typography";
+import { CreateAccountForm } from "../CreateAccountForm/CreateAccountForm";
+import { isMobile } from "../../platform/platform";
+import { Card, CardContent, Paper } from "@mui/material";
 
-
-const steps = ['Create Asset Account', 'Issue Assets'];
+const steps = ["Create Asset Account", "Issue Assets"];
 
 export const CreateAssetAccountSteps: React.FC = () => {
-
   const isStepFailed = (step: number) => {
     return false;
   };
 
   return (
-    <Box sx={{ maxWidth: '600px' }}>
-      <Stepper alternativeLabel={isMobile()} activeStep={0} sx={{ paddingTop: 2, paddingBottom: 2 }}>
+    <Box sx={{ maxWidth: "600px" }}>
+      <Stepper
+        alternativeLabel={isMobile()}
+        activeStep={0}
+        sx={{ paddingTop: 2, paddingBottom: 2 }}
+      >
         {steps.map((label, index) => {
-
           const labelProps: {
             optional?: React.ReactNode;
             error?: boolean;
@@ -42,15 +43,12 @@ export const CreateAssetAccountSteps: React.FC = () => {
         })}
       </Stepper>
       <Paper>
-
         <Card>
           <CardContent>
             <CreateAccountForm />
           </CardContent>
         </Card>
-
-
       </Paper>
     </Box>
   );
-}
+};

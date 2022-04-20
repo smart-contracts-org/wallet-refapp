@@ -1,17 +1,17 @@
-import { Box } from '@mui/material';
-import React from 'react';
+import { Box } from "@mui/material";
+import React from "react";
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
 }
 
-export const a11yProps =(index: number) => {
+export const a11yProps = (index: number) => {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   };
-}
+};
 
 export const TabPanel: React.FC<TabPanelProps> = (props: TabPanelProps) => {
   const { children, value, index, ...other } = props;
@@ -31,5 +31,4 @@ export const TabPanel: React.FC<TabPanelProps> = (props: TabPanelProps) => {
       )}
     </div>
   );
-}
-
+};
