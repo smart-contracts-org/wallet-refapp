@@ -143,17 +143,11 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
   return (
     <Box display='flex' flexDirection='column'>
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} >
-        <Typography color='text.secondary' variant='body2' marginRight={1} gutterBottom>
-          Swapping
-        </Typography>
-        <Typography color='primary' variant='body2' gutterBottom>
-          {symbol}
-        </Typography>
-        <Typography sx={{marginLeft: 1}} color='text.secondary' variant='body2' marginRight={1} gutterBottom>
-          Balance
-        </Typography>
-        <Typography color='primary' variant='body2' gutterBottom>
+      <Typography sx={{ml:1}} variant='h6' gutterBottom>
           {totalBalance}
+        </Typography>
+        <Typography sx={{ml:1}} variant='h6' gutterBottom>
+          {symbol}
         </Typography>
       </Box>
 
