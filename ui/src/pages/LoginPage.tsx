@@ -18,7 +18,8 @@ import { User } from '@daml.js/user/lib/User/module';
 
 type Props = {
   onLogin: (credentials: Credentials) => void;
-  setIsLoggingIn: (isLoggingIn: boolean) => void;
+  setIsLoggingIn?: (isLoggingIn: boolean) => void;
+  isLoggingIn?: boolean
 }
 
 /**
@@ -49,7 +50,7 @@ type Props = {
   },
 }))
 
-export const LoginPage: React.FC<Props> = ({onLogin, setIsLoggingIn}) => {
+export const LoginPage: React.FC<Props> = ({onLogin, setIsLoggingIn, isLoggingIn}) => {
   console.log('LOGIN PAGE Rendered')
   const classes = useStyles();
   const prodAdminParty = useAdminParty();
@@ -74,10 +75,10 @@ export const LoginPage: React.FC<Props> = ({onLogin, setIsLoggingIn}) => {
       }
       console.log('CREDENTIAL SET')
       onLogin(credentials);
-      setIsLoggingIn(false);
+      setIsLoggingIn && setIsLoggingIn(false);
     } catch(error) {
       alert(`Unknown error:\n${JSON.stringify(error)}`);
-      setIsLoggingIn(false);
+      setIsLoggingIn && setIsLoggingIn(false);
     }
   }, [onLogin]);
 
@@ -137,7 +138,14 @@ export const LoginPage: React.FC<Props> = ({onLogin, setIsLoggingIn}) => {
         options={{
           method: {
             button: {
-              render: () => <Button onClick={() => {setIsLoggingIn(true)}} sx={{margin: 1}} variant='contained' fullWidth></Button>,
+              render: () => <LoadingButton 
+              onClick={() => {setIsLoggingIn && setIsLoggingIn(true)}} 
+              loading={isLoggingIn}
+
+              loadingPosition="end"
+              sx={{margin: 1}} variant='contained' fullWidth>
+                
+              </LoadingButton>,
             },
           },
         }}

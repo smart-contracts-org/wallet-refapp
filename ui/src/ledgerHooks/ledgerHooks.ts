@@ -4,11 +4,8 @@ import { Choice, ContractId } from '@daml/types';
 import { ActionType } from '../pages/PendingAssetInviteDetailsPage';
 import { makeDamlSet } from '../utils/common';
 import { AssetHoldingAccount, AssetHoldingAccountProposal, AssetInSwap, Trade, TransferPreApproval, AssetHoldingAccountCloseProposal, AirdropRequest } from '@daml.js/account/lib/Account/';
-import { AssetTransfer, Asset, Reject_Transfer, Accept_Transfer, Cancel_Transfer} from '@daml.js/asset/lib/Asset/';
+import { AssetTransfer, Asset, Reject_Transfer, Accept_Transfer, Cancel_Transfer, AssetType} from '@daml.js/asset/lib/Asset/';
 import { Archive } from '@asset.js/d14e08374fc7197d6a0de468c968ae8ba3aadbf9315476fd39071831f5923662/lib/DA/Internal/Template';
-
-
-
 
 export const useGetAllAssetHoldingAccounts = () => {
   const myPartyId = useParty();
@@ -73,12 +70,7 @@ export const useGetTransferPreapprovalContractByContractId = (contractId: Contra
   const contract = useFetch(TransferPreApproval, contractId)
   return contract
 }
-export interface AssetType {
-  issuer: string;
-  symbol: string;
-  fungible: boolean;
-  reference: string;
-}
+
 export const useGetMyAssetAccountByKey = (assetType: AssetType) => {
   const myPartyId = useParty();
   const contract = useFetchByKey(AssetHoldingAccount, () => ({ _1: assetType, _2: myPartyId }), []);
@@ -92,8 +84,8 @@ export const useGetAssetHoldingInviteByContractId = (arg: ContractId<AssetHoldin
 
 export const useGetAssetTransfers = (isInbound?: boolean) => {
   const myPartyId = useParty();
-  const res = useStreamQueries(AssetTransfer, () => [{ recipient: isInbound ? myPartyId : undefined, sender: isInbound ? undefined : myPartyId }]);
-  console.log(res)
+  const res = useStreamQueries(AssetTransfer, () => [{ recipient: isInbound ? myPartyId : undefined, asset: {owner: isInbound ? undefined : myPartyId} }]);
+  console.log('res', res)
   return res
 }
 export const useGetAssetSwapRequests = (isInbound?: boolean) => {
@@ -216,10 +208,6 @@ export const useLedgerHooks = () => {
 
       })
 
-      // const result = await ledger.exercise(AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
-      //   recipient
-      // });
-
       return { isOk: true, payload: result }
 
     } catch (e) {
@@ -244,10 +232,6 @@ export const useLedgerHooks = () => {
       const result = await ledger.exerciseByKey(AssetHoldingAccount.Merge_Split, { _1: { issuer: outIssuer, symbol: outSymbol, reference: outReference, fungible: outFungible }, _2: party }, {
         assetCids: assetCids, outputAmounts: [outputAmount],
       })
-
-      // const result = await ledger.exercise(AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
-      //   recipient
-      // });
 
       return { isOk: true, payload: result }
 
@@ -284,13 +268,7 @@ export const useLedgerHooks = () => {
           observers: makeDamlSet<string>([])
         }
       })
-
-      // const result = await ledger.exercise(AssetHoldingAccount.Invite_New_Asset_Holder, assetAccountCid, {
-      //   recipient
-      // });
-
       return { isOk: true, payload: result }
-
     } catch (e) {
       return { isOk: false, payload: e }
 
