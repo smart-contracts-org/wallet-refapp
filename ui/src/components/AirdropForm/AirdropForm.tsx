@@ -1,12 +1,12 @@
-import React from 'react';
-import TextField from '@mui/material/TextField';
-import { Box, CardContent, Card, FormControl, Typography } from '@mui/material';
-import LoadingButton from '@mui/lab/LoadingButton';
-import { Theme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
-import { AirdropInvites } from '../AirdropInvites/AirdropInvites';
-import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
-import { SharedSnackbarContext } from '../../context/SharedSnackbarContext';
+import React from "react";
+import TextField from "@mui/material/TextField";
+import { Box, CardContent, Card, FormControl, Typography } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
+import { AirdropInvites } from "../AirdropInvites/AirdropInvites";
+import { useLedgerHooks } from "../../ledgerHooks/ledgerHooks";
+import { SharedSnackbarContext } from "../../context/SharedSnackbarContext";
 
 interface AirdropFormProps {
   symbol: string;
@@ -18,13 +18,11 @@ interface AirdropFormProps {
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'start'
-  }
-}))
-
-
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "start",
+  },
+}));
 
 export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
   const { issuer, owner, symbol, isFungible, reference } = props;
@@ -33,35 +31,42 @@ export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
   const [isLoading, setLoading] = React.useState<boolean>(false);
   const [isSuccessful, setSuccessful] = React.useState<boolean>(false);
   const ledgerHooks = useLedgerHooks();
-  const { openSnackbar } = React.useContext(SharedSnackbarContext)
+  const { openSnackbar } = React.useContext(SharedSnackbarContext);
 
   const onReset = () => {
     setRecipient("");
-    setLoading(false)
-    setError(false)
-    setSuccessful(false)
-
-  }
+    setLoading(false);
+    setError(false);
+    setSuccessful(false);
+  };
 
   const onSubmit = async () => {
     setLoading(true);
-    const result = await ledgerHooks.inviteNewAssetHolder({ recipient, owner, assetType: { issuer, reference: reference || "", fungible: isFungible, symbol } })
+    const result = await ledgerHooks.inviteNewAssetHolder({
+      recipient,
+      owner,
+      assetType: {
+        issuer,
+        reference: reference || "",
+        fungible: isFungible,
+        symbol,
+      },
+    });
     if (result.isOk) {
       setLoading(false);
       setSuccessful(true);
       setError(false);
-      openSnackbar(`Invitiation sent to ${recipient}`, 'success')
+      openSnackbar(`Invitiation sent to ${recipient}`, "success");
       onReset();
     } else {
-      setLoading(false)
-      setError(true)
+      setLoading(false);
+      setError(true);
       setSuccessful(false);
     }
-
-  }
+  };
 
   const handleKeyboardEvent = (e: React.KeyboardEvent<HTMLImageElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       onSubmit();
     }
   };
@@ -69,9 +74,17 @@ export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
   const classes = useStyles();
   return (
     <>
-      <Card className={classes.root} elevation={0} variant='outlined' sx={{ marginBottom: 1 }}>
-        <Typography color='text.primary' variant='body2' p={1}>
-          To airdrop assets, recipients must first give you permission to create assets on their behalf. The invitation form below allows you to send a request to airdrop. Once the recipient accepts, then you can airdrop assets to the recipients by clicking <b>send</b>
+      <Card
+        className={classes.root}
+        elevation={0}
+        variant="outlined"
+        sx={{ marginBottom: 1 }}
+      >
+        <Typography color="text.primary" variant="body2" p={1}>
+          To airdrop assets, recipients must first give you permission to create
+          assets on their behalf. The invitation form below allows you to send a
+          request to airdrop. Once the recipient accepts, then you can airdrop
+          assets to the recipients by clicking <b>send</b>
         </Typography>
       </Card>
       <FormControl error={hasError} className={classes.root}>
@@ -85,16 +98,15 @@ export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
             value={recipient}
             variant="outlined"
             onKeyDown={handleKeyboardEvent}
-            size='small'
+            size="small"
             disabled={isLoading}
-            autoComplete='off'
+            autoComplete="off"
             sx={{ marginRight: 1 }}
             onChange={(e) => setRecipient(e.currentTarget.value)}
-
           />
-          <Typography variant='caption' color='text.secondary'>
+          <Typography variant="caption" color="text.secondary">
             Input party ID of the user you want to invite to airdrop.
-        </Typography>
+          </Typography>
         </Box>
         <LoadingButton
           disabled={recipient.length === 0}
@@ -103,14 +115,21 @@ export const AirdropForm: React.FC<AirdropFormProps> = (props) => {
           variant="outlined"
           onClick={onSubmit}
         >
-          {isSuccessful ? 'Send' : 'Send'}
+          {isSuccessful ? "Send" : "Send"}
         </LoadingButton>
       </FormControl>
-      {hasError && <Card sx={{ margin: 1, width: '100%' }} ><CardContent><Typography>
-        An error was encountered, please try again.
-        </Typography>
-      </CardContent></Card>}
-      <AirdropInvites symbol={symbol} isFungible={isFungible} reference={reference} />
+      {hasError && (
+        <Card sx={{ margin: 1, width: "100%" }}>
+          <CardContent>
+            <Typography>An error was encountered, please try again.</Typography>
+          </CardContent>
+        </Card>
+      )}
+      <AirdropInvites
+        symbol={symbol}
+        isFungible={isFungible}
+        reference={reference}
+      />
     </>
   );
-}
+};
