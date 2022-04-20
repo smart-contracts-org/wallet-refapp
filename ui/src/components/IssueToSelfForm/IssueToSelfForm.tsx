@@ -77,25 +77,16 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
     <>
       { (
         <><FormControl fullWidth>
-          <Card className={classes.root} elevation={0} variant='outlined'>
-            <Typography color='text.primary' variant='body2' p={1}>
+          <Card className={classes.root} elevation={0} variant='outlined' >
+            <Typography color='text.primary' variant='body2' p={1} >
               The assets will be created directly in your wallet with the attributes you previously defined when creating the Asset Holding Account.
         </Typography>
           </Card>
           <TextField
-            margin="dense"
-            id="symbol"
-            label={`${ticker}`}
-            type="text"
-            fullWidth
-            variant="outlined"
-            disabled
-            size='small'
-          />
-          <TextField
+          sx={{mt:1, mb:1}}
             margin="none"
-            id="quantity"
-            label="Quantity"
+            id="amount"
+            label="Amount"
             type="number"
             value={amount}
             fullWidth

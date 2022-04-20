@@ -101,9 +101,7 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
     <>
       <FormControl className={classes.root}>
         <Box display='flex'  justifyContent='center'>
-          
-          
-          <Typography marginLeft={1}  variant='h6'>
+          <Typography   variant='h6'>
             {formattedSum || 'undefined'}
           </Typography>
           <Typography marginLeft={1}  variant='h6'>

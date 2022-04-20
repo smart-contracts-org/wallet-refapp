@@ -82,7 +82,7 @@ daml trigger --dar .daml/dist/triggers-0.0.1.dar \
 ```
 The purpose of this trigger is to send an `ExampleToken` Asset Holding Account invitation for new users
 
-2. start the `AcceptAirdropRequestTrigger` trigger from root directory
+2. start the `AcceptAirdropRequestTrigger` trigger from trigger directory
 ```
 daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --trigger-name AcceptAirdropRequestTrigger:acceptAirdropRequestTrigger \
@@ -91,7 +91,7 @@ daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --ledger-party "a"
 
 ```
-3. start the `AcceptAssetInviteTrigger` trigger from root directory
+3. start the `AcceptAssetInviteTrigger` trigger from trigger directory
 ```
 daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --trigger-name AcceptAssetInviteTrigger:acceptAssetInviteTrigger \
@@ -100,7 +100,7 @@ daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --ledger-party "a"
 
 ```
-4. start the `AcceptSwapTrigger` trigger from root directory
+4. start the `AcceptSwapTrigger` trigger from trigger directory
 ```
 daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --trigger-name AcceptSwapTrigger:acceptSwapTrigger \

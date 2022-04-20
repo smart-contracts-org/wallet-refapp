@@ -8,6 +8,9 @@ import { AirdropForm } from '../components/AirdropForm/AirdropForm';
 import Fab from '@mui/material/Fab';
 import { isMobile } from '../platform/platform';
 import { useQuery } from './PendingActivityDetailsPage/PendingActivityDetailsPage';
+import { numberWithCommas } from '../utils/numberWithCommas';
+import { useGetMyOwnedAssetsByAssetType } from '../ledgerHooks/ledgerHooks';
+import { getAssetSum } from '../utils/getAssetSum';
 
 export const enableFabBack = true
 
@@ -21,7 +24,11 @@ export const IssueAirdropPage: React.FC = () => {
   const owner = query.get('owner') || ""
   const reference = query.get('reference') || ""
   const isFungible = query.get('isFungible') === 'true'
-  
+  const { loading, contracts } = useGetMyOwnedAssetsByAssetType({ issuer, symbol, isFungible: isFungible, owner, reference});
+  const assetSum = getAssetSum(contracts);
+
+  const formattedSum = numberWithCommas(assetSum)
+
   const classes = usePageStyles();
   const [index, setIndex] = React.useState(1)
   const onBack = () => {
@@ -63,6 +70,14 @@ export const IssueAirdropPage: React.FC = () => {
             <Avatar className={classes.avatar}>
               {symbol[0] || 'undefined'}
             </Avatar>
+            <Box display='flex'  justifyContent='center'>
+          <Typography   variant='h6'>
+            {formattedSum || 'undefined'}
+          </Typography>
+          <Typography marginLeft={1}  variant='h6'>
+            {symbol || 'No ticker defined'}
+          </Typography>
+        </Box>
             <Box sx={{ marginTop: 1, marginBottom: 3, display: 'flex', flexDirection: 'row', width: '100%' }}>
               <Button sx={{ marginRight: 0.5 }} onClick={() => { onButtonClick(1) }} fullWidth variant={index === 1 ? 'contained' : 'outlined'} >Issue to Self</Button>
               <Button sx={{ marginLeft: 0.5 }} onClick={() => { onButtonClick(2) }} fullWidth variant={index === 2 ? 'contained' : 'outlined'}>Airdrop</Button>
