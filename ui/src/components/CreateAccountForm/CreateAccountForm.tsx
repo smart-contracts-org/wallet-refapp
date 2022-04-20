@@ -143,7 +143,7 @@ export const CreateAccountForm: React.FC<CreateAccountFormProps> = ({
             <TextField
               margin="none"
               id="reference"
-              label="Reference (Optional field) e.g. Lucie in the Sky With Diamonds "
+              label="Reference (Optional field) e.g. Limited Edition version 1 "
               type="text"
               autoComplete="off"
               fullWidth
