@@ -1,5 +1,5 @@
 import TextField from '@mui/material/TextField';
-import { AlertColor, Button, Card, CardContent, FormControl, Typography } from '@mui/material';
+import {Box, AlertColor, Button, Card, CardContent, FormControl, Typography } from '@mui/material';
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import React, { useContext } from 'react';
@@ -7,6 +7,7 @@ import { LoadingButton } from '@mui/lab';
 import { useLedgerHooks } from '../../ledgerHooks/ledgerHooks';
 import { useNavigate } from 'react-router';
 import { SharedSnackbarContext } from '../../context/SharedSnackbarContext';
+import InfoIcon from '@mui/icons-material/Info';
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -36,7 +37,7 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
   }
   const [hasError, setError] = React.useState<boolean>(false);
   const [isLoading, setLoading] = React.useState<boolean>(false);
-  const [amount, setAmount] = React.useState<string>('');
+  const [amount, setAmount] = React.useState<string>(!isFungible ? '1':'');
   const [isIssueToSelfSuccess, setIsIssueToSelfSuccess] = React.useState(false);
 
   const onIssue = async () => {
@@ -88,11 +89,11 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
             id="amount"
             label="Amount"
             type="number"
-            value={amount}
+            value={isFungible? amount : "1"}
             fullWidth
             onKeyDown={handleKeyboardEvent}
             variant="outlined"
-            disabled={isIssueToSelfSuccess}
+            disabled={isIssueToSelfSuccess || !isFungible}
             size='small'
             onChange={(e) => { onChange(e) }}
             inputProps={{
@@ -101,9 +102,17 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
               pattern: "[0-9]*"
             }}
           />
-          <Typography variant='caption' color='text.secondary'>
+          <Typography variant='caption' color='text.secondary' sx={{mb:1}}>
             Specify the quanity you would like to issue to wallet.
         </Typography>
+        {!isFungible && <Card  className={classes.root} elevation={0} variant='outlined' >
+        <Box display='flex' alignItems='center' margin={1}>
+          <InfoIcon color='primary' sx={{marginRight:1}}/> <Typography variant='body2'><i>Please note</i></Typography>
+            </Box>
+            <Typography color='text.secondary' variant='body2' p={1} >
+              Since this is a non-fungible token, you are limited to issuing the asset 1 contract at a time. Each contract is unique and cannot be split or merged.
+        </Typography>
+          </Card>}
         </FormControl>
 
           <LoadingButton
@@ -112,7 +121,8 @@ export const IssueToSelfForm: React.FC<IssueToSelfFormProps> = (props) => {
             variant="outlined"
             onClick={isIssueToSelfSuccess ? onReset : onIssue}
             sx={{
-              marginBottom: 0.5
+              mb: 1,
+              mt:1
             }}
           >
             {isIssueToSelfSuccess ?"Issue Again" : "Issue"}

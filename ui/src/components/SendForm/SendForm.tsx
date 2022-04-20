@@ -11,7 +11,6 @@ import { useGetMyOwnedAssetsByAssetType, useLedgerHooks } from '../../ledgerHook
 import { ContractId } from '@daml/types';
 import { AssetHoldingAccount } from '@daml.js/wallet-refapp/lib/Account';
 import { SharedSnackbarContext } from '../../context/SharedSnackbarContext';
-
 import { getAssetSum } from '../../utils/getAssetSum';
 import { numberWithCommas } from '../../utils/numberWithCommas';
 import InfoIcon from '@mui/icons-material/Info';
@@ -112,7 +111,6 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
           disabled={isLoading || isSuccessful}
           margin="normal"
           onKeyDown={handleKeyboardEvent}
-
           id="recipient"
           label="Recipient's Party ID"
           type="text"
@@ -123,8 +121,6 @@ export const SendForm: React.FC<SendFormProps> = (props) => {
           size='small'
           onChange={(e) => setRecipient(e.currentTarget.value)}
         />
-          
-        
         <TextField
           disabled={isLoading || isSuccessful}
           margin="none"
