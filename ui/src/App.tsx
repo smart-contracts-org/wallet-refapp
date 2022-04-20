@@ -2,13 +2,9 @@ import { Box, CssBaseline, LinearProgress, Toolbar } from '@mui/material';
 import React from 'react'
 import { SideMenu } from './components/SideMenu/SideMenu';
 import { TopAppBar } from './components/TopAppBar/TopAppBar';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {  ThemeProvider } from '@mui/material/styles';
 import {  HashRouter } from "react-router-dom";
 import { Pages } from './pages/Pages';
-
-
-
-import { ContractsProvider } from './providers/ContractsProvider';
 import { isMobile } from './platform/platform';
 import { SideMenuMobile } from './components/SideMenuMobile.tsx/SideMenuMobile';
 import DamlLedger from '@daml/react';
@@ -18,13 +14,7 @@ import { LoginPage } from './pages/LoginPage';
 import { RightDrawer } from './components/RightDrawer/RightDrawer';
 import { damlHubLogout } from '@daml/hub-react';
 import { SharedSnackbarProvider } from './context/SharedSnackbarContext';
-
-
-const theme = createTheme({
-  palette: {
-    mode: 'dark'
-  }
-});
+import { theme } from './Theme';
 
 export const App: React.FC = () => {
   const [isOpen, setOpen] = React.useState(false);
@@ -37,7 +27,6 @@ export const App: React.FC = () => {
   const toggleRightOpen = () => {
     setRightOpen(!isRightOpen);
   }
-
   const onLogout = () => {
     damlHubLogout()
     setCredentials(undefined)
@@ -51,16 +40,14 @@ export const App: React.FC = () => {
 
   return (
     <HashRouter>
-      <ContractsProvider>
         <ThemeProvider theme={theme}>
           <CssBaseline/>
           <TopAppBar party={credentials?.party} onLogout={ onLogout} isOpen={isOpen} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} />
           <SharedSnackbarProvider>
-
           <Toolbar/>
           {isLoggingIn && <LinearProgress sx={{width: '100%'}}/>}
           {
-           (credentials) ? 
+           credentials ? 
               <DamlLedger
                 token={credentials?.token}
                 party={credentials?.party}
@@ -78,12 +65,11 @@ export const App: React.FC = () => {
                 </Box>
               </DamlLedger>
              : 
-             <LoginPage setIsLoggingIn={handleIsLoggingIn} onLogin={setCredentials}/>
+             <LoginPage isLoggingIn={isLoggingIn} setIsLoggingIn={handleIsLoggingIn} onLogin={setCredentials}/>
           }
           <Box paddingBottom={10}/>
           </SharedSnackbarProvider>
         </ThemeProvider>
-      </ContractsProvider>
     </HashRouter>
 
   );

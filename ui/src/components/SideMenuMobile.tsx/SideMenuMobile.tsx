@@ -6,7 +6,6 @@ import { Link, useLocation } from "react-router-dom";
 import { Theme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
-
 import ListItemText from '@mui/material/ListItemText';
 import { Divider, ListItemButton, Typography, Link as LinkBtn } from '@mui/material';
 import { menuItems } from '../../configs/sideMenu.config';

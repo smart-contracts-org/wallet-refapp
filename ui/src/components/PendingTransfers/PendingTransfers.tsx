@@ -9,8 +9,10 @@ interface PendingTransfersProps {
 
 export const PendingTransfers: React.FC<PendingTransfersProps> = (props) => {
   const {isInbound} = props;
+  console.log('isinbond', isInbound)
   const {loading, contracts} = useGetAssetTransfers(isInbound);
   console.log(loading, contracts)
+  
   if(loading){
     return <LinearProgress sx={{width: '100%'}}/>
   }
