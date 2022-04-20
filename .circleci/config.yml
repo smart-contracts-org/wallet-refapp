@@ -60,5 +60,5 @@ workflows:
   test:
     jobs:
       - daml_test:
-          daml_sdk_version: "1.18.1"
+          daml_sdk_version: "2.1.0"
           context: walletRefApp
