@@ -1,8 +1,8 @@
-import React from 'react';
-import Typography from '@mui/material/Typography';
-import clx from 'clsx'
-import { Divider } from '@mui/material';
-import { useNarrowPendingStyles } from '../PendingStyles/PendingStyles';
+import React from "react";
+import Typography from "@mui/material/Typography";
+import clx from "clsx";
+import { Divider } from "@mui/material";
+import { useNarrowPendingStyles } from "../PendingStyles/PendingStyles";
 
 export interface PendingSwapRowProps {
   inboundTicker: string;
@@ -28,7 +28,9 @@ interface PendingSwapRowContentsProps {
   isInbound: boolean;
 }
 
-export const PendingSwapRowContents: React.FC<PendingSwapRowContentsProps> = (props) => {
+export const PendingSwapRowContents: React.FC<PendingSwapRowContentsProps> = (
+  props
+) => {
   const {
     proposer,
     receiver,
@@ -37,89 +39,140 @@ export const PendingSwapRowContents: React.FC<PendingSwapRowContentsProps> = (pr
     receiverAssetAmount,
     receiverAssetSymbol,
     isSwapDetailsPage,
-    isInbound
-
-  } = props
+    isInbound,
+  } = props;
   const classes = useNarrowPendingStyles();
   const inboundMessage = (
     <>
       <div>
         <div className={classes.divider} />
-        {!isSwapDetailsPage && <Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
-          { proposer}
-        </Typography>}
+        {!isSwapDetailsPage && (
+          <Typography
+            variant="body2"
+            className={clx(classes.text, classes.sender)}
+            color="text.secondary"
+          >
+            {proposer}
+          </Typography>
+        )}
         <Divider className={classes.divider} />
-        <Typography variant='body2' color='text.secondary' className={classes.text} >
-          {!isSwapDetailsPage ? 'wants to swap' : 'swapping'}
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          className={classes.text}
+        >
+          {!isSwapDetailsPage ? "wants to swap" : "swapping"}
         </Typography>
         <Divider className={classes.divider} />
 
         <div className={classes.inboundForOutboundContainer}>
-          <Typography variant='body2' className={clx(classes.text, classes.inboundQuantity)} color="text.secondary"  >
+          <Typography
+            variant="body2"
+            className={clx(classes.text, classes.inboundQuantity)}
+            color="text.secondary"
+          >
             {proposerAssetAmount}
           </Typography>
-          <Typography variant='body2' className={clx(classes.text, classes.inboundTicker)} color="text.secondary" >
+          <Typography
+            variant="body2"
+            className={clx(classes.text, classes.inboundTicker)}
+            color="text.secondary"
+          >
             {proposerAssetSymbol}
           </Typography>
-          <Typography variant='body2' color='text.secondary' className={classes.text} >
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            className={classes.text}
+          >
             for
           </Typography>
-          <Typography variant='body2' className={clx(classes.text, classes.outboundQuantity)} color="text.secondary"  >
+          <Typography
+            variant="body2"
+            className={clx(classes.text, classes.outboundQuantity)}
+            color="text.secondary"
+          >
             {receiverAssetAmount}
           </Typography>
-          <Typography variant='body2' className={clx(classes.text)} color="primary" >
+          <Typography
+            variant="body2"
+            className={clx(classes.text)}
+            color="primary"
+          >
             {receiverAssetSymbol}
           </Typography>
-
         </div>
         <div className={classes.divider} />
-
       </div>
     </>
-  )
+  );
 
   const outboundMessage = (
     <>
       <div>
         <div className={classes.divider} />
-        <Typography variant='body2' color='text.secondary' className={classes.text} >
-          {isSwapDetailsPage ? 'swapping' : 'you want to swap with'}
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          className={classes.text}
+        >
+          {isSwapDetailsPage ? "swapping" : "you want to swap with"}
         </Typography>
         <Divider className={classes.divider} />
-        {!isSwapDetailsPage && <><Typography variant='body2' className={clx(classes.text, classes.sender)} color="text.secondary" >
-          {receiver}
-        </Typography>
-          <Divider className={classes.divider} /></>}
+        {!isSwapDetailsPage && (
+          <>
+            <Typography
+              variant="body2"
+              className={clx(classes.text, classes.sender)}
+              color="text.secondary"
+            >
+              {receiver}
+            </Typography>
+            <Divider className={classes.divider} />
+          </>
+        )}
 
         <div className={classes.inboundForOutboundContainer}>
-          <Typography variant='body2' className={clx(classes.text, classes.outboundQuantity)} color="text.secondary"  >
+          <Typography
+            variant="body2"
+            className={clx(classes.text, classes.outboundQuantity)}
+            color="text.secondary"
+          >
             {proposerAssetAmount}
           </Typography>
-          <Typography variant='body2' className={clx(classes.text)} color="primary" >
+          <Typography
+            variant="body2"
+            className={clx(classes.text)}
+            color="primary"
+          >
             {proposerAssetSymbol}
           </Typography>
-          <Typography variant='body2' color='text.secondary' className={classes.text} >
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            className={classes.text}
+          >
             for
           </Typography>
-          <Typography variant='body2' className={clx(classes.text, classes.inboundQuantity)} color="text.secondary"  >
+          <Typography
+            variant="body2"
+            className={clx(classes.text, classes.inboundQuantity)}
+            color="text.secondary"
+          >
             {receiverAssetAmount}
           </Typography>
-          <Typography variant='body2' className={clx(classes.text, classes.inboundTicker)} color="text.secondary" >
+          <Typography
+            variant="body2"
+            className={clx(classes.text, classes.inboundTicker)}
+            color="text.secondary"
+          >
             {receiverAssetSymbol}
           </Typography>
         </div>
         <div className={classes.divider} />
-
       </div>
     </>
-  )
-
-  return (
-    <>
-
-      {isInbound ? inboundMessage : outboundMessage}
-
-
-    </>
   );
-}
+
+  return <>{isInbound ? inboundMessage : outboundMessage}</>;
+};

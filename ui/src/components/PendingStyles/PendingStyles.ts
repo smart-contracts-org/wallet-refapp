@@ -1,70 +1,70 @@
-import { Theme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
+import { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 
 export const useNarrowPendingStyles = makeStyles((theme: Theme) => ({
   card: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
     marginBottom: theme.spacing(1),
   },
   textContainer: {
-    display: 'flex',
-    flexDirection: 'column',
+    display: "flex",
+    flexDirection: "column",
   },
   actions: {
-    marginLeft: 'auto',
-    marginRight: theme.spacing(1)
+    marginLeft: "auto",
+    marginRight: theme.spacing(1),
   },
   button: {
     marginBottom: theme.spacing(0.5),
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(1),
   },
   quantity: {
-    backgroundColor: 'green'
+    backgroundColor: "green",
   },
   text: {
     marginLeft: theme.spacing(0.5),
-    marginRight: theme.spacing(0.5)
+    marginRight: theme.spacing(0.5),
   },
   sender: {
     color: theme.palette.text.primary,
   },
   assetName: {
-    color: theme.palette.primary.main
+    color: theme.palette.primary.main,
   },
   symbolTextContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center'
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
   moreButton: {
-    marginLeft: 'auto',
+    marginLeft: "auto",
   },
   marginTop: {
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   inboundTicker: {
-    color: theme.palette.primary.main
+    color: theme.palette.primary.main,
   },
   inboundQuantity: {
-    color: 'green'
+    color: "green",
   },
   outboundTicker: {
-    color: 'red',
+    color: "red",
   },
   outboundQuantity: {
-    color: 'red'
+    color: "red",
   },
   divider: {
     marginTop: theme.spacing(0.5),
-    marginBottom: theme.spacing(0.5)
+    marginBottom: theme.spacing(0.5),
   },
   inboundForOutboundContainer: {
-    display: 'flex',
-    flexDirection: 'row'
+    display: "flex",
+    flexDirection: "row",
   },
   avatar: {
     marginRight: theme.spacing(1),
-    marginLeft: theme.spacing(2)
-  }
-}))
+    marginLeft: theme.spacing(2),
+  },
+}));
