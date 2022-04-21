@@ -58,6 +58,17 @@ template AssetHoldingAccount with
     signatory assetType.issuer, owner
     key (assetType, owner) : (AssetType, Party)
     maintainer key._1.issuer
+    
+    nonconsuming choice Issue_Asset: ContractId Asset
+      with
+        amount: Decimal
+      controller assetType.issuer
+      do
+        create Asset with
+          assetType = assetType
+          owner = owner
+          amount = amount
+          observers = Set.empty
 
     -- Send an invite for a party to create AssetHoldingAccount for this asset type.
     nonconsuming choice Invite_New_Asset_Holder : ContractId AssetHoldingAccountProposal
