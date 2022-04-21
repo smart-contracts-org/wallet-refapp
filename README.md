@@ -71,10 +71,10 @@ All triggers will be run by `userAdmin` in Daml hub, but locally, we will just u
 
 ## Running the triggers
 
-1. Start the autoSendExampleAssetAccountPropposal, run the below from the trigger directory.
+1. Start the sendAssetHoldingAccountInviteTrigger, run the below from the trigger directory.
 ```
 daml trigger --dar .daml/dist/triggers-0.0.1.dar \
-             --trigger-name Trigger:autoSendExampleAssetAccountProposal \
+             --trigger-name SendAssetHoldingAccountInviteTrigger:sendAssetHoldingAccountInviteTrigger \
              --ledger-host localhost \
              --ledger-port 6865 \
              --ledger-party "a"

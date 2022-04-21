@@ -2,7 +2,7 @@
 module AcceptSwapTrigger where
 
 import qualified Daml.Trigger as T
-import DA.Foldable
+import DA.Foldable 
 import DA.Action
 import DA.Optional (whenSome)
 import Account 
@@ -37,15 +37,28 @@ acceptSwapTrigger = T.Trigger
             \offeredAsset -> do
               optOfferedAssetAccount <- T.queryContractKey @AssetHoldingAccount (offeredAsset.asset.assetType, c.receiver)            
               whenSome optOfferedAssetAccount do
-                \x -> do
+                \_ -> do
                   optRequestedAssetTxPreApproval <- T.queryContractId c.requestedAssetTxPreApprovalCid
                   whenSome optRequestedAssetTxPreApproval do
                     \requestedAssetTxPreApproval -> do
                       let isRequestedAsset = (\asset -> asset.assetType == requestedAssetTxPreApproval.asset.assetType && asset.owner == p)
                       let requestedAssets = filter(\(cid,contract) -> isRequestedAsset contract) allAssetContracts
-                      let requestedAssetCids = map fst requestedAssets
-                      T.dedupExercise tradeCid Trade_Settle with 
-                        requestedAssetCids = requestedAssetCids
+                      -- Ensures that the admin will always have enough balance to swap with
+                      -- If we don't have any assets, issue some
+                      if Prelude.length requestedAssets == 0 
+                        then  
+                          do 
+                            requestedAssetHoldingAccountCid <- T.queryContractKey @AssetHoldingAccount(requestedAssetTxPreApproval.asset.assetType, p)
+                            whenSome requestedAssetHoldingAccountCid do
+                              \(cid, c) -> do
+                                debug("Issuing assets for swap")
+                                T.dedupExercise cid Issue_Asset with 
+                                  amount = requestedAssetTxPreApproval.asset.amount
+                      else
+                        do
+                          let requestedAssetCids = map fst requestedAssets
+                          T.dedupExercise tradeCid Trade_Settle with 
+                            requestedAssetCids = requestedAssetCids
     debug $ "TRIGGERED",
   heartbeat = None
 }

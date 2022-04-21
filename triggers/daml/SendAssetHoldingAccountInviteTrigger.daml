@@ -1,4 +1,4 @@
-module Trigger where
+module SendAssetHoldingAccountInviteTrigger where
 
 import Account
 import qualified Daml.Trigger as T
