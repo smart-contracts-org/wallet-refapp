@@ -49,7 +49,7 @@ acceptSwapTrigger = T.Trigger
                         then  
                           do 
                             requestedAssetHoldingAccountCid <- T.queryContractKey @AssetHoldingAccount(requestedAssetTxPreApproval.asset.assetType, p)
-                            whenSome requestedAssetHoldingAccountCid do
+
                               \(cid, c) -> do
                                 debug("Issuing assets for swap")
                                 T.dedupExercise cid Issue_Asset with 

@@ -5,8 +5,8 @@ import qualified Daml.Trigger as T
 import DA.Foldable
 import DA.Action
 
-autoSendExampleAssetAccountProposal: T.Trigger ()
-autoSendExampleAssetAccountProposal = T.Trigger 
+sendAssetHoldingAccountInviteTrigger: T.Trigger ()
+sendAssetHoldingAccountInviteTrigger = T.Trigger 
  { initialize = pure (),
   updateState = \_  -> pure (),
   registeredTemplates = T.RegisteredTemplates [T.registeredTemplate @AssetHoldingAccountRequest, T.registeredTemplate @AssetHoldingAccount],
