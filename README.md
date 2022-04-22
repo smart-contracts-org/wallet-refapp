@@ -65,7 +65,6 @@ daml trigger --dar triggers.dar \
              --ledger-host localhost \
              --ledger-port 6865 \
              --ledger-party "a"
-
 ```
 This trigger sends an invitation to create an Asset Holding Account for Example Token to new users.
 
@@ -76,7 +75,6 @@ daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --ledger-host localhost \
              --ledger-port 6865 \
              --ledger-party "a"
-
 ```
 This trigger allows 'userAdmin' party (the issuer of Example Token) to automatically accept airdrop requests for Example Token.
 
@@ -87,7 +85,6 @@ daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --ledger-host localhost \
              --ledger-port 6865 \
              --ledger-party "a"
-
 ```
 This trigger allows 'userAdmin' party (the issuer of Example Token) to automatically accept invites to create an Asset Holding Account for user's asset. This invite is created as part of a swap workflow when a user swaps his or her asset for an amount of Example Tokens with 'userAdmin' party.
 
@@ -98,7 +95,6 @@ daml trigger --dar .daml/dist/triggers-0.0.1.dar \
              --ledger-host localhost \
              --ledger-port 6865 \
              --ledger-party "a"
-
 ```
 This trigger allows 'userAdmin' party (the issuer of Example Token) to automatically accept a swap proposal created by a user, where the user proposes to swap his or her asset for an amount of Example Tokens with 'userAdmin' party.
 
