@@ -75,6 +75,7 @@ export const LoginPage: React.FC<Props> = ({
         const ledger = new Ledger({ token: credentials.token });
         let userContract = await ledger.fetchByKey(User, credentials.party);
         if (userContract === null) {
+          console.log('creating', userContract)
           const user = { username: credentials.party, following: [] };
           userContract = await ledger.create(User, user);
 
@@ -86,13 +87,11 @@ export const LoginPage: React.FC<Props> = ({
           }
         }
         onLogin(credentials);
-        setIsLoggingIn && setIsLoggingIn(false);
       } catch (error) {
         alert(`Unknown error:\n${JSON.stringify(error)}`);
-        setIsLoggingIn && setIsLoggingIn(false);
       }
     },
-    [onLogin, setIsLoggingIn]
+    [onLogin]
   );
 
   if (!admin) {
