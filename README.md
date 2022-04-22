@@ -70,7 +70,7 @@ This trigger sends an invitation to create an Asset Holding Account for Example 
 
 2. start the `AcceptAirdropRequestTrigger` trigger from trigger directory
 ```
-daml trigger --dar .daml/dist/triggers-0.0.1.dar \
+daml trigger --dar triggers.dar \
              --trigger-name AcceptAirdropRequestTrigger:acceptAirdropRequestTrigger \
              --ledger-host localhost \
              --ledger-port 6865 \
@@ -80,7 +80,7 @@ This trigger allows 'userAdmin' party (the issuer of Example Token) to automatic
 
 3. start the `AcceptAssetInviteTrigger` trigger from trigger directory
 ```
-daml trigger --dar .daml/dist/triggers-0.0.1.dar \
+daml trigger --dar triggers.dar \
              --trigger-name AcceptAssetInviteTrigger:acceptAssetInviteTrigger \
              --ledger-host localhost \
              --ledger-port 6865 \
@@ -90,7 +90,7 @@ This trigger allows 'userAdmin' party (the issuer of Example Token) to automatic
 
 4. start the `AcceptSwapTrigger` trigger from trigger directory
 ```
-daml trigger --dar .daml/dist/triggers-0.0.1.dar \
+daml trigger --dar triggers.dar \
              --trigger-name AcceptSwapTrigger:acceptSwapTrigger \
              --ledger-host localhost \
              --ledger-port 6865 \
