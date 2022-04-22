@@ -11,12 +11,7 @@ build-dars:
 
 .PHONY: test
 test:
-	# Remove later
-	cd main/Tests && daml test
-	cd ..
-	cd main/Account && daml test
-	cd ..
-	cd main/Asset && daml test
+	cd main/Tests && daml test --color
 
 .PHONY: clean
 clean: 

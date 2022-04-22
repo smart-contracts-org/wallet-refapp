@@ -86,7 +86,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({
         )}
         {isMobile() && <SvgIcon />}
         {!isMobile() && (
-          <Typography variant="h6" noWrap component="div" sx={{fontWeight: 600, mt: 0}}>
+          <Typography variant="h6" noWrap component="div" sx={{ mt: 0.5}}>
             Wallet RefApp
           </Typography>
         )}
