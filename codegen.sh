@@ -1,1 +1,1 @@
-daml codegen js  main/Asset/.daml/dist/Asset-0.0.1.dar main/User/.daml/dist/User-0.0.1.dar main/Account/.daml/dist/Account-0.0.1.dar  -o ui/daml.js
+daml codegen js  main/Asset/asset.dar main/User/user.dar main/Account/account.dar  -o ui/daml.js
