@@ -25,3 +25,11 @@ clean:
 .PHONY: codegen
 codegen:
 	./codegen.sh
+
+.PHONY: sandbox
+sandbox:
+	daml sandbox --ledgerid wallet-refapp-sandbox main/Asset/asset.dar main/User/user.dar main/Account/account.dar
+
+.PHONY: server
+server:
+	daml json-api --ledger-host localhost --ledger-port 6865 --http-port 7575
