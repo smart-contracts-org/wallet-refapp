@@ -65,9 +65,9 @@ template AssetHoldingAccount with
       controller assetType.issuer
       do
         create Asset with
-          assetType = assetType
-          owner = owner
-          amount = amount
+          assetType
+          owner
+          amount
           observers = Set.empty
 
     -- Send an invite for a party to create AssetHoldingAccount for this asset type.
